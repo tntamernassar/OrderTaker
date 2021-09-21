@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
+<AbsoluteLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+
+    <com.google.android.material.tabs.TabLayout
+        android:id="@+id/tabLayout"
+        android:layout_width="369dp"
+        android:layout_height="58dp"
+        android:layout_marginTop="212dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginBottom="17dp"
+        android:layout_x="404dp"
+        android:layout_y="16dp"
+        android:background="#FFFFFF"
+        app:tabMaxWidth="100dp"
+        app:tabMode="scrollable"
+        app:tabPaddingEnd="0dp"
+        app:tabPaddingStart="0dp"
+        app:tabTextAppearance="@style/TextAppearance.AppCompat.Body1">
+
+        <com.google.android.material.tabs.TabItem
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Burgers" />
+
+        <com.google.android.material.tabs.TabItem
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Pizzas" />
+
+        <com.google.android.material.tabs.TabItem
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Drinks" />
+    </com.google.android.material.tabs.TabLayout>
+
+
+    <ListView
+        android:id="@+id/menu_holder"
+        android:layout_width="404dp"
+        android:layout_height="832dp"
+        android:layout_x="386dp"
+        android:layout_y="74dp"
+        android:background="@drawable/classic_border"></ListView>
+
+    <ListView
+        android:id="@+id/order_holder"
+        android:layout_width="381dp"
+        android:layout_height="834dp"
+        android:layout_x="3dp"
+        android:layout_y="74dp"
+        android:background="@drawable/classic_border">
+
+    </ListView>
+</AbsoluteLayout>
