@@ -17,8 +17,11 @@ import com.example.ordertakerfrontend.BackEnd.Services.Constants;
 import com.example.ordertakerfrontend.BackEnd.Services.FileManager;
 import com.example.ordertakerfrontend.BackEnd.Services.Network.ConnectionHandler;
 import com.example.ordertakerfrontend.BackEnd.Services.Utils;
+import com.example.ordertakerfrontend.FrontEnd.Menu;
+import com.example.ordertakerfrontend.FrontEnd.MenuProduct;
 
 import java.net.InetAddress;
+import java.util.HashMap;
 import java.util.LinkedList;
 
 public class MainActivity extends AppCompatActivity {
@@ -50,20 +53,63 @@ public class MainActivity extends AppCompatActivity {
     private Waitress initSystem(){
         Constants.CONTEXT = getApplicationContext();
 
+        HashMap<String, String[]> addons_example_1 = new HashMap<>();
+        addons_example_1.put("מידת עשייה", new String[]{"MW", "WD", "M", "D"});
+        addons_example_1.put("نوع اللحم", new String[]{"عجل", "خروف", "دجاج"});
+        addons_example_1.put("نوع الخبز", new String[]{"ابيض", "اسود"});
+        addons_example_1.put("نوع الخبز", new String[]{"ابيض", "اسود"});
+        addons_example_1.put("اضافات", new String[]{"خس", "بندورة" ,"خيار", "بصل", "فقع", "جبنه"});
+
         /**
          * Set up Menu
          * **/
-        LinkedList<MenuProduct> menuProducts = new LinkedList<>();
-        menuProducts.add(new MenuProduct("c1","p1", "desc", 1, null, new String[]{"ham.png"}));
-        menuProducts.add(new MenuProduct("c1","p2", "desc", 2, null, new String[]{"ham.png"}));
-        menuProducts.add(new MenuProduct("c1","p3", "desc", 3, null, new String[]{"ham.png"}));
-        menuProducts.add(new MenuProduct("c1","p3", "desc", 3, null, new String[]{"ham.png"}));
-        menuProducts.add(new MenuProduct("c1","p3", "desc", 3, null, new String[]{"ham.png"}));
-        menuProducts.add(new MenuProduct("c1","p3", "desc", 3, null, new String[]{"ham.png"}));
-        menuProducts.add(new MenuProduct("c1","p3", "desc", 3, null, new String[]{"ham.png"}));
-        menuProducts.add(new MenuProduct("c1","p3", "desc", 3, null, new String[]{"ham.png"}));
-        menuProducts.add(new MenuProduct("c1","p3", "desc", 3, null, new String[]{"ham.png"}));
-        Menu.init(getApplicationContext(), menuProducts);
+        Menu.init(getApplicationContext(), new LinkedList<>());
+        Menu.getInstance().addProduct(new MenuProduct("لحوم","همبرجر", "لحمه مفرومه   وبعض الوصف  وبعض الوصف", 15, addons_example_1, new String[]{"ham.png"}));
+        Menu.getInstance().addProduct(new MenuProduct("لحوم","شنيتسل", "لحمه مفرومه وبعض الوصف لحمه مفرومه وبعض الوصف", 30, null, new String[]{"ham.png"}));
+        Menu.getInstance().addProduct(new MenuProduct("لحوم","كباب", "لحمه مفرومه وبعض الوصف لحمه مفرومه وبعض الوصف", 30, null, new String[]{"ham.png"}));
+        Menu.getInstance().addProduct(new MenuProduct("لحوم","تورتيا", "لحمه مفرومه وبعض الوصف لحمه مفرومه وبعض الوصف", 30, null, new String[]{"ham.png"}));
+        Menu.getInstance().addProduct(new MenuProduct("لحوم","شوارما", "لحمه مفرومه وبعض الوصف لحمه مفرومه وبعض الوصف", 30, null, new String[]{"ham.png"}));
+        Menu.getInstance().addProduct(new MenuProduct("لحوم","برجيت", "لحمه مفرومه وبعض الوصف لحمه مفرومه وبعض الوصف", 30, null, new String[]{"ham.png"}));
+        Menu.getInstance().addProduct(new MenuProduct("لحوم","صدر دجاج", "لحمه مفرومه وبعض الوصف لحمه مفرومه وبعض الوصف", 30, null, new String[]{"ham.png"}));
+        Menu.getInstance().addProduct(new MenuProduct("لحوم","عروسه", "لحمه مفرومه وبعض الوصف لحمه مفرومه وبعض الوصف", 30, null, new String[]{"ham.png"}));
+        Menu.getInstance().addProduct(new MenuProduct("لحوم","خروف", "لحمه مفرومه وبعض الوصف لحمه مفرومه وبعض الوصف", 30, null, new String[]{"ham.png"}));
+
+        Menu.getInstance().addProduct(new MenuProduct("اسماك","سلمون", "لحمه مفرومه وبعض الوصف لحمه مفرومه وبعض الوصف", 100, null, new String[]{"ham.png"}));
+        Menu.getInstance().addProduct(new MenuProduct("اسماك","شرمبس", "لحمه مفرومه وبعض الوصف لحمه مفرومه وبعض الوصف", 100, null, new String[]{"ham.png"}));
+        Menu.getInstance().addProduct(new MenuProduct("اسماك","دينيس", "لحمه مفرومه وبعض الوصف لحمه مفرومه وبعض الوصف", 100, null, new String[]{"ham.png"}));
+        Menu.getInstance().addProduct(new MenuProduct("اسماك","لفز", "لحمه مفرومه وبعض الوصف لحمه مفرومه وبعض الوصف", 100, null, new String[]{"ham.png"}));
+        Menu.getInstance().addProduct(new MenuProduct("اسماك","سرغوس", "لحمه مفرومه وبعض الوصف لحمه مفرومه وبعض الوصف", 100, null, new String[]{"ham.png"}));
+        Menu.getInstance().addProduct(new MenuProduct("اسماك","فريده", "لحمه مفرومه وبعض الوصف لحمه مفرومه وبعض الوصف", 100, null, new String[]{"ham.png"}));
+        Menu.getInstance().addProduct(new MenuProduct("اسماك","طرخون", "لحمه مفرومه وبعض الوصف لحمه مفرومه وبعض الوصف", 100, null, new String[]{"ham.png"}));
+        Menu.getInstance().addProduct(new MenuProduct("اسماك","لفراك", "لحمه مفرومه وبعض الوصف لحمه مفرومه وبعض الوصف", 100, null, new String[]{"ham.png"}));
+        Menu.getInstance().addProduct(new MenuProduct("اسماك","مشط", "لحمه مفرومه وبعض الوصف لحمه مفرومه وبعض الوصف", 100, null, new String[]{"ham.png"}));
+        Menu.getInstance().addProduct(new MenuProduct("اسماك","بوري", "لحمه مفرومه وبعض الوصف لحمه مفرومه وبعض الوصف", 100, null, new String[]{"ham.png"}));
+        Menu.getInstance().addProduct(new MenuProduct("اسماك","سمك", "لحمه مفرومه وبعض الوصف لحمه مفرومه وبعض الوصف", 100, null, new String[]{"ham.png"}));
+
+        Menu.getInstance().addProduct(new MenuProduct("ايطالي","رفيولي", "لحمه مفرومه وبعض الوصف لحمه مفرومه وبعض الوصف", 100, null, new String[]{"ham.png"}));
+        Menu.getInstance().addProduct(new MenuProduct("ايطالي","بيتسا", "لحمه مفرومه وبعض الوصف لحمه مفرومه وبعض الوصف", 100, null, new String[]{"ham.png"}));
+        Menu.getInstance().addProduct(new MenuProduct("ايطالي","باستا", "لحمه مفرومه وبعض الوصف لحمه مفرومه وبعض الوصف", 100, null, new String[]{"ham.png"}));
+        Menu.getInstance().addProduct(new MenuProduct("ايطالي","طوسط", "لحمه مفرومه وبعض الوصف لحمه مفرومه وبعض الوصف", 100, null, new String[]{"ham.png"}));
+        Menu.getInstance().addProduct(new MenuProduct("ايطالي","لزانيا", "لحمه مفرومه وبعض الوصف لحمه مفرومه وبعض الوصف", 100, null, new String[]{"ham.png"}));
+
+        Menu.getInstance().addProduct(new MenuProduct("سلطات","عربيه", "لحمه مفرومه وبعض الوصف لحمه مفرومه وبعض الوصف", 20, null, new String[]{"ham.png"}));
+        Menu.getInstance().addProduct(new MenuProduct("سلطات","فتوش", "لحمه مفرومه وبعض الوصف لحمه مفرومه وبعض الوصف", 20, null, new String[]{"ham.png"}));
+        Menu.getInstance().addProduct(new MenuProduct("سلطات","ملفوف", "لحمه مفرومه وبعض الوصف لحمه مفرومه وبعض الوصف", 20, null, new String[]{"ham.png"}));
+        Menu.getInstance().addProduct(new MenuProduct("سلطات","ذره", "لحمه مفرومه وبعض الوصف لحمه مفرومه وبعض الوصف", 20, null, new String[]{"ham.png"}));
+        Menu.getInstance().addProduct(new MenuProduct("سلطات","يونانيه", "لحمه مفرومه وبعض الوصف لحمه مفرومه وبعض الوصف", 20, null, new String[]{"ham.png"}));
+        Menu.getInstance().addProduct(new MenuProduct("سلطات","حمص", "لحمه مفرومه وبعض الوصف لحمه مفرومه وبعض الوصف", 20, null, new String[]{"ham.png"}));
+        Menu.getInstance().addProduct(new MenuProduct("سلطات","باذنجان", "لحمه مفرومه وبعض الوصف لحمه مفرومه وبعض الوصف", 20, null, new String[]{"ham.png"}));
+        Menu.getInstance().addProduct(new MenuProduct("سلطات","بندوره", "لحمه مفرومه وبعض الوصف لحمه مفرومه وبعض الوصف", 20, null, new String[]{"ham.png"}));
+        Menu.getInstance().addProduct(new MenuProduct("سلطات","ذره", "لحمه مفرومه وبعض الوصف لحمه مفرومه وبعض الوصف", 20, null, new String[]{"ham.png"}));
+        Menu.getInstance().addProduct(new MenuProduct("سلطات","جزر", "لحمه مفرومه وبعض الوصف لحمه مفرومه وبعض الوصف", 20, null, new String[]{"ham.png"}));
+
+        Menu.getInstance().addProduct(new MenuProduct("مشروبات","ماء", "لحمه مفرومه وبعض الوصف لحمه مفرومه وبعض الوصف", 10, null, new String[]{"ham.png"}));
+        Menu.getInstance().addProduct(new MenuProduct("مشروبات","كولا", "لحمه مفرومه وبعض الوصف لحمه مفرومه وبعض الوصف", 10, null, new String[]{"ham.png"}));
+        Menu.getInstance().addProduct(new MenuProduct("مشروبات","فانتا", "لحمه مفرومه وبعض الوصف لحمه مفرومه وبعض الوصف", 10, null, new String[]{"ham.png"}));
+        Menu.getInstance().addProduct(new MenuProduct("مشروبات","سبرايت", "لحمه مفرومه وبعض الوصف لحمه مفرومه وبعض الوصف", 10, null, new String[]{"ham.png"}));
+        Menu.getInstance().addProduct(new MenuProduct("مشروبات","توت موز", "لحمه مفرومه وبعض الوصف لحمه مفرومه وبعض الوصف", 10, null, new String[]{"ham.png"}));
+        Menu.getInstance().addProduct(new MenuProduct("مشروبات","عنب", "لحمه مفرومه وبعض الوصف لحمه مفرومه وبعض الوصف", 10, null, new String[]{"ham.png"}));
+        Menu.getInstance().addProduct(new MenuProduct("مشروبات","برتقال", "لحمه مفرومه وبعض الوصف لحمه مفرومه وبعض الوصف", 10, null, new String[]{"ham.png"}));
 
         /**
          * Set up Restaurant, check if there is cached version in memory

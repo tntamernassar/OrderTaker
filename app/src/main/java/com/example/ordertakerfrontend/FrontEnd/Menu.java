@@ -1,4 +1,4 @@
-package com.example.ordertakerfrontend;
+package com.example.ordertakerfrontend.FrontEnd;
 
 import android.content.Context;
 import android.graphics.Bitmap;
@@ -13,25 +13,39 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
+import com.example.ordertakerfrontend.R;
+
 import java.io.File;
-import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
+import java.util.LinkedList;
 import java.util.List;
 
 public class Menu extends ArrayAdapter<MenuProduct> {
 
     private static Menu instance = null;
 
+    /** Used for Displaying on FE**/
     private List<MenuProduct> menuProductList;
+    /** Used for creating an instant instance of sub menu **/
+    private HashMap<String, LinkedList<MenuProduct>> categoriesProducts;
+
     private Context context;
 
     private Menu(Context context, List<MenuProduct> menuProductList){
         super(context, R.layout.menu_item, menuProductList);
         this.menuProductList = menuProductList;
         this.context = context;
+        this.categoriesProducts = new LinkedHashMap<>();
+
     }
 
     public static void init(Context context, List<MenuProduct> menuProductList){
         instance = new Menu(context, menuProductList);
+    }
+
+    public String[] getCategories() {
+        return this.categoriesProducts.keySet().toArray(new String[0]);
     }
 
     public static Menu getInstance() {
@@ -44,6 +58,18 @@ public class Menu extends ArrayAdapter<MenuProduct> {
 
     public void addProduct(MenuProduct product){
         this.menuProductList.add(product);
+        if(this.categoriesProducts.containsKey(product.getCategory())){
+            this.categoriesProducts.get(product.getCategory()).add(product);
+        }else{
+            LinkedList t = new LinkedList<>();
+            t.add(product);
+            this.categoriesProducts.put(product.getCategory(), t);
+        }
+    }
+
+
+    public Menu getSubMenu(String category){
+        return new Menu(this.context, this.categoriesProducts.get(category));
     }
 
     @NonNull
@@ -64,7 +90,7 @@ public class Menu extends ArrayAdapter<MenuProduct> {
 
         nameTV.setText(menuProduct.getName());
         descTV.setText(menuProduct.getDescription());
-        price.setText(menuProduct.getPrice() + "₪");
+        price.setText((menuProduct.getPrice() + "₪").replace(".0", ""));
 
         return row;
     }

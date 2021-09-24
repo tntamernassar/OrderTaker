@@ -1,6 +1,6 @@
 package com.example.ordertakerfrontend.BackEnd.Services;
 
-import android.os.Environment;
+import android.util.Log;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -14,10 +14,12 @@ import java.nio.charset.StandardCharsets;
 
 public class FileManager {
 
+    private static String basePath = Constants.CONTEXT.getFilesDir().getAbsolutePath();
+
     public synchronized static boolean writeObject(Object object, String filename){
 
         try {
-            File file = new File(Environment.getExternalStorageDirectory() + "/" + filename);
+            File file = new File(basePath + "/" + filename);
             if(!file.exists()){
                 file.createNewFile();
             }
@@ -35,8 +37,11 @@ public class FileManager {
     }
 
     public static Object readObject(String filename){
+
+        Log.d("TAG", basePath + " <<<<<<<<<<<<<<");
+
         try {
-            File file = new File(Environment.getExternalStorageDirectory() + "/" + filename);
+            File file = new File(basePath+ "/" + filename);
             FileInputStream fis = new FileInputStream(file);
             ObjectInputStream is = new ObjectInputStream(fis);
             Object o =  is.readObject();
@@ -51,7 +56,7 @@ public class FileManager {
 
     public static boolean appendToFile(String filename, String logEvent){
         try {
-            File file = new File(Environment.getExternalStorageDirectory() + "/" + filename);
+            File file = new File(basePath + "/" + filename);
             if(!file.exists()){
                 file.createNewFile();
             }
@@ -69,7 +74,7 @@ public class FileManager {
     public static String readFile(String filename){
         try {
 
-            File file = new File(Environment.getExternalStorageDirectory() + "/" + filename);
+            File file = new File(basePath + "/" + filename);
             if (!file.exists()) {
                 return "File not exist";
             }

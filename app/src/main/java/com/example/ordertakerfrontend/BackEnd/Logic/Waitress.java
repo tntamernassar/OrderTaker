@@ -116,7 +116,7 @@ public abstract class Waitress implements NetworkObserver {
 
 
     /**
-     * remove the item with index {#param orderItem} from the order of  {@param table}
+     * remove the item with index {@param orderItem} from the order of  {@param table}
      *
      * if the table is active remove the given item from the order*
      * **/

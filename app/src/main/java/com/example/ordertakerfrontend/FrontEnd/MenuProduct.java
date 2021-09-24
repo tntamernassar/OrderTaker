@@ -1,5 +1,7 @@
-package com.example.ordertakerfrontend;
+package com.example.ordertakerfrontend.FrontEnd;
 
+
+import java.util.HashMap;
 
 public class MenuProduct{
 
@@ -7,11 +9,11 @@ public class MenuProduct{
     private String name;
     private String description;
     private double price;
-    private String[] addons;
     private String[] images;
+    private HashMap<String, String[]> addons;
 
 
-    public MenuProduct(String category, String name, String description, double price, String[] addons, String[] images){
+    public MenuProduct(String category, String name, String description, double price, HashMap<String, String[]> addons, String[] images){
         this.category = category;
         this.name = name;
         this.description = description;
@@ -32,7 +34,11 @@ public class MenuProduct{
         return name;
     }
 
-    public String[] getAddons() {
+    public String getCategory() {
+        return category;
+    }
+
+    public HashMap<String, String[]> getAddons() {
         return addons;
     }
 
