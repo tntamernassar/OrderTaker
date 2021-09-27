@@ -1,9 +1,11 @@
 package com.example.ordertakerfrontend.FrontEnd;
 
 
+import com.example.ordertakerfrontend.BackEnd.Logic.Product;
+
 import java.util.HashMap;
 
-public class MenuProduct{
+public class MenuProduct implements Product {
 
     private String category;
     private String name;

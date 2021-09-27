@@ -110,7 +110,7 @@ public abstract class Waitress implements NetworkObserver {
         if(!this.restaurant.getTable(table).isActive()){
             this.restaurant.getTable(table).startOrder(getName());
         }
-        Utils.writeToLog("Table " + table + " Ordered Item : name : " + product.getName() + " quantity : " + quantity + " notes : " + notes);
+        Utils.writeToLog("Table " + table + " Ordered Item : name : " + product.toString() + " quantity : " + quantity + " notes : " + notes);
         return this.restaurant.getTable(table).getCurrentOrder().addItem(this.getName(), product, quantity, notes);
     }
 
@@ -136,7 +136,7 @@ public abstract class Waitress implements NetworkObserver {
      * **/
     public void editOrder(int table, int orderItem, Product product, int quantity, String notes){
         restaurant.getTable(table).getCurrentOrder().editOrder(orderItem, product, quantity, notes);
-        Utils.writeToLog("Table " + table + " Edited Item number : " + orderItem + " new name : " + product.getName() + " new quantity : " + quantity + " new notes : " + notes);
+        Utils.writeToLog("Table " + table + " Edited Item number : " + orderItem + " new name : " + product.toString() + " new quantity : " + quantity + " new notes : " + notes);
     }
 
     /**
