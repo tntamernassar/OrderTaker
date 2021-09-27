@@ -10,7 +10,6 @@ import java.util.concurrent.atomic.AtomicLong;
 public class Table implements Serializable {
 
     private int number;
-    private AtomicLong version;
     private boolean isActive;
     private Order currentOrder;
     private String startedAt;
@@ -19,32 +18,18 @@ public class Table implements Serializable {
 
     public Table(int number){
         this.number = number;
-        this.version = new AtomicLong(0);
         this.isActive = false;
         this.currentOrder = null;
     }
 
     public Table(int number,int version){
         this.number = number;
-        this.version = new AtomicLong(version);
         this.isActive = false;
         this.currentOrder = null;
     }
 
     public int getNumber() {
         return number;
-    }
-
-    public long getVersion() {
-        return version.get();
-    }
-
-    public void setVersion(long version) {
-        this.version.set(version);
-    }
-
-    public long nextVersion(){
-        return this.version.incrementAndGet();
     }
 
     public void setCurrentOrder(Order currentOrder) {
@@ -104,7 +89,6 @@ public class Table implements Serializable {
     public String toString() {
         return "Table {" + "\n\t" +
                 "number=" + number + ",\n\t" +
-                "version=" + version + ",\n\t" +
                 "isActive=" + isActive + ",\n\t" +
                 "currentOrder=" + currentOrder + "\n" +
                 "}";
