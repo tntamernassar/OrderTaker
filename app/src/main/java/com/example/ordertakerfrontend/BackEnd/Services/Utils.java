@@ -1,5 +1,17 @@
 package com.example.ordertakerfrontend.BackEnd.Services;
 
+import android.content.Context;
+import android.util.Log;
+
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.StringRequest;
+import com.android.volley.toolbox.Volley;
+import com.example.ordertakerfrontend.FrontEnd.Menu;
+import com.example.ordertakerfrontend.FrontEnd.MenuProduct;
+
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.util.Map;
@@ -50,5 +62,21 @@ public class Utils {
         Timestamp timestamp1 = new Timestamp(Long.parseLong(t1));
         Timestamp timestamp2 = new Timestamp(Long.parseLong(t1));
         return timestamp1.compareTo(timestamp2) > 0;
+    }
+
+    public static void encode_menu_to_json(){
+        MenuProduct[] pr = Menu.getInstance().getMenuProductList().toArray(new MenuProduct[0]);
+        String res = "";
+        for(MenuProduct p : pr){
+            res += p.toString() + "},\n";
+        }
+
+        res = res.substring(0, res.length()-1);
+        res = "{\n\t\"Menu\":[\n" + res + "\n\t]\n}";
+
+        FileManager.appendToFile("tmp", res);
+    }
+
+    public static void read_file_From_drive(Context context){
     }
 }

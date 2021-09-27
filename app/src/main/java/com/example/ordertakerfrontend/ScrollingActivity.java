@@ -8,6 +8,7 @@ import android.os.Bundle;
 
 import com.example.ordertakerfrontend.BackEnd.Services.Constants;
 import com.example.ordertakerfrontend.FrontEnd.MenuProduct;
+import com.example.ordertakerfrontend.FrontEnd.MenuSection;
 import com.example.ordertakerfrontend.FrontEnd.PopupAddons;
 import com.google.android.material.appbar.CollapsingToolbarLayout;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
@@ -158,14 +159,14 @@ public class ScrollingActivity extends AppCompatActivity {
                 /***
                  * Display Addons
                  * **/
-                if(menuProduct.getAddons() != null){
+                if(menuProduct.getSections() != null){
                     ListView AddonsHandler = menuPopup.findViewById(R.id.addons_handler);
                     LinkedList<String[]> addons = new LinkedList<>();
-                    String[] sections = menuProduct.getAddons().keySet().toArray(new String[]{""});
-                    for(String section: sections){
-                        addons.add(menuProduct.getAddons().get(section));
+                    LinkedList<MenuSection> sections = menuProduct.getSections();
+                    for(MenuSection ms: sections){
+                        addons.add(ms.getAddons());
                     }
-                    PopupAddons popupAddons = new PopupAddons(getApplicationContext(), R.layout.section_addons, sections, addons);
+                    PopupAddons popupAddons = new PopupAddons(getApplicationContext(), R.layout.section_addons, sections);
                     AddonsHandler.setAdapter(popupAddons);
 
                     int totalHeight = 0;

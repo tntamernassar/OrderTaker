@@ -18,6 +18,10 @@ public class Constants {
      * **/
     public static Waitress WAITRESS = null;
 
+
+    public static String MENU_DRIVE_URL = "https://www.googleapis.com/drive/v2/files/14lN7JeY2b8rQydzvFqd5tTdcPg_MZr3J/export/json";
+
+
     /**
      * UDP BUFFER SIZE
      * **/
@@ -78,5 +82,8 @@ public class Constants {
      * While syncing, the device only receive syncing responses but don't respond on requests
      * **/
     public static final int SYNCING_TIME = 30 * 1000;
+
+
+
 
 }

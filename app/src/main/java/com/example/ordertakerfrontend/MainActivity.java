@@ -19,8 +19,10 @@ import com.example.ordertakerfrontend.BackEnd.Services.Network.ConnectionHandler
 import com.example.ordertakerfrontend.BackEnd.Services.Utils;
 import com.example.ordertakerfrontend.FrontEnd.Menu;
 import com.example.ordertakerfrontend.FrontEnd.MenuProduct;
+import com.example.ordertakerfrontend.FrontEnd.MenuSection;
 
 import java.net.InetAddress;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.LinkedList;
 
@@ -62,15 +64,18 @@ public class MainActivity extends AppCompatActivity {
         addons_example_1.put("نوع الخبز", new String[]{"ابيض", "اسود"});
         addons_example_1.put("اضافات", new String[]{"خس", "بندورة" ,"خيار", "بصل", "فقع", "جبنه"});
 
+        LinkedList<MenuSection> sections = new LinkedList<>();
+        sections.add(new MenuSection("s1", new String[]{"A", "b", "c"}, true));
+        sections.add(new MenuSection("s2", new String[]{"A", "b", "c"}, false));
+
         /**
          * Set up Menu
          *
          * Context: the context of the current state of the application/object.
          *          You can get the context by invoking getApplicationContext(), getContext(), this
          * **/
-
         Menu.init(this, new LinkedList<>());
-        Menu.getInstance().addProduct(new MenuProduct("لحوم","همبرجر", "لحمه مفرومه   وبعض الوصف  وبعض الوصف", 15, addons_example_1, new String[]{"ham.png"}));
+        Menu.getInstance().addProduct(new MenuProduct("لحوم","همبرجر", "لحمه مفرومه   وبعض الوصف  وبعض الوصف", 15, sections, new String[]{"ham.png"}));
         Menu.getInstance().addProduct(new MenuProduct("لحوم","شنيتسل", "لحمه مفرومه وبعض الوصف لحمه مفرومه وبعض الوصف", 30, null, new String[]{"ham.png"}));
         Menu.getInstance().addProduct(new MenuProduct("لحوم","كباب", "لحمه مفرومه وبعض الوصف لحمه مفرومه وبعض الوصف", 30, null, new String[]{"ham.png"}));
         Menu.getInstance().addProduct(new MenuProduct("لحوم","تورتيا", "لحمه مفرومه وبعض الوصف لحمه مفرومه وبعض الوصف", 30, null, new String[]{"ham.png"}));
@@ -116,6 +121,7 @@ public class MainActivity extends AppCompatActivity {
         Menu.getInstance().addProduct(new MenuProduct("مشروبات","توت موز", "لحمه مفرومه وبعض الوصف لحمه مفرومه وبعض الوصف", 10, null, new String[]{"ham.png"}));
         Menu.getInstance().addProduct(new MenuProduct("مشروبات","عنب", "لحمه مفرومه وبعض الوصف لحمه مفرومه وبعض الوصف", 10, null, new String[]{"ham.png"}));
         Menu.getInstance().addProduct(new MenuProduct("مشروبات","برتقال", "لحمه مفرومه وبعض الوصف لحمه مفرومه وبعض الوصف", 10, null, new String[]{"ham.png"}));
+
 
         /**
          * Set up Restaurant, check if there is cached version in memory

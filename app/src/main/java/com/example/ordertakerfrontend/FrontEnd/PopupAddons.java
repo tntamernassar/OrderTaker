@@ -9,10 +9,12 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
+import com.example.ordertakerfrontend.BackEnd.Services.Constants;
 import com.example.ordertakerfrontend.R;
 
 import java.util.HashMap;
@@ -20,18 +22,21 @@ import java.util.LinkedList;
 
 
 
-public class PopupAddons extends ArrayAdapter<String[]> {
+public class PopupAddons extends ArrayAdapter<MenuSection> {
 
     Context context;
-    String[] sections;
-    LinkedList<String[]> addons;
+    LinkedList<MenuSection> addons;
     HashMap<String, LinkedList<String>> choosed;
-    public PopupAddons(@NonNull Context context, int resource, String[] sections, LinkedList<String[]> addons) {
+    HashMap<String, MenuSection> sections;
+    public PopupAddons(@NonNull Context context, int resource, LinkedList<MenuSection> addons) {
         super(context, resource, addons);
         this.context = context;
         this.addons = addons;
-        this.sections = sections;
         this.choosed = new HashMap<>();
+        this.sections = new HashMap<>();
+        for(MenuSection s : addons){
+            sections.put(s.getSection(), s);
+        }
     }
 
     private Button createAddonButton(String section, String addon){
@@ -51,14 +56,17 @@ public class PopupAddons extends ArrayAdapter<String[]> {
                 this.choosed.get(section).remove(addon);
                 button.setBackground(this.context.getResources().getDrawable(R.drawable.addon_button_off));
             }else{
-                if(this.choosed.containsKey(section)){
-                    this.choosed.get(section).add(addon);
-                }else{
+                if(this.choosed.get(section) == null){
                     LinkedList<String> addons = new LinkedList<>();
-                    addons.add(addon);
                     this.choosed.put(section, addons);
                 }
-                button.setBackground(this.context.getResources().getDrawable(R.drawable.addon_button_on));
+                if(this.sections.get(section).isMaxOne() && this.choosed.get(section).size() >= 1){
+                    Toast.makeText(Constants.CONTEXT, "cant choose more than one", Toast.LENGTH_SHORT).show();
+                }else {
+                    this.choosed.get(section).add(addon);
+                    button.setBackground(this.context.getResources().getDrawable(R.drawable.addon_button_on));
+                }
+
             }
         });
 
@@ -71,8 +79,8 @@ public class PopupAddons extends ArrayAdapter<String[]> {
     public View getView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {
         LayoutInflater layoutInflater = (LayoutInflater) context.getApplicationContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         View row = layoutInflater.inflate(R.layout.section_addons, parent, false);
-        String section = this.sections[position];
-        String[] addons = this.addons.get(position);
+        String section = this.addons.get(position).getSection();
+        String[] addons = this.addons.get(position).getAddons();
 
         TextView sectionName = row.findViewById(R.id.section_name);
         LinearLayout addonsList = row.findViewById(R.id.addons_list);
