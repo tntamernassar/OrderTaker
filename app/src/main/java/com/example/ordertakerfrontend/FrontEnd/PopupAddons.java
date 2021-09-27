@@ -28,6 +28,9 @@ public class PopupAddons extends ArrayAdapter<MenuSection> {
     LinkedList<MenuSection> addons;
     HashMap<String, LinkedList<String>> choosed;
     HashMap<String, MenuSection> sections;
+
+    HashMap<String, Button> section_buttons;
+
     public PopupAddons(@NonNull Context context, int resource, LinkedList<MenuSection> addons) {
         super(context, resource, addons);
         this.context = context;
@@ -37,6 +40,8 @@ public class PopupAddons extends ArrayAdapter<MenuSection> {
         for(MenuSection s : addons){
             sections.put(s.getSection(), s);
         }
+
+        this.section_buttons = new HashMap<>();
     }
 
     private Button createAddonButton(String section, String addon){
@@ -55,15 +60,25 @@ public class PopupAddons extends ArrayAdapter<MenuSection> {
             if(this.choosed.containsKey(section) && this.choosed.get(section).contains(addon)){
                 this.choosed.get(section).remove(addon);
                 button.setBackground(this.context.getResources().getDrawable(R.drawable.addon_button_off));
+
             }else{
                 if(this.choosed.get(section) == null){
                     LinkedList<String> addons = new LinkedList<>();
                     this.choosed.put(section, addons);
+                    this.section_buttons.put(section, button);
                 }
                 if(this.sections.get(section).isMaxOne() && this.choosed.get(section).size() >= 1){
-                    Toast.makeText(Constants.CONTEXT, "cant choose more than one", Toast.LENGTH_SHORT).show();
+                      Button tmp = this.section_buttons.get(section);
+                      tmp.setBackground(this.context.getResources().getDrawable(R.drawable.addon_button_off));
+                      this.section_buttons.remove(section);
+
+                      this.choosed.get(section).add(addon);
+                      button.setBackground(this.context.getResources().getDrawable(R.drawable.addon_button_on));
+                      this.section_buttons.put(section, button);
+
                 }else {
                     this.choosed.get(section).add(addon);
+                    this.section_buttons.put(section, button);
                     button.setBackground(this.context.getResources().getDrawable(R.drawable.addon_button_on));
                 }
 
