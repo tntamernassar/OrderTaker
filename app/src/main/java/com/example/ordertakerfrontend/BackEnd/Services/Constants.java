@@ -19,41 +19,6 @@ public class Constants {
     public static Waitress WAITRESS = null;
 
 
-    public static String MENU_DRIVE_URL = "https://www.googleapis.com/drive/v2/files/14lN7JeY2b8rQydzvFqd5tTdcPg_MZr3J/export/json";
-
-
-    /**
-     * UDP BUFFER SIZE
-     * **/
-    public static final int UDP_BUFFER_SIZE = 10000;
-
-    /**
-     * UDP MultiCast Host
-     * **/
-    public static final String UDP_MULTICAST_HOST = "230.0.0.0";
-
-    /**
-     * UDP port
-     * **/
-    public static final int UDP_PORT = 2000;
-
-
-    /**
-     * UDP repeating time,
-     * While udp is not guarantying that the message will be received,
-     * we send the message multiple time to lower the chances for loss
-     * we assume that the receiver can deal with repeated messages with the version algorithm for example
-     * **/
-    public static final int UDP_REPEAT = 3;
-
-
-    /**
-     * TCP PORT
-     * **/
-    public static int TCP_PORT = 2000;
-
-
-
     /**
      * Log file.
      * **/
@@ -70,18 +35,6 @@ public class Constants {
      * Hold last Restaurant state
      * **/
     public static String RESTAURANT_STATE_FILE = "restaurant";
-
-
-    /**
-     * Demon Delay Time.
-     * **/
-    public static final int DEMON_DELAY = 5 * 1000;
-
-    /**
-     * The Time Syncing process is on.
-     * While syncing, the device only receive syncing responses but don't respond on requests
-     * **/
-    public static final int SYNCING_TIME = 30 * 1000;
 
 
 

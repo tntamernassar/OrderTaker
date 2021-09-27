@@ -1,27 +1,18 @@
 package com.example.ordertakerfrontend.BackEnd.Logic;
 
 
-import com.example.ordertakerfrontend.BackEnd.Logic.NetworkNotification.NetworkNotification;
-import com.example.ordertakerfrontend.BackEnd.Services.Constants;
-import com.example.ordertakerfrontend.BackEnd.Services.FileManager;
-import com.example.ordertakerfrontend.BackEnd.Services.Network.ConnectionHandler;
-import com.example.ordertakerfrontend.BackEnd.Services.Network.NetworkAdapter;
-import com.example.ordertakerfrontend.BackEnd.Services.Network.NetworkObserver;
+
 import com.example.ordertakerfrontend.BackEnd.Services.OrderDistribution.OrderDistributionRequest;
 import com.example.ordertakerfrontend.BackEnd.Services.OrderDistribution.OrderDistributor;
 import com.example.ordertakerfrontend.BackEnd.Services.Utils;
 
-import java.net.InetAddress;
-import java.util.LinkedList;
 
-public abstract class Waitress implements NetworkObserver {
+public class Waitress {
 
 
     private Restaurant restaurant;
-    private boolean isSyncing;
-    private NetworkAdapter networkAdapter;
     private String name;
-    private LinkedList<Integer> changedTables;
+
 
     /**
      *  Waitress class is responsible for the interaction
@@ -30,57 +21,19 @@ public abstract class Waitress implements NetworkObserver {
      * **/
     public Waitress(String name, Restaurant restaurant){
         this.restaurant = restaurant;
-        this.isSyncing = true;
-        new java.util.Timer().schedule(
-                new java.util.TimerTask() {
-                    @Override
-                    public void run() {
-                        doneSyncing();
-                    }
-                },
-                Constants.SYNCING_TIME
-        );
         this.name = name;
-        this.changedTables = new LinkedList<>();
-    }
 
-    public void setNetworkAdapter(NetworkAdapter networkAdapter) {
-        this.networkAdapter = networkAdapter;
-    }
-
-
-    public String getName() {
-        return name;
-    }
-
-    public LinkedList<Integer> getChangedTables() {
-        return changedTables;
-    }
-
-    public void setChangedTables(LinkedList<Integer> changedTables) {
-        this.changedTables = changedTables;
     }
 
     public Restaurant getRestaurant() {
         return restaurant;
     }
-    public NetworkAdapter getNetworkAdapter() {
-        return networkAdapter;
+
+    public String getName() {
+        return name;
     }
 
-    public boolean isSyncing() {
-        return isSyncing;
-    }
-    public void doneSyncing(){
-        this.isSyncing = false;
-    }
 
-    private void tableChanged(int table){
-        FileManager.writeObject(this.getRestaurant(), Constants.RESTAURANT_STATE_FILE);
-        if(!changedTables.contains(table)){
-            changedTables.push(table);
-        }
-    }
     /**
      * open the table {@param table}
      *
@@ -90,8 +43,6 @@ public abstract class Waitress implements NetworkObserver {
         Table theTable = restaurant.getTable(table);
         if (!theTable.isActive()){
             theTable.startOrder(getName());
-            theTable.nextVersion();
-            tableChanged(table);
             Utils.writeToLog("Opened Table " + table);
         }else {
             Utils.writeToLog("Tried to open Table " + table + " While it Was opened");
@@ -158,7 +109,6 @@ public abstract class Waitress implements NetworkObserver {
             Table theTable = restaurant.getTable(table);
             Order currentOrder = theTable.getCurrentOrder();
             if(currentOrder.getOrderItems().size() > 0){
-                theTable.nextVersion();
                 if(currentOrder.isDistributed()){
                     // the order already distributed
                     Order distributedVersion = currentOrder.getDistributeVersion();
@@ -173,7 +123,6 @@ public abstract class Waitress implements NetworkObserver {
                     Utils.writeToLog("Table " + table + " Submitted the order");
                 }
                 currentOrder.distributeItems();
-                tableChanged(table);
                 return currentOrder;
             }else{
                 Utils.writeToLog("Order contains no item");
@@ -206,8 +155,6 @@ public abstract class Waitress implements NetworkObserver {
                 }
             }
             Order closedOrder = theTable.closeOrder();
-            theTable.nextVersion();
-            tableChanged(table);
             Utils.writeToLog("Table " + table + " Closed the order");
             return closedOrder;
         }else{
@@ -230,8 +177,6 @@ public abstract class Waitress implements NetworkObserver {
         Table theTable = restaurant.getTable(table);
         if(restaurant.getTable(table).isActive()){
             Order closedOrder = theTable.closeOrder();
-            theTable.nextVersion();
-            tableChanged(table);
             Utils.writeToLog("Table " + table + " Canceled the order");
             return closedOrder;
         }else{
@@ -240,22 +185,4 @@ public abstract class Waitress implements NetworkObserver {
         }
     }
 
-    @Override
-    public void UDPNotification(InetAddress address, NetworkNotification notification) {
-        if(!notification.getSenderName().equals(getName())){ // prevent loopback
-            notification.visitUDP(address,this);
-            onUDPNotification(address, notification);
-        }
-    }
-
-    @Override
-    public void TCPNotification(ConnectionHandler handler, NetworkNotification notification) {
-        if(!notification.getSenderName().equals(getName())){ // prevent loopback
-            notification.visitTCP(handler,this);
-            onTCPNotification(handler, notification);
-        }
-    }
-
-    public abstract void onUDPNotification(InetAddress address, NetworkNotification notification);
-    public abstract void onTCPNotification(ConnectionHandler handler, NetworkNotification notification);
 }

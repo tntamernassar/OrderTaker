@@ -5,25 +5,20 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.content.Intent;
 import android.content.res.Resources;
 import android.os.Bundle;
-import android.util.Log;
 import android.widget.Button;
 
-import com.example.ordertakerfrontend.BackEnd.Logic.NetworkNotification.NetworkNotification;
 import com.example.ordertakerfrontend.BackEnd.Logic.OrderHistory;
 import com.example.ordertakerfrontend.BackEnd.Logic.Restaurant;
 import com.example.ordertakerfrontend.BackEnd.Logic.Table;
 import com.example.ordertakerfrontend.BackEnd.Logic.Waitress;
 import com.example.ordertakerfrontend.BackEnd.Services.Constants;
 import com.example.ordertakerfrontend.BackEnd.Services.FileManager;
-import com.example.ordertakerfrontend.BackEnd.Services.Network.ConnectionHandler;
 import com.example.ordertakerfrontend.BackEnd.Services.Utils;
 import com.example.ordertakerfrontend.FrontEnd.Menu;
 import com.example.ordertakerfrontend.FrontEnd.MenuProduct;
 import com.example.ordertakerfrontend.FrontEnd.MenuSection;
 
 import java.net.InetAddress;
-import java.util.Arrays;
-import java.util.HashMap;
 import java.util.LinkedList;
 
 public class MainActivity extends AppCompatActivity {
@@ -163,12 +158,7 @@ public class MainActivity extends AppCompatActivity {
         /**
          * Set up Waitress Listeners
          * **/
-        Waitress waitress = new Waitress("John", restaurant) {
-            @Override
-            public void onUDPNotification(InetAddress address, NetworkNotification notification) {}
-            @Override
-            public void onTCPNotification(ConnectionHandler handler, NetworkNotification notification) {}
-        };
+        Waitress waitress = new Waitress("John", restaurant);
 
         Constants.WAITRESS = waitress;
 
