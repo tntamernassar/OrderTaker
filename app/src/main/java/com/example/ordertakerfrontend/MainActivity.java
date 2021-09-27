@@ -61,12 +61,13 @@ public class MainActivity extends AppCompatActivity {
         addons_example_1.put("מידת עשייה", new String[]{"MW", "WD", "M", "D"});
         addons_example_1.put("نوع اللحم", new String[]{"عجل", "خروف", "دجاج"});
         addons_example_1.put("نوع الخبز", new String[]{"ابيض", "اسود"});
-        addons_example_1.put("نوع الخبز", new String[]{"ابيض", "اسود"});
         addons_example_1.put("اضافات", new String[]{"خس", "بندورة" ,"خيار", "بصل", "فقع", "جبنه"});
 
         LinkedList<MenuSection> sections = new LinkedList<>();
-        sections.add(new MenuSection("s1", new String[]{"A", "b", "c"}, true));
-        sections.add(new MenuSection("s2", new String[]{"A", "b", "c"}, false));
+        sections.add(new MenuSection("מידת עשייה", new String[]{"MW", "WD", "M", "D"}, true));
+        sections.add(new MenuSection("نوع اللحم", new String[]{"عجل", "خروف", "دجاج"}, true));
+        sections.add(new MenuSection("نوع الخبز", new String[]{"ابيض", "اسود"}, true));
+        sections.add(new MenuSection("اضافات", new String[]{"خس", "بندورة" ,"خيار", "بصل", "فقع", "جبنه"}, false));
 
         /**
          * Set up Menu
