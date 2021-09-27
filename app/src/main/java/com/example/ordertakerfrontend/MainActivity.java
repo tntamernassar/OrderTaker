@@ -62,8 +62,12 @@ public class MainActivity extends AppCompatActivity {
 
         /**
          * Set up Menu
+         *
+         * Context: the context of the current state of the application/object.
+         *          You can get the context by invoking getApplicationContext(), getContext(), this
          * **/
-        Menu.init(getApplicationContext(), new LinkedList<>());
+
+        Menu.init(this, new LinkedList<>());
         Menu.getInstance().addProduct(new MenuProduct("لحوم","همبرجر", "لحمه مفرومه   وبعض الوصف  وبعض الوصف", 15, addons_example_1, new String[]{"ham.png"}));
         Menu.getInstance().addProduct(new MenuProduct("لحوم","شنيتسل", "لحمه مفرومه وبعض الوصف لحمه مفرومه وبعض الوصف", 30, null, new String[]{"ham.png"}));
         Menu.getInstance().addProduct(new MenuProduct("لحوم","كباب", "لحمه مفرومه وبعض الوصف لحمه مفرومه وبعض الوصف", 30, null, new String[]{"ham.png"}));
