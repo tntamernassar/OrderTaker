@@ -4,6 +4,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
 import android.content.res.Resources;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.widget.Button;
 
@@ -18,8 +19,8 @@ import com.example.ordertakerfrontend.FrontEnd.Menu;
 import com.example.ordertakerfrontend.FrontEnd.MenuProduct;
 import com.example.ordertakerfrontend.FrontEnd.MenuSection;
 
-import java.net.InetAddress;
 import java.util.LinkedList;
+
 
 public class MainActivity extends AppCompatActivity {
 
@@ -28,6 +29,7 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         getSupportActionBar().hide();
+
 
         Waitress waitress = initSystem();
 

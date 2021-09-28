@@ -5,6 +5,7 @@
     android:id="@+id/main_container"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@drawable/bg4"
     tools:context=".MainActivity">
 
     <Button
@@ -15,6 +16,7 @@
         android:layout_marginTop="72dp"
         android:fontFamily="monospace"
         android:text="3"
+        android:backgroundTint="@color/purple_5"
         android:textColor="@color/white"
         android:textSize="100sp"
         app:layout_constraintStart_toStartOf="parent"
@@ -75,6 +77,7 @@
 
     <Button
         android:id="@+id/table_1"
+        android:backgroundTint="@color/purple_6"
         android:layout_width="206dp"
         android:layout_height="190dp"
         android:layout_marginStart="564dp"
