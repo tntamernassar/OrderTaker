@@ -64,7 +64,7 @@
 
 
         <TextView
-            android:id="@+id/textView17"
+            android:id="@+id/quantity"
             android:layout_width="40dp"
             android:layout_height="39dp"
             android:layout_x="300dp"

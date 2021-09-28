@@ -11,8 +11,10 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.ContentView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.fragment.app.Fragment;
 
 import com.example.ordertakerfrontend.BackEnd.Services.Constants;
 import com.example.ordertakerfrontend.R;
@@ -31,20 +33,21 @@ public class PopupAddons extends ArrayAdapter<MenuSection> {
 
     HashMap<String, Button> section_buttons;
 
+
     public PopupAddons(@NonNull Context context, int resource, LinkedList<MenuSection> addons) {
         super(context, resource, addons);
         this.context = context;
         this.addons = addons;
         this.choosed = new HashMap<>();
         this.sections = new HashMap<>();
-        for(MenuSection s : addons){
+        for (MenuSection s : addons) {
             sections.put(s.getSection(), s);
         }
 
         this.section_buttons = new HashMap<>();
     }
 
-    private Button createAddonButton(String section, String addon){
+    private Button createAddonButton(String section, String addon) {
         Button button = new Button(this.context);
         LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(
                 ViewGroup.LayoutParams.WRAP_CONTENT,
@@ -56,27 +59,28 @@ public class PopupAddons extends ArrayAdapter<MenuSection> {
         button.setText(addon);
         button.setLayoutParams(layoutParams);
 
-        button.setOnClickListener((View view)->{
-            if(this.choosed.containsKey(section) && this.choosed.get(section).contains(addon)){
+        button.setOnClickListener((View view) -> {
+            if (this.choosed.containsKey(section) && this.choosed.get(section).contains(addon)) {
                 this.choosed.get(section).remove(addon);
                 button.setBackground(this.context.getResources().getDrawable(R.drawable.addon_button_off));
 
-            }else{
-                if(this.choosed.get(section) == null){
+            } else {
+                if (this.choosed.get(section) == null) {
                     LinkedList<String> addons = new LinkedList<>();
                     this.choosed.put(section, addons);
                     this.section_buttons.put(section, button);
                 }
-                if(this.sections.get(section).isMaxOne() && this.choosed.get(section).size() >= 1){
-                      Button tmp = this.section_buttons.get(section);
-                      tmp.setBackground(this.context.getResources().getDrawable(R.drawable.addon_button_off));
-                      this.section_buttons.remove(section);
+                if (this.sections.get(section).isMaxOne() && this.choosed.get(section).size() >= 1) {
+                    Button tmp = this.section_buttons.get(section);
+                    tmp.setBackground(this.context.getResources().getDrawable(R.drawable.addon_button_off));
+                    this.section_buttons.remove(section);
+                    this.choosed.get(section).removeLast();
 
-                      this.choosed.get(section).add(addon);
-                      button.setBackground(this.context.getResources().getDrawable(R.drawable.addon_button_on));
-                      this.section_buttons.put(section, button);
+                    this.choosed.get(section).add(addon);
+                    button.setBackground(this.context.getResources().getDrawable(R.drawable.addon_button_on));
+                    this.section_buttons.put(section, button);
 
-                }else {
+                } else {
                     this.choosed.get(section).add(addon);
                     this.section_buttons.put(section, button);
                     button.setBackground(this.context.getResources().getDrawable(R.drawable.addon_button_on));
@@ -85,9 +89,9 @@ public class PopupAddons extends ArrayAdapter<MenuSection> {
             }
         });
 
+
         return button;
     }
-
 
     @NonNull
     @Override
@@ -102,14 +106,16 @@ public class PopupAddons extends ArrayAdapter<MenuSection> {
 
         sectionName.setText(section);
 
-        for (String addon: addons){
+        for (String addon : addons) {
             Button button = createAddonButton(section, addon);
             addonsList.addView(button);
         }
 
+
         return row;
     }
 }
+
 
 
 

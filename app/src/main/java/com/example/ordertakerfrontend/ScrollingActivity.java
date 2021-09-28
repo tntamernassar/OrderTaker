@@ -28,6 +28,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.ordertakerfrontend.databinding.ActivityScrollingBinding;
 import com.google.android.material.tabs.TabLayout;
@@ -180,6 +181,8 @@ public class ScrollingActivity extends AppCompatActivity {
                     par.height = totalHeight + (AddonsHandler.getDividerHeight() * (popupAddons.getCount() - 1));
                     AddonsHandler.setLayoutParams(par);
                     AddonsHandler.requestLayout();
+
+
                 }else{
                     // no addons
                 }
@@ -188,7 +191,50 @@ public class ScrollingActivity extends AppCompatActivity {
                 AlertDialog dialog = dialogBuilder.create();
                 dialog.show();
                 dialog.getWindow().setLayout(1000, 1500);
+
+
+                /**
+                 * increase and decrease quantity buttons.
+                 * */
+                FloatingActionButton f = menuPopup.findViewById(R.id.increase_quantity);
+                f.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        increase_decrease_quantity(menuPopup, '+');
+                    }
+                });
+
+                menuPopup.findViewById(R.id.decrease_quantity).setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        increase_decrease_quantity(menuPopup, '-');
+                    }
+                });
+
             }
         });
+    }
+
+    public int increase_decrease_quantity(View view, char ch){
+        TextView t1 = (TextView)view.findViewById(R.id.quantity);
+        int oldQuantitry = Integer.parseInt(t1.getText().toString());
+        int newQuantity = -1;
+        switch (ch){
+            case '-':
+                if(oldQuantitry == 0){
+                    return 0;
+                }
+                newQuantity = oldQuantitry - 1;
+                t1.setText(newQuantity + "");
+                return newQuantity;
+
+            case '+':
+                newQuantity = oldQuantitry + 1;
+                t1.setText(newQuantity + "");
+                return newQuantity;
+            default:
+                Log.d("xx", "Encorrect arguments, must provide - or + as char ");
+                return  newQuantity;
+        }
     }
 }
