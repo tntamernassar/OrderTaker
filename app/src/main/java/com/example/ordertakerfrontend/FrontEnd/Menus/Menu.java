@@ -1,4 +1,4 @@
-package com.example.ordertakerfrontend.FrontEnd;
+package com.example.ordertakerfrontend.FrontEnd.Menus;
 
 import android.content.Context;
 import android.graphics.Bitmap;

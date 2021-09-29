@@ -1,9 +1,8 @@
-package com.example.ordertakerfrontend.FrontEnd;
+package com.example.ordertakerfrontend.FrontEnd.Menus;
 
 
 import com.example.ordertakerfrontend.BackEnd.Logic.Product;
 
-import java.util.HashMap;
 import java.util.LinkedList;
 
 public class MenuProduct implements Product {

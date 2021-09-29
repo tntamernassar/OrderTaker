@@ -7,9 +7,11 @@ import android.graphics.BitmapFactory;
 import android.os.Bundle;
 
 import com.example.ordertakerfrontend.BackEnd.Services.Constants;
-import com.example.ordertakerfrontend.FrontEnd.MenuProduct;
-import com.example.ordertakerfrontend.FrontEnd.MenuSection;
-import com.example.ordertakerfrontend.FrontEnd.PopupAddons;
+import com.example.ordertakerfrontend.BackEnd.Services.Utils;
+import com.example.ordertakerfrontend.FrontEnd.Menus.MenuProduct;
+import com.example.ordertakerfrontend.FrontEnd.Menus.MenuSection;
+import com.example.ordertakerfrontend.FrontEnd.Popups.PopupAddons;
+import com.example.ordertakerfrontend.FrontEnd.Popups.YesNoCallbacks;
 import com.google.android.material.appbar.CollapsingToolbarLayout;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.Snackbar;
@@ -25,10 +27,8 @@ import android.view.MenuItem;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.example.ordertakerfrontend.databinding.ActivityScrollingBinding;
 import com.google.android.material.tabs.TabLayout;
@@ -58,7 +58,7 @@ public class ScrollingActivity extends AppCompatActivity {
         toolBarLayout.setTitle("طاوله " + table);
 
         TabLayout categories = (TabLayout) findViewById(R.id.categories);
-        for(String category: com.example.ordertakerfrontend.FrontEnd.Menu.getInstance().getCategories()){
+        for(String category: com.example.ordertakerfrontend.FrontEnd.Menus.Menu.getInstance().getCategories()){
             TabLayout.Tab tab = categories.newTab();
             tab.setText(category);
             categories.addTab(categories.newTab().setText(category));
@@ -89,10 +89,19 @@ public class ScrollingActivity extends AppCompatActivity {
         cancel.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Constants.WAITRESS.cancelOrder(table);
+                Utils.YesNoDialog(ScrollingActivity.this, "لالغاء الطلب اضغط نعم", new YesNoCallbacks() {
+                    @Override
+                    public void yes() {
+                        Constants.WAITRESS.cancelOrder(table);
+                        Intent intent = new Intent(ScrollingActivity.this, MainActivity.class);
+                        startActivity(intent);
+                    }
 
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
+                    @Override
+                    public void no() {//nothing to add here
+                    }
+                });
+
             }
         });
 
@@ -100,10 +109,42 @@ public class ScrollingActivity extends AppCompatActivity {
         submit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Constants.WAITRESS.submitOrder(table);
+                Utils.YesNoDialog(ScrollingActivity.this, "لارسال الطلب اضغط نعم", new YesNoCallbacks() {
+                    @Override
+                    public void yes() {
+                        Constants.WAITRESS.submitOrder(table);
+
+                    }
+
+                    @Override
+                    public void no() {
+
+                    }
+                });
+
             }
         });
 
+        binding.close.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                Utils.YesNoDialog(ScrollingActivity.this, "لالغاء الطلب اضغط نعم", new YesNoCallbacks() {
+                    @Override
+                    public void yes() {
+                        Constants.WAITRESS.closeOrder(table);
+                        Intent intent = new Intent(ScrollingActivity.this, MainActivity.class);
+                        startActivity(intent);
+                    }
+
+                    @Override
+                    public void no() {
+
+                    }
+                });
+
+            }
+        });
 
     }
 
@@ -133,7 +174,7 @@ public class ScrollingActivity extends AppCompatActivity {
         ListView listView = findViewById(R.id.menu_holder);
 
 
-        com.example.ordertakerfrontend.FrontEnd.Menu menu = com.example.ordertakerfrontend.FrontEnd.Menu.getInstance().getSubMenu(category);
+        com.example.ordertakerfrontend.FrontEnd.Menus.Menu menu = com.example.ordertakerfrontend.FrontEnd.Menus.Menu.getInstance().getSubMenu(category);
         listView.setAdapter(menu);
 
         Activity that = this;

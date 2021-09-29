@@ -1,16 +1,14 @@
 package com.example.ordertakerfrontend.BackEnd.Services;
 
-import android.content.Context;
-import android.util.Log;
+import android.app.Activity;
+import android.content.DialogInterface;
 
-import com.android.volley.Request;
-import com.android.volley.RequestQueue;
-import com.android.volley.Response;
-import com.android.volley.VolleyError;
-import com.android.volley.toolbox.StringRequest;
-import com.android.volley.toolbox.Volley;
-import com.example.ordertakerfrontend.FrontEnd.Menu;
-import com.example.ordertakerfrontend.FrontEnd.MenuProduct;
+import androidx.appcompat.app.AlertDialog;
+
+import com.example.ordertakerfrontend.FrontEnd.Menus.Menu;
+import com.example.ordertakerfrontend.FrontEnd.Menus.MenuProduct;
+import com.example.ordertakerfrontend.FrontEnd.Popups.YesNoCallbacks;
+import com.example.ordertakerfrontend.MainActivity;
 
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
@@ -77,6 +75,34 @@ public class Utils {
         FileManager.appendToFile("tmp", res);
     }
 
-    public static void read_file_From_drive(Context context){
+
+    public static void YesNoDialog(Activity activity, String title, YesNoCallbacks callbacks){
+        // Build an AlertDialog
+        AlertDialog.Builder builder = new AlertDialog.Builder(activity);
+
+        // Set a title for alert dialog
+        builder.setTitle(title);
+
+
+        // Set the alert dialog yes button click listener
+        builder.setPositiveButton("نعم", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                callbacks.yes();
+            }
+        });
+
+        // Set the alert dialog no button click listener
+        builder.setNegativeButton("لا", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                callbacks.no();
+            }
+        });
+
+        AlertDialog dialog = builder.create();
+        // Display the alert dialog on interface
+        dialog.show();
     }
+
 }

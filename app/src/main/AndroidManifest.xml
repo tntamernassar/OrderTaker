@@ -33,10 +33,6 @@
 
         </activity>
 
-        <activity
-            android:name=".FrontEnd.OrderPopUp"
-            android:theme="@style/Theme.MaterialComponents.Dialog">
-        </activity>
     </application>
 
 </manifest>

@@ -1,4 +1,4 @@
-package com.example.ordertakerfrontend.FrontEnd;
+package com.example.ordertakerfrontend.FrontEnd.Menus;
 
 public class MenuSection {
     private String section;

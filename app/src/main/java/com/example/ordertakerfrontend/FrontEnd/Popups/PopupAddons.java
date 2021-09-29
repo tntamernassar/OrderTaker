@@ -1,4 +1,4 @@
-package com.example.ordertakerfrontend.FrontEnd;
+package com.example.ordertakerfrontend.FrontEnd.Popups;
 
 
 import android.content.Context;
@@ -9,14 +9,11 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
-import androidx.annotation.ContentView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.fragment.app.Fragment;
 
-import com.example.ordertakerfrontend.BackEnd.Services.Constants;
+import com.example.ordertakerfrontend.FrontEnd.Menus.MenuSection;
 import com.example.ordertakerfrontend.R;
 
 import java.util.HashMap;

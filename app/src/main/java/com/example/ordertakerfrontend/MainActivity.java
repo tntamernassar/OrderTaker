@@ -1,10 +1,11 @@
 package com.example.ordertakerfrontend;
 
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.res.Resources;
-import android.graphics.Color;
 import android.os.Bundle;
 import android.widget.Button;
 
@@ -15,9 +16,10 @@ import com.example.ordertakerfrontend.BackEnd.Logic.Waitress;
 import com.example.ordertakerfrontend.BackEnd.Services.Constants;
 import com.example.ordertakerfrontend.BackEnd.Services.FileManager;
 import com.example.ordertakerfrontend.BackEnd.Services.Utils;
-import com.example.ordertakerfrontend.FrontEnd.Menu;
-import com.example.ordertakerfrontend.FrontEnd.MenuProduct;
-import com.example.ordertakerfrontend.FrontEnd.MenuSection;
+import com.example.ordertakerfrontend.FrontEnd.Menus.Menu;
+import com.example.ordertakerfrontend.FrontEnd.Menus.MenuProduct;
+import com.example.ordertakerfrontend.FrontEnd.Menus.MenuSection;
+import com.example.ordertakerfrontend.FrontEnd.Popups.YesNoCallbacks;
 
 import java.util.LinkedList;
 
@@ -40,8 +42,26 @@ public class MainActivity extends AppCompatActivity {
 
             table_btn.setOnClickListener(view ->{
                 Intent intent = new Intent(this, ScrollingActivity.class);
-                intent.putExtra("table", table);
-                startActivity(intent);
+                if(!waitress.getRestaurant().getTable(table).isActive()) {
+
+                    Utils.YesNoDialog(MainActivity.this, "فتح طاوله رقم 1 ؟", new YesNoCallbacks() {
+                        @Override
+                        public void yes() {
+                            waitress.openTable(table);
+                            intent.putExtra("table", table);
+                            startActivity(intent);
+                        }
+
+                        @Override
+                        public void no() { }
+                    });
+
+                }else{
+                    intent.putExtra("table", table);
+                    startActivity(intent);
+                }
+
+
             });
         }
 
