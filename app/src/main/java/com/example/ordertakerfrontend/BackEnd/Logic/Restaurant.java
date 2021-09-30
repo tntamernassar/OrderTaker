@@ -39,4 +39,11 @@ public class Restaurant implements Serializable {
         this.tables.put(table.getNumber(), table);
     }
 
+    @Override
+    public String toString() {
+        return "Restaurant{" +
+                "tables=" + tables +
+                ", orderHistory=" + orderHistory +
+                '}';
+    }
 }

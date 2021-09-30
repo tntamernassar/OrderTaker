@@ -7,6 +7,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.res.Resources;
 import android.os.Bundle;
+import android.util.Log;
 import android.widget.Button;
 
 import com.example.ordertakerfrontend.BackEnd.Logic.OrderHistory;
@@ -42,8 +43,7 @@ public class MainActivity extends AppCompatActivity {
 
             table_btn.setOnClickListener(view ->{
                 Intent intent = new Intent(this, ScrollingActivity.class);
-                if(!waitress.getRestaurant().getTable(table).isActive()) {
-
+                    if(!waitress.getRestaurant().getTable(table).isActive()) {
                     Utils.YesNoDialog(MainActivity.this, "فتح طاوله رقم 1 ؟", new YesNoCallbacks() {
                         @Override
                         public void yes() {
