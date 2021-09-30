@@ -26,15 +26,18 @@ import java.util.LinkedList;
 
 
 public class MainActivity extends AppCompatActivity {
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         getSupportActionBar().hide();
+        Waitress waitress;
+        if(Constants.WAITRESS == null)
+            waitress = initSystem();
+        else
+            waitress = Constants.WAITRESS;
 
 
-        Waitress waitress = initSystem();
 
         Resources resources = getResources();
         for(Integer table: waitress.getRestaurant().getTables()){
@@ -43,7 +46,8 @@ public class MainActivity extends AppCompatActivity {
 
             table_btn.setOnClickListener(view ->{
                 Intent intent = new Intent(this, ScrollingActivity.class);
-                    if(!waitress.getRestaurant().getTable(table).isActive()) {
+                if(!waitress.getRestaurant().getTable(table).isActive()) {
+                    Log.d("OnCreat: MainActivity", "Table is not active");
                     Utils.YesNoDialog(MainActivity.this, "فتح طاوله رقم 1 ؟", new YesNoCallbacks() {
                         @Override
                         public void yes() {

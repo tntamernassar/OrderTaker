@@ -12,6 +12,7 @@ public class Waitress {
 
     private Restaurant restaurant;
     private String name;
+    private boolean inited = false;
 
 
     /**
@@ -22,6 +23,7 @@ public class Waitress {
     public Waitress(String name, Restaurant restaurant){
         this.restaurant = restaurant;
         this.name = name;
+        inited = true;
 
     }
 
