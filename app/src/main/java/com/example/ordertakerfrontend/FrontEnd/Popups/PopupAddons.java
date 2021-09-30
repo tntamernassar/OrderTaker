@@ -44,6 +44,10 @@ public class PopupAddons extends ArrayAdapter<MenuSection> {
         this.section_buttons = new HashMap<>();
     }
 
+    public HashMap<String, LinkedList<String>> getChoosed() {
+        return choosed;
+    }
+
     private Button createAddonButton(String section, String addon) {
         Button button = new Button(this.context);
         LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(

@@ -21,10 +21,12 @@
         <entry key="app/src/main/res/layout/activity_main.xml" value="0.25" />
         <entry key="app/src/main/res/layout/activity_scrolling.xml" value="0.25" />
         <entry key="app/src/main/res/layout/content_scrolling.xml" value="0.25" />
-        <entry key="app/src/main/res/layout/menu_item.xml" value="0.75" />
+        <entry key="app/src/main/res/layout/menu_item.xml" value="0.7094017094017094" />
         <entry key="app/src/main/res/layout/menu_popup.xml" value="0.1" />
+        <entry key="app/src/main/res/layout/order.xml" value="0.15763546798029557" />
+        <entry key="app/src/main/res/layout/order_item.xml" value="0.1" />
         <entry key="app/src/main/res/layout/section_addons.xml" value="0.466966966966967" />
-        <entry key="app/src/main/res/layout/table_management.xml" value="0.33" />
+        <entry key="app/src/main/res/layout/table_management.xml" value="0.10037174721189591" />
         <entry key="app/src/main/res/menu/menu_scrolling.xml" value="0.2630208333333333" />
       </map>
     </option>

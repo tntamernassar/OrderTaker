@@ -6,10 +6,13 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
 
+import com.example.ordertakerfrontend.BackEnd.Logic.OrderItem;
 import com.example.ordertakerfrontend.BackEnd.Services.Constants;
 import com.example.ordertakerfrontend.BackEnd.Services.Utils;
 import com.example.ordertakerfrontend.FrontEnd.Menus.MenuProduct;
 import com.example.ordertakerfrontend.FrontEnd.Menus.MenuSection;
+import com.example.ordertakerfrontend.FrontEnd.Menus.OrderProduct;
+import com.example.ordertakerfrontend.FrontEnd.Menus.Orders;
 import com.example.ordertakerfrontend.FrontEnd.Popups.PopupAddons;
 import com.example.ordertakerfrontend.FrontEnd.Popups.YesNoCallbacks;
 import com.google.android.material.appbar.CollapsingToolbarLayout;
@@ -25,20 +28,25 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.ordertakerfrontend.databinding.ActivityScrollingBinding;
 import com.google.android.material.tabs.TabLayout;
 
 import java.io.File;
+import java.util.HashMap;
 import java.util.LinkedList;
+import java.util.List;
 
 
 public class ScrollingActivity extends AppCompatActivity {
 
     private ActivityScrollingBinding binding;
+    private int tableId;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -48,13 +56,13 @@ public class ScrollingActivity extends AppCompatActivity {
         setContentView(binding.getRoot());
 
         Intent intent = getIntent();
-        int table = intent.getExtras().getInt("table");
+        this.tableId = intent.getExtras().getInt("table");
 
 
         Toolbar toolbar = binding.toolbar;
         setSupportActionBar(toolbar);
         CollapsingToolbarLayout toolBarLayout = binding.toolbarLayout;
-        toolBarLayout.setTitle("طاوله " + table);
+        toolBarLayout.setTitle("طاوله " + tableId);
 
         TabLayout categories = (TabLayout) findViewById(R.id.categories);
         for(String category: com.example.ordertakerfrontend.FrontEnd.Menus.Menu.getInstance().getCategories()){
@@ -81,6 +89,19 @@ public class ScrollingActivity extends AppCompatActivity {
             }
         });
 
+
+        /**
+         *  Added notes
+         *
+         * */
+
+      createOrdersList();
+
+        //        Orders orders = new Orders(this, );
+
+
+
+
         String selected = categories.getTabAt(categories.getSelectedTabPosition()).getText().toString();
         createMenuList(selected);
 
@@ -91,7 +112,7 @@ public class ScrollingActivity extends AppCompatActivity {
                 Utils.YesNoDialog(ScrollingActivity.this, "لالغاء الطلب اضغط نعم", new YesNoCallbacks() {
                     @Override
                     public void yes() {
-                        Constants.WAITRESS.cancelOrder(table);
+                        Constants.WAITRESS.cancelOrder(tableId);
                         Intent intent = new Intent(ScrollingActivity.this, MainActivity.class);
                         startActivity(intent);
                     }
@@ -109,7 +130,7 @@ public class ScrollingActivity extends AppCompatActivity {
                 Utils.YesNoDialog(ScrollingActivity.this, "لارسال الطلب اضغط نعم", new YesNoCallbacks() {
                     @Override
                     public void yes() {
-                        Constants.WAITRESS.submitOrder(table);
+                        Constants.WAITRESS.submitOrder(tableId);
                     }
 
                     @Override
@@ -125,7 +146,7 @@ public class ScrollingActivity extends AppCompatActivity {
                 Utils.YesNoDialog(ScrollingActivity.this, "لالغاء الطلب اضغط نعم", new YesNoCallbacks() {
                     @Override
                     public void yes() {
-                            Constants.WAITRESS.closeOrder(table);
+                            Constants.WAITRESS.closeOrder(tableId);
                             Intent intent = new Intent(ScrollingActivity.this, MainActivity.class);
                             startActivity(intent);
                     }
@@ -139,6 +160,21 @@ public class ScrollingActivity extends AppCompatActivity {
             }
         });
 
+    }
+
+    /**
+     * Create the order list that contains the waitress notes + menuProduct
+     * */
+    private void createOrdersList() {
+        ListView ls = (ListView)findViewById(R.id.order_holder);
+        List<OrderItem> orders = new LinkedList<>();
+        for(OrderItem o: Constants.WAITRESS.getRestaurant().getTable(tableId).getCurrentOrder().getOrderItems().values()){
+            orders.add(o);
+        }
+        if(orders!=null) {
+            Orders orders1 = new Orders(ScrollingActivity.this, orders);
+            ls.setAdapter(orders1);
+        }
     }
 
     @Override
@@ -190,7 +226,7 @@ public class ScrollingActivity extends AppCompatActivity {
 
                 nameTV.setText(menuProduct.getName());
                 descTV.setText(menuProduct.getDescription());
-
+                PopupAddons[] popupAddons = new PopupAddons[1];
                 /**
                  * Display Addons
                  * */
@@ -201,18 +237,18 @@ public class ScrollingActivity extends AppCompatActivity {
                     for(MenuSection ms: sections){
                         addons.add(ms.getAddons());
                     }
-                    PopupAddons popupAddons = new PopupAddons(getApplicationContext(), R.layout.section_addons, sections);
-                    AddonsHandler.setAdapter(popupAddons);
+                    popupAddons[0] = new PopupAddons(getApplicationContext(), R.layout.section_addons, sections);
+                    AddonsHandler.setAdapter(popupAddons[0]);
 
                     int totalHeight = 0;
-                    for (int index = 0; index < popupAddons.getCount(); index++) {
-                        View listItem = popupAddons.getView(index, null, AddonsHandler);
+                    for (int index = 0; index < popupAddons[0].getCount(); index++) {
+                        View listItem = popupAddons[0].getView(index, null, AddonsHandler);
                         listItem.measure(0, 0);
                         totalHeight += listItem.getMeasuredHeight();
                     }
 
                     ViewGroup.LayoutParams par = AddonsHandler.getLayoutParams();
-                    par.height = totalHeight + (AddonsHandler.getDividerHeight() * (popupAddons.getCount() - 1));
+                    par.height = totalHeight + (AddonsHandler.getDividerHeight() * (popupAddons[0].getCount() - 1));
                     AddonsHandler.setLayoutParams(par);
                     AddonsHandler.requestLayout();
                 }
@@ -234,11 +270,41 @@ public class ScrollingActivity extends AppCompatActivity {
                         increaseDecreaseQuantity(menuPopup, '-');
                     }
                 });
+                /**
+                 *  Order history on screen.
+                 *
+                 * */
 
                 dialogBuilder.setView(menuPopup);
                 AlertDialog dialog = dialogBuilder.create();
+
+                FloatingActionButton submit_order = (FloatingActionButton)menuPopup.findViewById(R.id.submit_order);
+                submit_order.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+//                        Toast.makeText(ScrollingActivity.this, "good", Toast.LENGTH_SHORT).show();
+//                        if(popupAddons[0] != null){
+//                            for(String section: popupAddons[0].getChoosed().keySet()){
+//                                Log.d("SECTION: ", section);
+//                                    for(String addon: popupAddons[0].getChoosed().get(section)){
+//                                        Log.d("ADDONS--", addon);
+//                                    }
+//                            }
+//                        }
+                        OrderProduct ordered = new OrderProduct(menuProduct, popupAddons[0].getChoosed());
+                        int quantity = Integer.parseInt(((TextView) menuPopup.findViewById(R.id.quantity)).getText().toString());
+                        Constants.WAITRESS.orderItem(tableId, ordered, quantity, ((EditText) menuPopup.findViewById(R.id.notes)).getText().toString());
+                        dialog.cancel();
+                        createOrdersList();
+                    }
+                });
+
+
+
+
                 dialog.show();
                 dialog.getWindow().setLayout(1000, 1500);
+
 
 
             }
