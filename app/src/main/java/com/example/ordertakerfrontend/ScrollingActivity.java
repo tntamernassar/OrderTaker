@@ -132,9 +132,9 @@ public class ScrollingActivity extends AppCompatActivity {
                 Utils.YesNoDialog(ScrollingActivity.this, "لالغاء الطلب اضغط نعم", new YesNoCallbacks() {
                     @Override
                     public void yes() {
-                        Constants.WAITRESS.closeOrder(table);
-                        Intent intent = new Intent(ScrollingActivity.this, MainActivity.class);
-                        startActivity(intent);
+                            Constants.WAITRESS.closeOrder(table);
+                            Intent intent = new Intent(ScrollingActivity.this, MainActivity.class);
+                            startActivity(intent);
                     }
 
                     @Override

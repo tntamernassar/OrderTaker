@@ -113,24 +113,23 @@
 
         <EditText
             android:id="@+id/notes"
-            android:layout_width="500dp"
+            android:layout_width="370dp"
             android:layout_height="93dp"
+            android:layout_marginRight="20dp"
             android:ems="10"
             android:gravity="start|top"
             android:hint="ملاحظات"
-            android:inputType="textMultiLine"
-            android:layout_marginRight="20dp"
-            />
+            android:inputType="textMultiLine" />
 
         <com.google.android.material.floatingactionbutton.FloatingActionButton
             android:id="@+id/submit"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginTop="15dp"
+            android:layout_marginRight="100dp"
             android:contentDescription="Submit Order"
             app:backgroundTint="@color/amber"
-            app:srcCompat="@drawable/ic_baseline_done_24"
-            android:layout_marginRight="20dp"
-            android:layout_marginTop="15dp"/>
+            app:srcCompat="@drawable/ic_baseline_done_24" />
 
     </LinearLayout>
 
