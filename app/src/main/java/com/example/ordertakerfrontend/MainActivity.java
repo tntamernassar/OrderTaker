@@ -1,9 +1,7 @@
 package com.example.ordertakerfrontend;
 
-import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.res.Resources;
 import android.os.Bundle;
@@ -31,12 +29,14 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         getSupportActionBar().hide();
-        Waitress waitress;
-        if(Constants.WAITRESS == null)
-            waitress = initSystem();
-        else
-            waitress = Constants.WAITRESS;
 
+
+        Waitress waitress;
+        if(Constants.WAITRESS == null) {
+            waitress = initSystem();
+        } else {
+            waitress = Constants.WAITRESS;
+        }
 
 
         Resources resources = getResources();
@@ -75,6 +75,7 @@ public class MainActivity extends AppCompatActivity {
 
     private Waitress initSystem(){
         Constants.CONTEXT = getApplicationContext();
+
 
         LinkedList<MenuSection> sections_example_1 = new LinkedList<>();
         sections_example_1.add(new MenuSection("מידת עשייה", new String[]{"MW", "WD", "M", "D"}, true));

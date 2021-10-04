@@ -63,13 +63,13 @@ public class Order implements Serializable {
 
     public int addItem(String waiterName, Product product, int quantity, String notes){
         int newItemIndex = itemsCounter.incrementAndGet();
-        this.orderItems.put(newItemIndex, new OrderItem(waiterName, product, quantity, notes));
+        this.orderItems.put(newItemIndex, new OrderItem(newItemIndex, waiterName, product, quantity, notes));
         return newItemIndex;
     }
 
     public int addItem(String waiterName, String timestamp, Product product, int quantity, String notes, boolean distributed){
         int newItemIndex = itemsCounter.incrementAndGet();
-        this.orderItems.put(newItemIndex, new OrderItem(timestamp, waiterName, product, quantity, notes, distributed));
+        this.orderItems.put(newItemIndex, new OrderItem(newItemIndex, timestamp, waiterName, product, quantity, notes, distributed));
         return newItemIndex;
     }
 
@@ -89,7 +89,7 @@ public class Order implements Serializable {
         Order o = new Order(getStartedBy());
         for(Integer oi: this.orderItems.keySet()){
             OrderItem orderItem = this.orderItems.get(oi);
-            o.orderItems.put(oi, new OrderItem(orderItem.getWaiterName(), orderItem.getProduct(), orderItem.getQuantity(), orderItem.getNotes()));
+            o.orderItems.put(oi, new OrderItem(orderItem.getIndex(), orderItem.getWaiterName(), orderItem.getProduct(), orderItem.getQuantity(), orderItem.getNotes()));
         }
         return o;
     }

@@ -6,16 +6,17 @@ import java.util.HashMap;
 import java.util.LinkedList;
 
 public class OrderProduct implements Product{
-    private MenuProduct mProduct;
+
+    private MenuProduct menuProduct;
     private HashMap<String, LinkedList<String>> addons;
 
     public OrderProduct(MenuProduct mProduct, HashMap<String, LinkedList<String>> addons){
-        this.mProduct = mProduct;
+        this.menuProduct = mProduct;
         this.addons = addons;
     }
 
-    public MenuProduct getmProduct() {
-        return mProduct;
+    public MenuProduct getMenuProduct() {
+        return menuProduct;
     }
 
     public HashMap<String, LinkedList<String>> getAddons() {

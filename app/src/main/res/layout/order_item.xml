@@ -1,32 +1,23 @@
 <?xml version="1.0" encoding="utf-8"?>
 <AbsoluteLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
 
-
     <TextView
         android:id="@+id/order_name"
-        android:layout_width="234dp"
+        android:layout_width="193dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="64dp"
         android:layout_marginEnd="419dp"
-        android:layout_x="77dp"
-        android:layout_y="14dp"
+        android:layout_x="104dp"
+        android:layout_y="13dp"
         android:text="اسم المنتج"
         android:textAlignment="textStart"
         android:textAllCaps="false"
         android:textSize="20dp"
         android:textStyle="bold" />
-
-    <de.hdodenhof.circleimageview.CircleImageView
-        android:id="@+id/order_image"
-        android:layout_width="76dp"
-        android:layout_height="77dp"
-        android:layout_x="0dp"
-        android:layout_y="12dp"
-        android:src="@drawable/ic_launcher_background" />
-
 
     <TextView
         android:id="@+id/order_notes"
@@ -34,10 +25,41 @@
         android:layout_height="42dp"
         android:layout_marginTop="64dp"
         android:layout_marginEnd="419dp"
-        android:layout_x="119dp"
-        android:layout_y="46dp"
-        android:text="notes"
-        android:textAlignment="textStart"
+        android:layout_x="105dp"
+        android:layout_y="43dp"
+        android:text="ملاحظات"
+        android:textAlignment="textEnd"
         android:textSize="15dp" />
+
+    <TextView
+        android:id="@+id/order_quantity"
+        android:layout_width="67dp"
+        android:layout_height="61dp"
+        android:layout_marginTop="64dp"
+        android:layout_marginEnd="419dp"
+        android:layout_x="302dp"
+        android:layout_y="10dp"
+        android:text="3"
+        android:textAlignment="center"
+        android:textSize="40dp" />
+
+    <Button
+        android:id="@+id/delete_item"
+        android:layout_width="25dp"
+        android:layout_height="25dp"
+        android:layout_x="9dp"
+        android:layout_y="14dp"
+        android:scaleType="center"
+        android:backgroundTint="@color/gold"
+        android:background="@drawable/ic_baseline_delete_5" />
+
+    <Button
+        android:id="@+id/edit_item"
+        android:layout_width="25dp"
+        android:layout_height="25dp"
+        android:layout_x="9dp"
+        android:layout_y="47dp"
+        android:backgroundTint="@color/gold"
+        android:background="@android:drawable/ic_menu_edit" />
 
 </AbsoluteLayout>

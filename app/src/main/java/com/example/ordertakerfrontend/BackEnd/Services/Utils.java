@@ -1,6 +1,7 @@
 package com.example.ordertakerfrontend.BackEnd.Services;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.DialogInterface;
 
 import androidx.appcompat.app.AlertDialog;
@@ -76,9 +77,9 @@ public class Utils {
     }
 
 
-    public static void YesNoDialog(Activity activity, String title, YesNoCallbacks callbacks){
+    public static void YesNoDialog(Context context, String title, YesNoCallbacks callbacks){
         // Build an AlertDialog
-        AlertDialog.Builder builder = new AlertDialog.Builder(activity);
+        AlertDialog.Builder builder = new AlertDialog.Builder(context);
 
         // Set a title for alert dialog
         builder.setTitle(title);

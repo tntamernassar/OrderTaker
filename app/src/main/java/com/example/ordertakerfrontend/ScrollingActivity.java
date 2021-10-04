@@ -6,7 +6,6 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
 
-import com.example.ordertakerfrontend.BackEnd.Logic.OrderItem;
 import com.example.ordertakerfrontend.BackEnd.Services.Constants;
 import com.example.ordertakerfrontend.BackEnd.Services.Utils;
 import com.example.ordertakerfrontend.FrontEnd.Menus.MenuProduct;
@@ -32,15 +31,12 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.example.ordertakerfrontend.databinding.ActivityScrollingBinding;
 import com.google.android.material.tabs.TabLayout;
 
 import java.io.File;
-import java.util.HashMap;
 import java.util.LinkedList;
-import java.util.List;
 
 
 public class ScrollingActivity extends AppCompatActivity {
@@ -65,7 +61,7 @@ public class ScrollingActivity extends AppCompatActivity {
         toolBarLayout.setTitle("طاوله " + tableId);
 
         TabLayout categories = (TabLayout) findViewById(R.id.categories);
-        for(String category: com.example.ordertakerfrontend.FrontEnd.Menus.Menu.getInstance().getCategories()){
+        for (String category : com.example.ordertakerfrontend.FrontEnd.Menus.Menu.getInstance().getCategories()) {
             TabLayout.Tab tab = categories.newTab();
             tab.setText(category);
             categories.addTab(categories.newTab().setText(category));
@@ -90,16 +86,7 @@ public class ScrollingActivity extends AppCompatActivity {
         });
 
 
-        /**
-         *  Added notes
-         *
-         * */
-
-      createOrdersList();
-
-        //        Orders orders = new Orders(this, );
-
-
+        Orders.createOrdersList(findViewById(R.id.order_holder), tableId, ScrollingActivity.this);
 
 
         String selected = categories.getTabAt(categories.getSelectedTabPosition()).getText().toString();
@@ -118,7 +105,8 @@ public class ScrollingActivity extends AppCompatActivity {
                     }
 
                     @Override
-                    public void no() {}
+                    public void no() {
+                    }
                 });
             }
         });
@@ -134,7 +122,8 @@ public class ScrollingActivity extends AppCompatActivity {
                     }
 
                     @Override
-                    public void no() {}
+                    public void no() {
+                    }
                 });
             }
         });
@@ -146,9 +135,9 @@ public class ScrollingActivity extends AppCompatActivity {
                 Utils.YesNoDialog(ScrollingActivity.this, "لالغاء الطلب اضغط نعم", new YesNoCallbacks() {
                     @Override
                     public void yes() {
-                            Constants.WAITRESS.closeOrder(tableId);
-                            Intent intent = new Intent(ScrollingActivity.this, MainActivity.class);
-                            startActivity(intent);
+                        Constants.WAITRESS.closeOrder(tableId);
+                        Intent intent = new Intent(ScrollingActivity.this, MainActivity.class);
+                        startActivity(intent);
                     }
 
                     @Override
@@ -160,21 +149,6 @@ public class ScrollingActivity extends AppCompatActivity {
             }
         });
 
-    }
-
-    /**
-     * Create the order list that contains the waitress notes + menuProduct
-     * */
-    private void createOrdersList() {
-        ListView ls = (ListView)findViewById(R.id.order_holder);
-        List<OrderItem> orders = new LinkedList<>();
-        for(OrderItem o: Constants.WAITRESS.getRestaurant().getTable(tableId).getCurrentOrder().getOrderItems().values()){
-            orders.add(o);
-        }
-        if(orders!=null) {
-            Orders orders1 = new Orders(ScrollingActivity.this, orders);
-            ls.setAdapter(orders1);
-        }
     }
 
     @Override
@@ -199,7 +173,7 @@ public class ScrollingActivity extends AppCompatActivity {
     }
 
 
-    private void createMenuList(String category){
+    private void createMenuList(String category) {
         ListView listView = findViewById(R.id.menu_holder);
 
 
@@ -212,7 +186,9 @@ public class ScrollingActivity extends AppCompatActivity {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
                 AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(that);
-                View menuPopup = that.getLayoutInflater().inflate(R.layout.menu_popup, (ViewGroup) view,false);
+                View menuPopup = that.getLayoutInflater().inflate(R.layout.menu_popup, (ViewGroup) view, false);
+                dialogBuilder.setView(menuPopup);
+                AlertDialog dialog = dialogBuilder.create();
 
                 MenuProduct menuProduct = menu.getMenuProductList().get(i);
 
@@ -220,21 +196,27 @@ public class ScrollingActivity extends AppCompatActivity {
                 TextView descTV = menuPopup.findViewById(R.id.description);
                 ImageView image = menuPopup.findViewById(R.id.image);
 
-                File imgFile = new  File(getFilesDir().getAbsolutePath()+"/"+menuProduct.getImages()[0]);
+                File imgFile = new File(getFilesDir().getAbsolutePath() + "/" + menuProduct.getImages()[0]);
                 Bitmap myBitmap = BitmapFactory.decodeFile(imgFile.getAbsolutePath());
                 image.setImageBitmap(myBitmap);
 
                 nameTV.setText(menuProduct.getName());
                 descTV.setText(menuProduct.getDescription());
+
+                /** popupAddons have been created as an array of 1 item
+                 *  Because it will be used inside of a callback
+                 * */
                 PopupAddons[] popupAddons = new PopupAddons[1];
+
+
                 /**
                  * Display Addons
                  * */
-                if(menuProduct.getSections() != null){
+                if (menuProduct.getSections() != null) {
                     ListView AddonsHandler = menuPopup.findViewById(R.id.addons_handler);
                     LinkedList<String[]> addons = new LinkedList<>();
                     LinkedList<MenuSection> sections = menuProduct.getSections();
-                    for(MenuSection ms: sections){
+                    for (MenuSection ms : sections) {
                         addons.add(ms.getAddons());
                     }
                     popupAddons[0] = new PopupAddons(getApplicationContext(), R.layout.section_addons, sections);
@@ -270,54 +252,41 @@ public class ScrollingActivity extends AppCompatActivity {
                         increaseDecreaseQuantity(menuPopup, '-');
                     }
                 });
+
                 /**
-                 *  Order history on screen.
-                 *
+                 *  setup OrderItem confirmation listener.
                  * */
-
-                dialogBuilder.setView(menuPopup);
-                AlertDialog dialog = dialogBuilder.create();
-
-                FloatingActionButton submit_order = (FloatingActionButton)menuPopup.findViewById(R.id.submit_order);
+                FloatingActionButton submit_order = (FloatingActionButton) menuPopup.findViewById(R.id.submit_order);
                 submit_order.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
-//                        Toast.makeText(ScrollingActivity.this, "good", Toast.LENGTH_SHORT).show();
-//                        if(popupAddons[0] != null){
-//                            for(String section: popupAddons[0].getChoosed().keySet()){
-//                                Log.d("SECTION: ", section);
-//                                    for(String addon: popupAddons[0].getChoosed().get(section)){
-//                                        Log.d("ADDONS--", addon);
-//                                    }
-//                            }
-//                        }
                         OrderProduct ordered = new OrderProduct(menuProduct, popupAddons[0].getChoosed());
                         int quantity = Integer.parseInt(((TextView) menuPopup.findViewById(R.id.quantity)).getText().toString());
                         Constants.WAITRESS.orderItem(tableId, ordered, quantity, ((EditText) menuPopup.findViewById(R.id.notes)).getText().toString());
                         dialog.cancel();
-                        createOrdersList();
+                        Orders.createOrdersList(findViewById(R.id.order_holder), tableId, ScrollingActivity.this);
+
                     }
                 });
 
 
-
-
+                /**
+                 * Display Popup
+                 * */
                 dialog.show();
                 dialog.getWindow().setLayout(1000, 1500);
-
-
 
             }
         });
     }
 
-    public int increaseDecreaseQuantity(View view, char ch){
-        TextView t1 = (TextView)view.findViewById(R.id.quantity);
+    public int increaseDecreaseQuantity(View view, char ch) {
+        TextView t1 = (TextView) view.findViewById(R.id.quantity);
         int oldQuantity = Integer.parseInt(t1.getText().toString());
         int newQuantity;
-        switch (ch){
+        switch (ch) {
             case '-':
-                if(oldQuantity == 0){
+                if (oldQuantity == 0) {
                     return 0;
                 }
                 newQuantity = oldQuantity - 1;
@@ -329,8 +298,8 @@ public class ScrollingActivity extends AppCompatActivity {
                 t1.setText(newQuantity + "");
                 return newQuantity;
             default:
-                Log.d("xx", "Encorrect arguments, must provide - or + as char ");
-                return  -1;
+                Log.d("xx", "Incorrect arguments, must provide - or + as char ");
+                return -1;
         }
     }
 }

@@ -7,6 +7,7 @@ import java.io.Serializable;
 
 public class OrderItem implements Serializable {
 
+    private int index;
     private Product product;
     private int quantity;
     private String notes;
@@ -14,7 +15,10 @@ public class OrderItem implements Serializable {
     private String timestamp;
     private boolean isDistributed;
 
-    public OrderItem(String waiterName, Product product, int quantity, String notes) {
+
+    /** Main Constructor **/
+    public OrderItem(int index, String waiterName, Product product, int quantity, String notes) {
+        this.index = index;
         this.waiterName = waiterName;
         this.product = product;
         this.quantity = quantity;
@@ -23,13 +27,20 @@ public class OrderItem implements Serializable {
         this.isDistributed = false;
     }
 
-    public OrderItem(String timestamp, String waiterName, Product product, int quantity, String notes, boolean isDistributed) {
+
+    /** Copy Constructor **/
+    public OrderItem(int index, String timestamp, String waiterName, Product product, int quantity, String notes, boolean isDistributed) {
+        this.index = index;
         this.product = product;
         this.quantity = quantity;
         this.notes = notes;
         this.waiterName = waiterName;
         this.timestamp = timestamp;
         this.isDistributed = isDistributed;
+    }
+
+    public int getIndex() {
+        return index;
     }
 
     public boolean isDistributed() {
