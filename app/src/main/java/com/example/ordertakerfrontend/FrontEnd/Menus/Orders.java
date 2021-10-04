@@ -72,14 +72,15 @@ public class Orders extends ArrayAdapter<OrderItem> {
         OrderProduct orderedProduct = (OrderProduct)order.getProduct();
 
 
-        /**
-         * add here order history
-         * */
         String notes = "";
-        for(String s: orderedProduct.getAddons().keySet()){
-            for(String s1: ((OrderProduct)order.getProduct()).getAddons().get(s)){
-                notes += s1 + " • ";
+        if(orderedProduct.getAddons().keySet().size() > 0){
+            for(String s: orderedProduct.getAddons().keySet()){
+                for(String s1: orderedProduct.getAddons().get(s)){
+                    notes += s1 + " • ";
+                }
             }
+        }else{
+            notes = "بدون اضافات";
         }
 
         order_name.setText(orderedProduct.getMenuProduct().getName());

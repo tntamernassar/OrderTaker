@@ -89,7 +89,7 @@ public class Order implements Serializable {
         Order o = new Order(getStartedBy());
         for(Integer oi: this.orderItems.keySet()){
             OrderItem orderItem = this.orderItems.get(oi);
-            o.orderItems.put(oi, new OrderItem(orderItem.getIndex(), orderItem.getWaiterName(), orderItem.getProduct(), orderItem.getQuantity(), orderItem.getNotes()));
+            o.orderItems.put(oi, new OrderItem(orderItem.getIndex(), orderItem.getTimestamp(), orderItem.getWaiterName(), orderItem.getProduct(), orderItem.getQuantity(), orderItem.getNotes(), orderItem.isDistributed()));
         }
         return o;
     }

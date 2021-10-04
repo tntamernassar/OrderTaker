@@ -111,6 +111,7 @@ public class Waitress {
             Table theTable = restaurant.getTable(table);
             Order currentOrder = theTable.getCurrentOrder();
             if(currentOrder.getOrderItems().size() > 0){
+                currentOrder.distributeItems();
                 if(currentOrder.isDistributed()){
                     // the order already distributed
                     Order distributedVersion = currentOrder.getDistributeVersion();
@@ -124,7 +125,6 @@ public class Waitress {
                     currentOrder.setDistributeVersion(currentOrder.clone());
                     Utils.writeToLog("Table " + table + " Submitted the order");
                 }
-                currentOrder.distributeItems();
                 return currentOrder;
             }else{
                 Utils.writeToLog("Order contains no item");

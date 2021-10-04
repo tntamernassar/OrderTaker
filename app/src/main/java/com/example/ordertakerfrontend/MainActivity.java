@@ -78,9 +78,9 @@ public class MainActivity extends AppCompatActivity {
 
 
         LinkedList<MenuSection> sections_example_1 = new LinkedList<>();
-        sections_example_1.add(new MenuSection("מידת עשייה", new String[]{"MW", "WD", "M", "D"}, true));
+        sections_example_1.add(new MenuSection("מידת עשייה", new String[]{"ميديوم", "ويل دان", "دان", "محروق"}, true));
         sections_example_1.add(new MenuSection("نوع اللحم", new String[]{"عجل", "خروف", "دجاج"}, true));
-        sections_example_1.add(new MenuSection("نوع الخبز", new String[]{"ابيض", "اسود"}, true));
+        sections_example_1.add(new MenuSection("نوع الخبز", new String[]{"خبز ابيض", "خبز اسود"}, true));
         sections_example_1.add(new MenuSection("اضافات", new String[]{"خس", "بندورة" ,"خيار", "بصل", "فقع", "جبنه"}, false));
 
 
