@@ -40,12 +40,28 @@ public class PopupAddons extends ArrayAdapter<MenuSection> {
         for (MenuSection s : addons) {
             sections.put(s.getSection(), s);
         }
+        this.section_buttons = new HashMap<>();
+    }
 
+    public PopupAddons(@NonNull Context context, int resource, LinkedList<MenuSection> addons, HashMap<String, LinkedList<String>> choosed) {
+        super(context, resource, addons);
+        this.context = context;
+        this.addons = addons;
+        this.choosed = choosed;
+        this.sections = new HashMap<>();
+        for (MenuSection s : addons) {
+            sections.put(s.getSection(), s);
+        }
         this.section_buttons = new HashMap<>();
     }
 
     public HashMap<String, LinkedList<String>> getChoosed() {
         return choosed;
+    }
+
+
+    private boolean isChosen(String section, String addon){
+        return this.choosed.containsKey(section) && this.choosed.get(section).contains(addon);
     }
 
     private Button createAddonButton(String section, String addon) {
@@ -56,15 +72,19 @@ public class PopupAddons extends ArrayAdapter<MenuSection> {
         );
 
         layoutParams.setMargins(10, 10, 10, 10);
-        button.setBackground(this.context.getResources().getDrawable(R.drawable.addon_button_off));
+        if(this.isChosen(section, addon)){
+            button.setBackground(this.context.getResources().getDrawable(R.drawable.addon_button_on));
+            this.section_buttons.put(section, button);
+        }else{
+            button.setBackground(this.context.getResources().getDrawable(R.drawable.addon_button_off));
+        }
         button.setText(addon);
         button.setLayoutParams(layoutParams);
 
         button.setOnClickListener((View view) -> {
-            if (this.choosed.containsKey(section) && this.choosed.get(section).contains(addon)) {
+            if (isChosen(section, addon)) {
                 this.choosed.get(section).remove(addon);
                 button.setBackground(this.context.getResources().getDrawable(R.drawable.addon_button_off));
-
             } else {
                 if (this.choosed.get(section) == null) {
                     LinkedList<String> addons = new LinkedList<>();

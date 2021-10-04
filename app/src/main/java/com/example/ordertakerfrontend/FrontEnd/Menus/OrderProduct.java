@@ -10,6 +10,11 @@ public class OrderProduct implements Product{
     private MenuProduct menuProduct;
     private HashMap<String, LinkedList<String>> addons;
 
+    public OrderProduct(MenuProduct mProduct){
+        this.menuProduct = mProduct;
+        this.addons = new HashMap<String, LinkedList<String>>();
+    }
+
     public OrderProduct(MenuProduct mProduct, HashMap<String, LinkedList<String>> addons){
         this.menuProduct = mProduct;
         this.addons = addons;

@@ -14,6 +14,7 @@ import com.example.ordertakerfrontend.BackEnd.Logic.OrderItem;
 import com.example.ordertakerfrontend.BackEnd.Logic.Waitress;
 import com.example.ordertakerfrontend.BackEnd.Services.Constants;
 import com.example.ordertakerfrontend.BackEnd.Services.Utils;
+import com.example.ordertakerfrontend.FrontEnd.Popups.OrderActivity;
 import com.example.ordertakerfrontend.FrontEnd.Popups.YesNoCallbacks;
 import com.example.ordertakerfrontend.R;
 import com.example.ordertakerfrontend.ScrollingActivity;
@@ -23,36 +24,25 @@ import java.util.List;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AlertDialog;
 
 public class Orders extends ArrayAdapter<OrderItem> {
 
-    private ListView parentList;
+    private OrderActivity orderActivity;
     private int tableId;
     private List<OrderItem> orders;
     private Context context;
 
 
-    public Orders(ListView parentList, int tableId, Context context, List<OrderItem> orders){
+    public Orders(OrderActivity orderActivity, int tableId, Context context, List<OrderItem> orders){
         super(context, R.layout.order_item, orders);
-        this.parentList = parentList;
+        this.orderActivity = orderActivity;
         this.tableId = tableId;
         this.orders = orders;
         this.context = context;
     }
 
-    /**
-     * Create the order list that contains the waitress notes + menuProduct
-     */
-    public static void createOrdersList(ListView parentList, int tableId, Context context) {
-        List<OrderItem> orders = new LinkedList<>();
-        for (OrderItem o : Constants.WAITRESS.getRestaurant().getTable(tableId).getCurrentOrder().getOrderItems().values()) {
-            orders.add(o);
-        }
-        if (orders != null) {
-            Orders orders1 = new Orders(parentList, tableId, context, orders);
-            parentList.setAdapter(orders1);
-        }
-    }
+
 
     @NonNull
     @Override
@@ -60,7 +50,7 @@ public class Orders extends ArrayAdapter<OrderItem> {
         LayoutInflater layoutInflater = (LayoutInflater) context.getApplicationContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         View row = layoutInflater.inflate(R.layout.order_item, parent, false);
 
-        OrderItem order = orders.get(position);
+        OrderItem orderItem = orders.get(position);
 
         TextView order_name = (TextView) row.findViewById(R.id.order_name);
         TextView order_notes = (TextView) row.findViewById(R.id.order_notes);
@@ -69,7 +59,7 @@ public class Orders extends ArrayAdapter<OrderItem> {
         Button edit_item = (Button) row.findViewById(R.id.edit_item);
 
 
-        OrderProduct orderedProduct = (OrderProduct)order.getProduct();
+        OrderProduct orderedProduct = (OrderProduct)orderItem.getProduct();
 
 
         String notes = "";
@@ -85,24 +75,35 @@ public class Orders extends ArrayAdapter<OrderItem> {
 
         order_name.setText(orderedProduct.getMenuProduct().getName());
         order_notes.setText(notes);
-        quantity.setText(order.getQuantity() + "");
+        quantity.setText(orderItem.getQuantity() + "");
 
         /**
          * Delete item
          * */
-
         delete_item.setOnClickListener((view)->{
             Utils.YesNoDialog(context, "are you sure you want to delete this item ?", new YesNoCallbacks() {
                 @Override
                 public void yes() {
-                    Constants.WAITRESS.removeItem(tableId, order.getIndex());
-                    createOrdersList(parentList, tableId, context);
+                    Constants.WAITRESS.removeItem(tableId, orderItem.getIndex());
+                    orderActivity.createOrdersList();
                 }
 
                 @Override
                 public void no() {
 
                 }
+            });
+        });
+
+        /***
+         * Edit Item
+         * */
+
+        edit_item.setOnClickListener((v)->{
+            orderActivity.makeItemPopUp(orderedProduct, convertView, orderItem.getQuantity(), orderItem.getNotes(), (AlertDialog alertDialog, OrderProduct newOrderProduct, int newQuantity, String newNotes)->{
+                Constants.WAITRESS.editOrder(tableId, orderItem.getIndex(), newOrderProduct, newQuantity, newNotes);
+                alertDialog.cancel();
+                orderActivity.createOrdersList();
             });
         });
 
