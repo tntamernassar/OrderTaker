@@ -1,12 +1,14 @@
 package com.example.ordertakerfrontend;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.ContextCompat;
 
 import android.content.Intent;
 import android.content.res.Resources;
 import android.os.Bundle;
 import android.util.Log;
 import android.widget.Button;
+import android.widget.TextView;
 
 import com.example.ordertakerfrontend.BackEnd.Logic.OrderHistory;
 import com.example.ordertakerfrontend.BackEnd.Logic.Restaurant;
@@ -24,6 +26,27 @@ import java.util.LinkedList;
 
 
 public class MainActivity extends AppCompatActivity {
+
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        if (Constants.WAITRESS != null) {
+            Resources resources = getResources();
+            for (Integer table : Constants.WAITRESS.getRestaurant().getTables()) {
+                int table_id = resources.getIdentifier("table_"+table, "id", getApplicationContext().getPackageName());
+                Button table_btn = findViewById(table_id);
+                if(Constants.WAITRESS.getRestaurant().getTable(table).isActive()){
+                    table_btn.setBackground(ContextCompat.getDrawable(getApplicationContext(), R.drawable.taken_table));
+                    table_btn.setTextColor(this.getResources().getColor(R.color.white));
+                }else{
+                    table_btn.setBackground(ContextCompat.getDrawable(getApplicationContext(), R.drawable.available_table));
+                    table_btn.setTextColor(this.getResources().getColor(R.color.gold2));
+                }
+            }
+        }
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -45,7 +68,7 @@ public class MainActivity extends AppCompatActivity {
             Button table_btn = findViewById(table_id);
 
             table_btn.setOnClickListener(view ->{
-                Intent intent = new Intent(this, ScrollingActivity.class);
+                Intent intent = new Intent(this, OrderActivity.class);
                 if(!waitress.getRestaurant().getTable(table).isActive()) {
                     Log.d("OnCreat: MainActivity", "Table is not active");
                     Utils.YesNoDialog(MainActivity.this, "فتح طاوله رقم 1 ؟", new YesNoCallbacks() {

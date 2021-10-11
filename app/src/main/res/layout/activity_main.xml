@@ -5,112 +5,117 @@
     android:id="@+id/main_container"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/bg4"
+    android:background="@drawable/bg8"
     tools:context=".MainActivity">
 
-    <Button
+    <androidx.appcompat.widget.AppCompatButton
         android:id="@+id/table_3"
+        android:background="@drawable/available_table"
         android:layout_width="175dp"
         android:layout_height="473dp"
         android:layout_marginStart="48dp"
         android:layout_marginTop="72dp"
         android:fontFamily="monospace"
         android:text="3"
-        android:backgroundTint="@color/purple_5"
-        android:textColor="@color/white"
+        android:textColor="@color/gold2"
         android:textSize="100sp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <Button
+    <androidx.appcompat.widget.AppCompatButton
         android:id="@+id/table_5"
+        android:background="@drawable/available_table"
         android:layout_width="206dp"
         android:layout_height="190dp"
         android:layout_marginStart="28dp"
         android:layout_marginTop="996dp"
         android:fontFamily="monospace"
         android:text="5"
-        android:textColor="@color/white"
+        android:textColor="@color/gold2"
         android:textSize="100sp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <Button
+    <androidx.appcompat.widget.AppCompatButton
         android:id="@+id/table_4"
-        android:name="ShapeAppearanceOverlay.MyApp.Button.Rounded"
+        android:background="@drawable/available_table"
         android:layout_width="206dp"
         android:layout_height="190dp"
         android:layout_marginStart="28dp"
         android:layout_marginTop="736dp"
         android:fontFamily="monospace"
         android:text="4"
-        android:textColor="@color/white"
+        android:textColor="@color/gold2"
         android:textSize="100sp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <Button
+    <androidx.appcompat.widget.AppCompatButton
         android:id="@+id/table_8"
+        android:background="@drawable/available_table"
         android:layout_width="206dp"
         android:layout_height="190dp"
         android:layout_marginStart="564dp"
         android:layout_marginTop="736dp"
         android:fontFamily="monospace"
         android:text="8"
-        android:textColor="@color/white"
+        android:textColor="@color/gold2"
         android:textSize="100sp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <Button
+    <androidx.appcompat.widget.AppCompatButton
         android:id="@+id/table_2"
+        android:background="@drawable/available_table"
         android:layout_width="206dp"
         android:layout_height="190dp"
         android:layout_marginStart="564dp"
         android:layout_marginTop="328dp"
         android:fontFamily="monospace"
         android:text="2"
-        android:textColor="@color/white"
+        android:textColor="@color/gold2"
         android:textSize="100sp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <Button
+    <androidx.appcompat.widget.AppCompatButton
         android:id="@+id/table_1"
-        android:backgroundTint="@color/purple_6"
+        android:background="@drawable/available_table"
         android:layout_width="206dp"
         android:layout_height="190dp"
         android:layout_marginStart="564dp"
         android:layout_marginTop="96dp"
         android:fontFamily="monospace"
         android:text="1"
-        android:textColor="@color/white"
+        android:textColor="@color/gold2"
         android:textSize="100sp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <Button
+    <androidx.appcompat.widget.AppCompatButton
         android:id="@+id/table_7"
+        android:background="@drawable/available_table"
         android:layout_width="206dp"
         android:layout_height="190dp"
         android:layout_marginStart="564dp"
         android:layout_marginTop="996dp"
         android:fontFamily="monospace"
         android:text="7"
-        android:textColor="@color/white"
+        android:textColor="@color/gold2"
         android:textSize="100sp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <Button
+    <androidx.appcompat.widget.AppCompatButton
         android:id="@+id/table_6"
+        android:background="@drawable/available_table"
         android:layout_width="206dp"
         android:layout_height="190dp"
         android:layout_marginStart="296dp"
         android:layout_marginTop="996dp"
         android:fontFamily="monospace"
         android:text="6"
-        android:textColor="@color/white"
+        android:textColor="@color/gold2"
         android:textSize="100sp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />

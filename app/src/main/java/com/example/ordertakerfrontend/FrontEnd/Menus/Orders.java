@@ -1,25 +1,20 @@
 package com.example.ordertakerfrontend.FrontEnd.Menus;
 
-import android.app.Activity;
 import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
-import android.widget.ListView;
 import android.widget.TextView;
 
 import com.example.ordertakerfrontend.BackEnd.Logic.OrderItem;
-import com.example.ordertakerfrontend.BackEnd.Logic.Waitress;
 import com.example.ordertakerfrontend.BackEnd.Services.Constants;
 import com.example.ordertakerfrontend.BackEnd.Services.Utils;
 import com.example.ordertakerfrontend.FrontEnd.Popups.OrderActivity;
 import com.example.ordertakerfrontend.FrontEnd.Popups.YesNoCallbacks;
 import com.example.ordertakerfrontend.R;
-import com.example.ordertakerfrontend.ScrollingActivity;
 
-import java.util.LinkedList;
 import java.util.List;
 
 import androidx.annotation.NonNull;

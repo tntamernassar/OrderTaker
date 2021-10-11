@@ -25,7 +25,6 @@
         app:tabTextAppearance="@style/TextAppearance.AppCompat.Body1"
         app:tabTextColor="@color/black">
 
-
     </com.google.android.material.tabs.TabLayout>
 
 

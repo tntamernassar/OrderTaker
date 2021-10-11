@@ -1,0 +1,131 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:layout_weight="1"
+    android:weightSum="2"
+    tools:context=".OrderActivity">
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="100dp"
+        android:background="@drawable/classic_border"
+        android:orientation="horizontal">
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1">
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="طاوله 1"
+                android:textColor="@color/black"
+                android:textSize="50dp"
+                android:layout_marginRight="20dp"
+                android:layout_marginTop="20dp"></TextView>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+            <com.google.android.material.floatingactionbutton.FloatingActionButton
+                android:id="@+id/submit"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="20dp"
+                android:layout_marginTop="20dp"
+                android:contentDescription="Submit Order"
+                app:backgroundTint="@color/gold"
+                app:layout_anchor="@id/app_bar"
+                app:srcCompat="@drawable/ic_baseline_done_24"
+                app:tint="@color/white" />
+
+            <com.google.android.material.floatingactionbutton.FloatingActionButton
+                android:id="@+id/close"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="20dp"
+                android:layout_marginTop="20dp"
+                android:contentDescription="Submit Order"
+                app:backgroundTint="@color/gold"
+                app:layout_anchor="@id/app_bar"
+                app:srcCompat="@android:drawable/ic_lock_lock"
+                app:tint="@color/white" />
+
+            <com.google.android.material.floatingactionbutton.FloatingActionButton
+                android:id="@+id/cancel"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="20dp"
+                android:layout_marginTop="20dp"
+                android:contentDescription="Submit Order"
+                app:backgroundTint="@color/gold"
+                app:layout_anchor="@id/app_bar"
+                app:srcCompat="@android:drawable/ic_menu_close_clear_cancel"
+                app:tint="@color/white" />
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="horizontal">
+        
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:background="@drawable/classic_border"
+            android:layout_weight=".48"
+            android:orientation="vertical">
+
+            <com.google.android.material.tabs.TabLayout
+                android:id="@+id/categories"
+                android:layout_width="match_parent"
+                android:layout_height="60dp"
+                android:background="@drawable/classic_border"
+                app:tabIconTint="@color/amber"
+                app:tabIndicatorColor="@color/gold2"
+                app:tabMaxWidth="100dp"
+                app:tabMode="scrollable"
+                app:tabPaddingEnd="0dp"
+                app:tabPaddingStart="0dp"
+                app:tabTextAppearance="@style/TextAppearance.AppCompat.Body1"
+                app:tabTextColor="@color/black"/>
+
+            <ListView
+                android:id="@+id/menu_holder"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"></ListView>
+
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:background="@drawable/classic_border"
+            android:layout_weight=".48">
+
+            <ListView
+                android:id="@+id/order_holder"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@drawable/classic_border">
+            </ListView>
+
+        </LinearLayout>
+        
+        
+    </LinearLayout>
+
+</LinearLayout>
