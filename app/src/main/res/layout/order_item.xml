@@ -33,33 +33,36 @@
 
     <TextView
         android:id="@+id/order_quantity"
-        android:layout_width="67dp"
-        android:layout_height="61dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:layout_marginTop="64dp"
         android:layout_marginEnd="419dp"
-        android:layout_x="302dp"
-        android:layout_y="10dp"
+        android:layout_x="338dp"
+        android:layout_y="20dp"
         android:text="3"
         android:textAlignment="center"
         android:textSize="40dp" />
 
-    <Button
-        android:id="@+id/delete_item"
-        android:layout_width="25dp"
-        android:layout_height="25dp"
-        android:layout_x="9dp"
-        android:layout_y="14dp"
-        android:scaleType="center"
-        android:backgroundTint="@color/gold"
-        android:background="@drawable/ic_baseline_delete_5" />
+    <TextView
+        android:id="@+id/order_quantity2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="64dp"
+        android:layout_marginEnd="419dp"
+        android:layout_x="320dp"
+        android:layout_y="30dp"
+        android:text="x"
+        android:textAlignment="center"
+        android:textSize="25dp" />
 
     <Button
-        android:id="@+id/edit_item"
-        android:layout_width="25dp"
-        android:layout_height="25dp"
-        android:layout_x="9dp"
-        android:layout_y="47dp"
+        android:id="@+id/delete_item"
+        android:layout_width="43dp"
+        android:layout_height="wrap_content"
+        android:layout_x="14dp"
+        android:layout_y="24dp"
+        android:background="@drawable/ic_baseline_delete_5"
         android:backgroundTint="@color/gold"
-        android:background="@android:drawable/ic_menu_edit" />
+        android:scaleType="center" />
 
 </AbsoluteLayout>

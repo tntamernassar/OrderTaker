@@ -1,6 +1,7 @@
 package com.example.ordertakerfrontend.FrontEnd.Menus;
 
 import android.content.Context;
+import android.os.Build;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,10 +16,13 @@ import com.example.ordertakerfrontend.FrontEnd.Popups.OrderActivity;
 import com.example.ordertakerfrontend.FrontEnd.Popups.YesNoCallbacks;
 import com.example.ordertakerfrontend.R;
 
+import java.util.Arrays;
+import java.util.LinkedList;
 import java.util.List;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AlertDialog;
 
 public class Orders extends ArrayAdapter<OrderItem> {
@@ -39,6 +43,7 @@ public class Orders extends ArrayAdapter<OrderItem> {
 
 
 
+    @RequiresApi(api = Build.VERSION_CODES.O)
     @NonNull
     @Override
     public View getView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {
@@ -46,31 +51,30 @@ public class Orders extends ArrayAdapter<OrderItem> {
         View row = layoutInflater.inflate(R.layout.order_item, parent, false);
 
         OrderItem orderItem = orders.get(position);
+        OrderProduct orderedProduct = (OrderProduct)orderItem.getProduct();
 
         TextView order_name = (TextView) row.findViewById(R.id.order_name);
         TextView order_notes = (TextView) row.findViewById(R.id.order_notes);
         TextView quantity = (TextView) row.findViewById(R.id.order_quantity);
         Button delete_item = (Button) row.findViewById(R.id.delete_item);
-        Button edit_item = (Button) row.findViewById(R.id.edit_item);
 
 
-        OrderProduct orderedProduct = (OrderProduct)orderItem.getProduct();
+        LinkedList<String> all_addons = new LinkedList<>();
+        for(String s: orderedProduct.getAddons().keySet()){
+            LinkedList<String> addons = orderedProduct.getAddons().get(s);
+            all_addons.addAll(addons);
+        }
+        String addons_string = String.join(" • ", all_addons);
 
 
-        String notes = "";
-        if(orderedProduct.getAddons().keySet().size() > 0){
-            for(String s: orderedProduct.getAddons().keySet()){
-                for(String s1: orderedProduct.getAddons().get(s)){
-                    notes += s1 + " • ";
-                }
-            }
-        }else{
-            notes = "بدون اضافات";
+        if(addons_string.equals("")){
+            addons_string = "بدون اضافات";
         }
 
+
         order_name.setText(orderedProduct.getMenuProduct().getName());
-        order_notes.setText(notes);
-        quantity.setText(orderItem.getQuantity() + "");
+        order_notes.setText(addons_string);
+        quantity.setText(orderItem.getQuantity()+"");
 
         /**
          * Delete item
@@ -93,8 +97,7 @@ public class Orders extends ArrayAdapter<OrderItem> {
         /***
          * Edit Item
          * */
-
-        edit_item.setOnClickListener((v)->{
+        row.setOnClickListener((v)->{
             orderActivity.makeItemPopUp(orderedProduct, convertView, orderItem.getQuantity(), orderItem.getNotes(), (AlertDialog alertDialog, OrderProduct newOrderProduct, int newQuantity, String newNotes)->{
                 Constants.WAITRESS.editOrder(tableId, orderItem.getIndex(), newOrderProduct, newQuantity, newNotes);
                 alertDialog.cancel();
