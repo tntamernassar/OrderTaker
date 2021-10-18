@@ -10,7 +10,8 @@ public class MenuSection {
         this.addons = addons;
         this.maxOne = maxOne;
     }
-
+    //this is just a test for writing some text on tis stand
+    //
     public void setAddons(String[] addons) {
         this.addons = addons;
     }

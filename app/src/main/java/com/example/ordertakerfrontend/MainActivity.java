@@ -8,7 +8,6 @@ import android.content.res.Resources;
 import android.os.Bundle;
 import android.util.Log;
 import android.widget.Button;
-import android.widget.TextView;
 
 import com.example.ordertakerfrontend.BackEnd.Logic.OrderHistory;
 import com.example.ordertakerfrontend.BackEnd.Logic.Restaurant;
@@ -21,6 +20,9 @@ import com.example.ordertakerfrontend.FrontEnd.Menus.Menu;
 import com.example.ordertakerfrontend.FrontEnd.Menus.MenuProduct;
 import com.example.ordertakerfrontend.FrontEnd.Menus.MenuSection;
 import com.example.ordertakerfrontend.FrontEnd.Popups.YesNoCallbacks;
+import com.example.ordertakerfrontend.Network.NetworkManager.NetworkAdapter;
+import com.example.ordertakerfrontend.Network.NetworkMessages.TestMessage;
+import com.example.ordertakerfrontend.Network.NetworkMessages.initRequest;
 
 import java.util.LinkedList;
 
@@ -52,6 +54,8 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         getSupportActionBar().hide();
+
+
 
 
         Waitress waitress;
@@ -98,6 +102,7 @@ public class MainActivity extends AppCompatActivity {
 
     private Waitress initSystem(){
         Constants.CONTEXT = getApplicationContext();
+
 
 
         LinkedList<MenuSection> sections_example_1 = new LinkedList<>();
@@ -215,6 +220,16 @@ public class MainActivity extends AppCompatActivity {
         /** Cache this run in log **/
         Utils.writeToLog(waitress.getName() + " Started OrderTaker");
 
+
+        /** Network init **/
+        NetworkAdapter networkAdapter = new NetworkAdapter() {
+            @Override
+            public void onConnection(NetworkAdapter adapter) {
+                adapter.receive();
+                adapter.send(new initRequest());
+            }
+        };
+        networkAdapter.start();
         return waitress;
     }
 
