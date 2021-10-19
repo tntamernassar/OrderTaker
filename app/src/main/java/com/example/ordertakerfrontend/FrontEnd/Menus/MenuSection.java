@@ -1,6 +1,10 @@
 package com.example.ordertakerfrontend.FrontEnd.Menus;
 
-public class MenuSection {
+import java.io.Serializable;
+import java.util.Arrays;
+import java.util.Objects;
+
+public class MenuSection implements Serializable {
     private String section;
     private String[] addons;
     private boolean maxOne;
@@ -34,5 +38,20 @@ public class MenuSection {
 
     public boolean isMaxOne() {
         return maxOne;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        MenuSection that = (MenuSection) o;
+        return maxOne == that.maxOne && section.equals(that.section) && Arrays.equals(addons, that.addons);
+    }
+
+    @Override
+    public int hashCode() {
+        int result = Objects.hash(section, maxOne);
+        result = 31 * result + Arrays.hashCode(addons);
+        return result;
     }
 }

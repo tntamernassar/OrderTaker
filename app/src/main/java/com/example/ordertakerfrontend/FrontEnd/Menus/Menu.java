@@ -13,15 +13,17 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
+import com.example.ordertakerfrontend.BackEnd.Services.FileManager;
 import com.example.ordertakerfrontend.R;
 
 import java.io.File;
+import java.io.Serializable;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.List;
 
-public class Menu extends ArrayAdapter<MenuProduct> {
+public class Menu extends ArrayAdapter<MenuProduct> implements Serializable {
 
     private static Menu instance = null;
 
@@ -34,15 +36,15 @@ public class Menu extends ArrayAdapter<MenuProduct> {
 
     private Menu(Context context, List<MenuProduct> menuProductList){
         super(context, R.layout.menu_item, menuProductList);
-        this.menuProductList = menuProductList;
+        setMenuProductList(menuProductList);
         this.context = context;
-        this.categoriesProducts = new LinkedHashMap<>();
-
     }
+
 
     public static void init(Context context, List<MenuProduct> menuProductList){
         instance = new Menu(context, menuProductList);
     }
+
 
     public String[] getCategories() {
         return this.categoriesProducts.keySet().toArray(new String[0]);
@@ -52,8 +54,16 @@ public class Menu extends ArrayAdapter<MenuProduct> {
         return instance;
     }
 
-    public List<MenuProduct> getMenuProductList() {
+    public synchronized List<MenuProduct> getMenuProductList() {
         return menuProductList;
+    }
+
+    public synchronized void setMenuProductList(List<MenuProduct> menuProductList) {
+        this.menuProductList = new LinkedList<>();
+        this.categoriesProducts = new LinkedHashMap<>();
+        for (MenuProduct menuProduct : menuProductList){
+            addProduct(menuProduct);
+        }
     }
 
     public void addProduct(MenuProduct product){
@@ -67,6 +77,15 @@ public class Menu extends ArrayAdapter<MenuProduct> {
         }
     }
 
+
+    public boolean containsProduct(MenuProduct menuProduct){
+        for(MenuProduct mp: this.menuProductList){
+            if (mp.equals(menuProduct)){
+                return true;
+            }
+        }
+        return false;
+    }
 
     public Menu getSubMenu(String category){
         return new Menu(this.context, this.categoriesProducts.get(category));
@@ -94,4 +113,5 @@ public class Menu extends ArrayAdapter<MenuProduct> {
 
         return row;
     }
+
 }

@@ -3,9 +3,12 @@ package com.example.ordertakerfrontend.FrontEnd.Menus;
 
 import com.example.ordertakerfrontend.BackEnd.Logic.Product;
 
+import java.io.Serializable;
+import java.util.Arrays;
 import java.util.LinkedList;
+import java.util.Objects;
 
-public class MenuProduct implements Product {
+public class MenuProduct implements Product, Serializable {
 
     private String category;
     private String name;
@@ -57,38 +60,18 @@ public class MenuProduct implements Product {
         return (String[]) res.toArray();
     }
 
-//    public String toString(){
-//        return "{\n\t\"category\":\""+this.category+"\", \n" +
-//                "\t\"name\":\""+this.name+"\", \n" +
-//                "\t\"description\":\""+this.description+"\", \n" +
-//                "\t\"price\":"+this.price+", \n" +
-//                "\t\"images\":"+concatenate_(this.images)+", \n" +
-//                "\t\"addons\":"+concatenate_hash()+" \n";
-//
-//    }
-//
-//    public String concatenate_(String[] e){
-//        String res = "";
-//        for(String s: e){
-//            res = res + "\"" + s + "\"" + ",";
-//        }
-//        res = res.substring(0, res.length()-1);
-//        res = "[" + res + "]";
-//        return res;
-//    }
-//
-//    public String concatenate_hash(){
-//        String res = "";
-//
-//        if(addons==null){
-//            return "null";
-//        }
-//        for(String s : addons.keySet()){
-//            res += "\"" + s + "\":" + concatenate_(addons.get(s)) + ",\n";
-//        }
-//
-//        res = res.substring(0, res.length()-2);
-//        res = "{\n" + res + "\n}";
-//        return res;
-//    }
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        MenuProduct that = (MenuProduct) o;
+        return Double.compare(that.price, price) == 0 && category.equals(that.category) && name.equals(that.name) && description.equals(that.description) && Arrays.equals(images, that.images) && Objects.equals(sections, that.sections);
+    }
+
+    @Override
+    public int hashCode() {
+        int result = Objects.hash(category, name, description, price, sections);
+        result = 31 * result + Arrays.hashCode(images);
+        return result;
+    }
 }
