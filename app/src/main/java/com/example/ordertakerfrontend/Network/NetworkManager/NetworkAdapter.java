@@ -13,10 +13,18 @@ public abstract class NetworkAdapter extends Thread {
 
     private Socket socket;
     private NetworkReceiver receiver;
-
+    public static NetworkAdapter instance;
 
     public NetworkAdapter(){
 
+    }
+
+    public static void init(NetworkAdapter networkAdapter){
+        instance = networkAdapter;
+    }
+
+    public static NetworkAdapter getInstance(){
+        return instance;
     }
 
     public void receive(){
@@ -39,7 +47,6 @@ public abstract class NetworkAdapter extends Thread {
                 connected = true;
                 onConnection(this);
             } catch (IOException e) {
-
                 try {
                     Log.d("NetworkAdapter", "Trying to connect to server ...");
                     Utils.writeToLog("NetworkAdapter Trying to connect to server ...");

@@ -7,4 +7,6 @@ dependencyResolutionManagement {
     }
 }
 rootProject.name = "OrderTakerFrontEnd"
+
+include ':app', ':escposprinter'
 include ':app'

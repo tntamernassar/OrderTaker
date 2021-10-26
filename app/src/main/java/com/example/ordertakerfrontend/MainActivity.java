@@ -17,13 +17,10 @@ import com.example.ordertakerfrontend.BackEnd.Services.Constants;
 import com.example.ordertakerfrontend.BackEnd.Services.FileManager;
 import com.example.ordertakerfrontend.BackEnd.Services.Utils;
 import com.example.ordertakerfrontend.FrontEnd.Menus.DiskMenu;
-import com.example.ordertakerfrontend.FrontEnd.Menus.Menu;
-import com.example.ordertakerfrontend.FrontEnd.Menus.MenuProduct;
-import com.example.ordertakerfrontend.FrontEnd.Menus.MenuSection;
 import com.example.ordertakerfrontend.FrontEnd.Popups.YesNoCallbacks;
 import com.example.ordertakerfrontend.Network.NetworkManager.NetworkAdapter;
-import com.example.ordertakerfrontend.Network.NetworkMessages.TestMessage;
 import com.example.ordertakerfrontend.Network.NetworkMessages.initRequest;
+
 
 import java.util.LinkedList;
 
@@ -57,8 +54,6 @@ public class MainActivity extends AppCompatActivity {
         getSupportActionBar().hide();
 
 
-
-
         Waitress waitress;
         if(Constants.WAITRESS == null) {
             waitress = initSystem();
@@ -66,6 +61,8 @@ public class MainActivity extends AppCompatActivity {
             waitress = Constants.WAITRESS;
         }
 
+        Intent tmp = new Intent(this, MenuEditActivity.class);
+        startActivity(tmp);
 
         Resources resources = getResources();
         for(Integer table: waitress.getRestaurant().getTables()){
@@ -103,15 +100,6 @@ public class MainActivity extends AppCompatActivity {
 
     private Waitress initSystem(){
         Constants.CONTEXT = getApplicationContext();
-
-
-
-        LinkedList<MenuSection> sections_example_1 = new LinkedList<>();
-        sections_example_1.add(new MenuSection("מידת עשייה", new String[]{"ميديوم", "ويل دان", "دان", "محروق"}, true));
-        sections_example_1.add(new MenuSection("نوع اللحم", new String[]{"عجل", "خروف", "دجاج"}, true));
-        sections_example_1.add(new MenuSection("نوع الخبز", new String[]{"خبز ابيض", "خبز اسود"}, true));
-        sections_example_1.add(new MenuSection("اضافات", new String[]{"خس", "بندورة" ,"خيار", "بصل", "فقع", "جبنه"}, false));
-
 
 
         /**

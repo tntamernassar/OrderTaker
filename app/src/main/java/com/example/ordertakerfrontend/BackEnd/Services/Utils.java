@@ -3,11 +3,14 @@ package com.example.ordertakerfrontend.BackEnd.Services;
 import android.app.Activity;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.text.InputType;
+import android.widget.EditText;
 
 import androidx.appcompat.app.AlertDialog;
 
 import com.example.ordertakerfrontend.FrontEnd.Menus.Menu;
 import com.example.ordertakerfrontend.FrontEnd.Menus.MenuProduct;
+import com.example.ordertakerfrontend.FrontEnd.Popups.TextInputCallback;
 import com.example.ordertakerfrontend.FrontEnd.Popups.YesNoCallbacks;
 import com.example.ordertakerfrontend.MainActivity;
 
@@ -104,6 +107,31 @@ public class Utils {
         AlertDialog dialog = builder.create();
         // Display the alert dialog on interface
         dialog.show();
+    }
+
+    public static void AcquireInputDialog(Activity activity, String title, TextInputCallback callback){
+        AlertDialog.Builder builder = new AlertDialog.Builder(activity);
+        builder.setTitle(title);
+
+        final EditText input = new EditText(activity);
+        input.setInputType(InputType.TYPE_CLASS_TEXT);
+        builder.setView(input);
+
+        builder.setPositiveButton("تم", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                String text = input.getText().toString();
+                callback.onInput(text);
+            }
+        });
+        builder.setNegativeButton("الغاء", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.cancel();
+            }
+        });
+
+        builder.show();
     }
 
 }

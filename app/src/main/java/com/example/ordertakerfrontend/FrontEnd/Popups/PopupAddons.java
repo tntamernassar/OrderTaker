@@ -119,8 +119,9 @@ public class PopupAddons extends ArrayAdapter<MenuSection> {
     public View getView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {
         LayoutInflater layoutInflater = (LayoutInflater) context.getApplicationContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         View row = layoutInflater.inflate(R.layout.section_addons, parent, false);
-        String section = this.addons.get(position).getSection();
-        String[] addons = this.addons.get(position).getAddons();
+        MenuSection menuSection = this.addons.get(position);
+        String section = menuSection.getSection();
+        String[] addons = menuSection.getAddons();
 
         TextView sectionName = row.findViewById(R.id.section_name);
         LinearLayout addonsList = row.findViewById(R.id.addons_list);

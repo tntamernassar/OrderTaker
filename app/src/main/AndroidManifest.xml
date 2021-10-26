@@ -15,6 +15,10 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.OrderTakerFrontEnd">
         <activity
+            android:name=".MenuEditActivity"
+            android:exported="true"
+            android:theme="@style/Theme.AppCompat.Light"/>
+        <activity
             android:name=".OrderActivity"
             android:exported="true" />
         <activity

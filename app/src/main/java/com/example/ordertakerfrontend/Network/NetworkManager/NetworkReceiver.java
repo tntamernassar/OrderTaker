@@ -1,7 +1,4 @@
 package com.example.ordertakerfrontend.Network.NetworkManager;
-import android.util.Log;
-
-import com.example.ordertakerfrontend.BackEnd.Services.FileManager;
 import com.example.ordertakerfrontend.BackEnd.Services.Utils;
 import com.example.ordertakerfrontend.Network.NetworkMessages.NetworkMessage;
 import com.example.ordertakerfrontend.Network.NetworkMessages.NetworkMessageDecoder;
@@ -12,9 +9,6 @@ import org.json.JSONObject;
 import java.io.DataInputStream;
 import java.io.IOException;
 import java.net.Socket;
-import java.nio.ByteBuffer;
-import java.nio.charset.StandardCharsets;
-import java.util.Arrays;
 
 public class NetworkReceiver extends Thread {
 

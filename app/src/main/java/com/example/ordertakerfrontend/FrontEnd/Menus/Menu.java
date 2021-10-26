@@ -50,6 +50,10 @@ public class Menu extends ArrayAdapter<MenuProduct> implements Serializable {
         return this.categoriesProducts.keySet().toArray(new String[0]);
     }
 
+    public void addEmptyCategory(String category){
+        this.categoriesProducts.put(category, new LinkedList<>());
+    }
+
     public static Menu getInstance() {
         return instance;
     }
@@ -113,5 +117,6 @@ public class Menu extends ArrayAdapter<MenuProduct> implements Serializable {
 
         return row;
     }
+
 
 }

@@ -20,6 +20,7 @@ import android.widget.TextView;
 import com.example.ordertakerfrontend.BackEnd.Logic.OrderItem;
 import com.example.ordertakerfrontend.BackEnd.Services.Constants;
 import com.example.ordertakerfrontend.BackEnd.Services.Utils;
+import com.example.ordertakerfrontend.FrontEnd.Menus.Menu;
 import com.example.ordertakerfrontend.FrontEnd.Menus.MenuProduct;
 import com.example.ordertakerfrontend.FrontEnd.Menus.MenuSection;
 import com.example.ordertakerfrontend.FrontEnd.Menus.OrderProduct;
@@ -48,7 +49,7 @@ public class OrderActivity extends AppCompatActivity implements com.example.orde
         this.tableId = intent.getExtras().getInt("table");
 
         TabLayout categories = (TabLayout) findViewById(R.id.categories);
-        for (String category : com.example.ordertakerfrontend.FrontEnd.Menus.Menu.getInstance().getCategories()) {
+        for (String category : Menu.getInstance().getCategories()) {
             TabLayout.Tab tab = categories.newTab();
             tab.setText(category);
             categories.addTab(categories.newTab().setText(category));
@@ -135,11 +136,8 @@ public class OrderActivity extends AppCompatActivity implements com.example.orde
     private void createMenuList(String category) {
         ListView listView = findViewById(R.id.menu_holder);
 
-
-        com.example.ordertakerfrontend.FrontEnd.Menus.Menu menu = com.example.ordertakerfrontend.FrontEnd.Menus.Menu.getInstance().getSubMenu(category);
+        Menu menu = Menu.getInstance().getSubMenu(category);
         listView.setAdapter(menu);
-
-        Activity that = this;
 
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
