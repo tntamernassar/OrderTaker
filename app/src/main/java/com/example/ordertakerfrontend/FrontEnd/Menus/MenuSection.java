@@ -40,6 +40,32 @@ public class MenuSection implements Serializable {
         return maxOne;
     }
 
+    public void removeAddon(String addon){
+
+        String[] newAddons = new String[this.addons.length - 1];
+        int i = 0;
+        int j = 0;
+        while (j < newAddons.length){
+            if(!this.addons[i].equals(addon)){
+                newAddons[j] = this.addons[i];
+                j++;
+            }
+            i++;
+        }
+
+        this.addons = newAddons;
+
+    }
+
+    public void addAddon(String addon){
+        String[] newAddon = new String[this.addons.length + 1];
+        for(int i = 0; i < this.addons.length; i++){
+            newAddon[i] = this.addons[i];
+        }
+        newAddon[newAddon.length - 1] = addon;
+        this.addons = newAddon;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;

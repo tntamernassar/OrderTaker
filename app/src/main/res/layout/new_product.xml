@@ -14,7 +14,7 @@
         android:id="@+id/header_title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Add new product to category"
+        android:text="category"
         android:textSize="25dp"/>
 
     <ImageView
@@ -23,15 +23,31 @@
         android:layout_height="200dp"
         android:src="@drawable/default_product_image"/>
 
-    <EditText
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="50dp"
-        android:hint="اسم المنتج"
-        android:textSize="24dp"/>
+        android:orientation="horizontal">
+        <EditText
+            android:id="@+id/product_name"
+            android:layout_width="200dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="50dp"
+            android:hint="اسم المنتج"
+            android:textSize="24dp"/>
+        <EditText
+            android:id="@+id/product_price"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="50dp"
+            android:layout_marginRight="50dp"
+            android:inputType="number"
+            android:hint="70₪"
+            android:textSize="24dp"/>
+    </LinearLayout>
+
 
     <EditText
-        android:id="@+id/editTextTextMultiLine"
+        android:id="@+id/product_description"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="20dp"
@@ -69,6 +85,11 @@
             android:text="اضافة سكشن جديد"
             android:textSize="15dp"/>
 
+        <ListView
+            android:id="@+id/sections_list_view"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"/>
+
     </LinearLayout>
 
     <LinearLayout
@@ -88,7 +109,7 @@
             app:tint="@color/white" />
 
         <com.google.android.material.floatingactionbutton.FloatingActionButton
-            android:id="@+id/add_product"
+            android:id="@+id/submit_add_product"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginRight="80dp"

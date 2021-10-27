@@ -13,6 +13,7 @@ import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.ScrollView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.ordertakerfrontend.BackEnd.Services.Utils;
 import com.example.ordertakerfrontend.FrontEnd.Menus.EditableAddons;
@@ -22,6 +23,7 @@ import com.example.ordertakerfrontend.FrontEnd.Menus.MenuSection;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.tabs.TabLayout;
 
+import java.util.Arrays;
 import java.util.LinkedList;
 
 public class MenuEditActivity extends AppCompatActivity {
@@ -90,7 +92,7 @@ public class MenuEditActivity extends AppCompatActivity {
                 }
             }
         });
-
+        System.out.println(menu.getMenuProductList().size());
         String selected = categories.getTabAt(categories.getSelectedTabPosition()).getText().toString();
         BuildMenuList(menu, selected);
     }
@@ -111,10 +113,11 @@ public class MenuEditActivity extends AppCompatActivity {
     }
 
     private void BuildMenuSection(ListView view, LinkedList<MenuSection> menuSections){
-        EditableAddons editableAddons = new EditableAddons(getApplicationContext(), view.getId(), menuSections);
+        EditableAddons editableAddons = new EditableAddons(this, view.getId(), menuSections);
         view.setAdapter(editableAddons);
-
     }
+
+
 
     private void setAddProductListener(Menu menu){
         FloatingActionButton add_product = findViewById(R.id.add_product);
@@ -132,19 +135,53 @@ public class MenuEditActivity extends AppCompatActivity {
             TextView header_title = inflated.findViewById(R.id.header_title);
             FloatingActionButton add_section = inflated.findViewById(R.id.add_section);
             LinearLayout linearLayout = inflated.findViewById(R.id.sections_holder);
+            FloatingActionButton submit_add_product = inflated.findViewById(R.id.submit_add_product);
+
+            TextView product_name = inflated.findViewById(R.id.product_name);
+            TextView product_price = inflated.findViewById(R.id.product_price);
+            TextView product_description = inflated.findViewById(R.id.product_description);
+
+
 
             header_title.setText(selectedCategory);
 
             LinkedList<MenuSection> menuSections = new LinkedList<>();
-            menuSections.add(new MenuSection("test",new String[]{"a1", "a2", "a3", "a4"}, false));
-            menuSections.add(new MenuSection("test",new String[]{"a1", "a2", "a3", "a4"}, false));
-            menuSections.add(new MenuSection("test",new String[]{"a1", "a2", "a3", "a4"}, false));
-
             add_section.setOnClickListener(add_section_view -> {
-                linearLayout.removeAllViews();
-                ListView listView = new ListView(linearLayout.getContext());
-                linearLayout.addView(listView);
-                BuildMenuSection(listView, menuSections);
+                Utils.AcquireInputDialog(this, "Enter Section name", input -> {
+                    menuSections.add(new MenuSection(input,new String[]{}, false));
+                    ListView listView = linearLayout.findViewById(R.id.sections_list_view);
+                    BuildMenuSection(listView, menuSections);
+                });
+            });
+
+            submit_add_product.setOnClickListener(submit_add_product_view -> {
+                try {
+                    String name = product_name.getText().toString();
+                    double price = Double.parseDouble(product_price.getText().toString());
+                    String description = product_description.getText().toString();
+
+                    if(name.length() == 0){
+                        Toast.makeText(getApplicationContext(), "Please Enter product name", Toast.LENGTH_LONG).show();
+                        return;
+                    }else if(description.length() == 0){
+                        Toast.makeText(getApplicationContext(), "Please Enter product Description", Toast.LENGTH_LONG).show();
+                        return;
+                    }
+
+                    LinkedList<MenuSection> newMenuSection = new LinkedList<>();
+                    for (MenuSection menuSection: menuSections){
+                        if(menuSection.getAddons().length > 0){
+                            newMenuSection.add(menuSection);
+                        }
+                    }
+
+                    MenuProduct newMenuProduct = new MenuProduct(selectedCategory, name, description, price, menuSections, new String[]{"ham.png"});
+                    menu.addProduct(newMenuProduct);
+                    BuildMenuList(menu, newMenuProduct.getCategory());
+                }catch (Exception e){
+                    Toast.makeText(getApplicationContext(), "Please Enter valid product price", Toast.LENGTH_LONG).show();
+                }
+
             });
 
         });

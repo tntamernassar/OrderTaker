@@ -109,11 +109,11 @@ public class Utils {
         dialog.show();
     }
 
-    public static void AcquireInputDialog(Activity activity, String title, TextInputCallback callback){
-        AlertDialog.Builder builder = new AlertDialog.Builder(activity);
+    public static void AcquireInputDialog(Context context, String title, TextInputCallback callback){
+        AlertDialog.Builder builder = new AlertDialog.Builder(context);
         builder.setTitle(title);
 
-        final EditText input = new EditText(activity);
+        final EditText input = new EditText(context);
         input.setInputType(InputType.TYPE_CLASS_TEXT);
         builder.setView(input);
 
