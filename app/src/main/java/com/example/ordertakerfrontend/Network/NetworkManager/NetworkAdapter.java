@@ -31,7 +31,7 @@ public abstract class NetworkAdapter extends Thread {
         this.receiver.start();
     }
 
-    public void send(NetworkMessage message){
+    public synchronized void send(NetworkMessage message){
         NetworkSender networkSender = new NetworkSender(socket, message);
         networkSender.start();
     }
@@ -42,7 +42,7 @@ public abstract class NetworkAdapter extends Thread {
         boolean connected = false;
         while (!connected){
             try {
-                this.socket = new Socket("192.168.84.135",2222);
+                this.socket = new Socket("192.168.43.135",2222);
                 this.receiver = new NetworkReceiver(this.socket);
                 connected = true;
                 onConnection(this);

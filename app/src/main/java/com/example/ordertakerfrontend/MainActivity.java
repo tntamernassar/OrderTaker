@@ -19,7 +19,7 @@ import com.example.ordertakerfrontend.BackEnd.Services.Utils;
 import com.example.ordertakerfrontend.FrontEnd.Menus.DiskMenu;
 import com.example.ordertakerfrontend.FrontEnd.Popups.YesNoCallbacks;
 import com.example.ordertakerfrontend.Network.NetworkManager.NetworkAdapter;
-import com.example.ordertakerfrontend.Network.NetworkMessages.initRequest;
+import com.example.ordertakerfrontend.Network.NetworkMessages.Out.initRequest;
 
 
 import java.util.LinkedList;

@@ -31,19 +31,40 @@
         android:layout_height="match_parent"
         android:orientation="vertical">
 
-        <com.google.android.material.tabs.TabLayout
-            android:id="@+id/categories"
+        <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="60dp"
-            android:background="@drawable/classic_border"
-            app:tabIconTint="@color/amber"
-            app:tabIndicatorColor="@color/gold2"
-            app:tabMaxWidth="100dp"
-            app:tabMode="scrollable"
-            app:tabPaddingEnd="0dp"
-            app:tabPaddingStart="0dp"
-            app:tabTextAppearance="@style/TextAppearance.AppCompat.Body1"
-            app:tabTextColor="@color/black"/>
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:background="@drawable/classic_border">
+
+            <com.google.android.material.floatingactionbutton.FloatingActionButton
+                android:id="@+id/add_section"
+                android:layout_width="40dp"
+                android:layout_marginRight="10dp"
+                android:layout_height="40dp"
+                android:layout_marginTop="10dp"
+                app:fabCustomSize="40dp"
+                app:backgroundTint="@color/amber"
+                android:src="@drawable/ic_baseline_add_24_5_5"
+                android:textAlignment="center"
+                android:textStyle="bold" />
+
+            <com.google.android.material.tabs.TabLayout
+                android:id="@+id/categories"
+                android:layout_width="match_parent"
+                android:layout_height="60dp"
+                app:tabIconTint="@color/amber"
+                app:tabIndicatorColor="@color/gold2"
+                app:tabMaxWidth="100dp"
+                app:tabMode="scrollable"
+                app:tabPaddingEnd="0dp"
+                app:tabPaddingStart="0dp"
+                app:tabTextAppearance="@style/TextAppearance.AppCompat.Body1"
+                app:tabTextColor="@color/black"/>
+
+        </LinearLayout>
+
+
 
 
         <LinearLayout

@@ -3,6 +3,10 @@ package com.example.ordertakerfrontend.FrontEnd.Menus;
 
 import com.example.ordertakerfrontend.BackEnd.Logic.Product;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.io.Serializable;
 import java.util.Arrays;
 import java.util.LinkedList;
@@ -58,6 +62,61 @@ public class MenuProduct implements Product, Serializable {
             res.add(ms.getSection());
         }
         return (String[]) res.toArray();
+    }
+
+    public void setCategory(String category) {
+        this.category = category;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    public void setImages(String[] images) {
+        this.images = images;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public void setPrice(double price) {
+        this.price = price;
+    }
+
+    public void setSections(LinkedList<MenuSection> sections) {
+        this.sections = sections;
+    }
+
+
+    public JSONObject toJSON(){
+        try {
+            JSONObject o = new JSONObject();
+            o.put("category", category);
+            o.put("name", name);
+            o.put("description", description);
+            o.put("price", price);
+            JSONArray objects = new JSONArray();
+            if(sections != null) {
+                for (MenuSection menuSection : sections) {
+                    objects.put(menuSection.toJSON());
+                }
+            }
+            o.put("sections", objects);
+
+
+            JSONArray imagesArray = new JSONArray();
+            if(images != null){
+                for (int i = 0; i < images.length; i ++){
+                    imagesArray.put(images[i]);
+                }
+            }
+            o.put("images", imagesArray);
+            return o;
+        }catch (JSONException e){
+            e.printStackTrace();
+            return null;
+        }
     }
 
     @Override

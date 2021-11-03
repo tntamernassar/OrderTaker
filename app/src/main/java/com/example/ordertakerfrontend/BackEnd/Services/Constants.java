@@ -37,6 +37,7 @@ public class Constants {
     public static String RESTAURANT_STATE_FILE = "restaurant";
 
 
+    public static final double TCP_CHUNK_LENGTH = 500.0;
 
 
 }

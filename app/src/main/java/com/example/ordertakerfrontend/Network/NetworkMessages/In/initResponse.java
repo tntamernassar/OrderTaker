@@ -1,10 +1,12 @@
-package com.example.ordertakerfrontend.Network.NetworkMessages;
+package com.example.ordertakerfrontend.Network.NetworkMessages.In;
 
 import com.example.ordertakerfrontend.BackEnd.Logic.Waitress;
+import com.example.ordertakerfrontend.BackEnd.Services.ImagesManager;
 import com.example.ordertakerfrontend.FrontEnd.Menus.DiskMenu;
 import com.example.ordertakerfrontend.FrontEnd.Menus.Menu;
 import com.example.ordertakerfrontend.FrontEnd.Menus.MenuProduct;
 import com.example.ordertakerfrontend.FrontEnd.Menus.MenuSection;
+import com.example.ordertakerfrontend.Network.NetworkMessages.NetworkMessage;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -16,9 +18,11 @@ import java.util.LinkedList;
 public class initResponse implements NetworkMessage {
 
     private JSONObject menu;
+    private JSONArray serverImages;
 
-    public initResponse(JSONObject menu){
+    public initResponse(JSONObject menu, JSONArray serverImages){
         this.menu = menu;
+        this.serverImages = serverImages;
     }
 
     @Override
@@ -26,6 +30,24 @@ public class initResponse implements NetworkMessage {
         return null;
     }
 
+
+    private void deleteExtraImages(){
+        try{
+            String[] tabletImages = ImagesManager.listImages();
+            LinkedList<String> serverImagesList = new LinkedList<>();
+            for(int i = 0; i < serverImages.length(); i++){
+                serverImagesList.add(serverImages.getString(i));
+            }
+
+            for(String tabletImage: tabletImages){
+                if (!serverImagesList.contains(tabletImage)){
+                    ImagesManager.deleteImage(tabletImage);
+                }
+            }
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+    }
 
     private LinkedList<MenuProduct> getMenuProducts(){
         try {
@@ -86,7 +108,8 @@ public class initResponse implements NetworkMessage {
         LinkedList<MenuProduct> serverMenuProducts = getMenuProducts();
         Menu.getInstance().setMenuProductList(serverMenuProducts);
         DiskMenu diskMenu = new DiskMenu(serverMenuProducts);
-        diskMenu.writeToDisk();
+        diskMenu.execute();
+        deleteExtraImages();
     }
 
 }

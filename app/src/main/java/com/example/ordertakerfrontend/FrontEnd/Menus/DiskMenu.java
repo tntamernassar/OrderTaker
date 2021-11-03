@@ -1,6 +1,7 @@
 package com.example.ordertakerfrontend.FrontEnd.Menus;
 
 import android.content.Context;
+import android.os.AsyncTask;
 
 import com.example.ordertakerfrontend.BackEnd.Services.FileManager;
 
@@ -8,7 +9,7 @@ import java.io.Serializable;
 import java.util.LinkedList;
 import java.util.List;
 
-public class DiskMenu implements Serializable {
+public class DiskMenu extends AsyncTask<Void, Void, Void> implements Serializable {
 
     List<MenuProduct> menuProducts;
 
@@ -17,6 +18,7 @@ public class DiskMenu implements Serializable {
     }
 
     public void writeToDisk(){
+        System.out.println("Writing menu");
         FileManager.writeObject(this, "menu");
     }
 
@@ -25,5 +27,9 @@ public class DiskMenu implements Serializable {
         Menu.init(context, menuProducts);
     }
 
-
+    @Override
+    protected Void doInBackground(Void... voids) {
+        writeToDisk();
+        return null;
+    }
 }

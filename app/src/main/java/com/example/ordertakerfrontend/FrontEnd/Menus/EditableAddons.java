@@ -1,5 +1,6 @@
 package com.example.ordertakerfrontend.FrontEnd.Menus;
 
+import android.app.Activity;
 import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -7,6 +8,7 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.CheckBox;
+import android.widget.HorizontalScrollView;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -17,7 +19,9 @@ import androidx.annotation.Nullable;
 
 import com.example.ordertakerfrontend.BackEnd.Services.Utils;
 import com.example.ordertakerfrontend.FrontEnd.Popups.YesNoCallbacks;
+import com.example.ordertakerfrontend.MainActivity;
 import com.example.ordertakerfrontend.R;
+import com.github.dhaval2404.imagepicker.ImagePicker;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.util.LinkedList;
@@ -30,6 +34,7 @@ public class EditableAddons extends ArrayAdapter<MenuSection> {
         super(context, resource, menuSections);
         this.menuSections = menuSections;
     }
+
 
     public LinkedList<MenuSection> getMenuSections() {
         return menuSections;
@@ -67,6 +72,8 @@ public class EditableAddons extends ArrayAdapter<MenuSection> {
         return button;
     }
 
+
+
     @NonNull
     @Override
     public View getView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {
@@ -77,7 +84,6 @@ public class EditableAddons extends ArrayAdapter<MenuSection> {
         String section = menuSection.getSection();
         String[] addons = menuSection.getAddons();
 
-
         TextView sectionName = row.findViewById(R.id.section_name);
         LinearLayout addonsList = row.findViewById(R.id.addons_list);
         FloatingActionButton add_addon = row.findViewById(R.id.add_addon);
@@ -86,7 +92,7 @@ public class EditableAddons extends ArrayAdapter<MenuSection> {
 
 
         sectionName.setText(section);
-
+        only_one.setChecked(menuSection.isMaxOne());
 
         only_one.setOnClickListener(view -> {
             menuSection.setMaxOne(only_one.isChecked());

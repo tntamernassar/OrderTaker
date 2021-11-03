@@ -1,7 +1,13 @@
 package com.example.ordertakerfrontend.FrontEnd.Menus;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.io.Serializable;
 import java.util.Arrays;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Objects;
 
 public class MenuSection implements Serializable {
@@ -64,6 +70,23 @@ public class MenuSection implements Serializable {
         }
         newAddon[newAddon.length - 1] = addon;
         this.addons = newAddon;
+    }
+
+    public JSONObject toJSON(){
+        try {
+            JSONObject o = new JSONObject();
+            JSONArray addonsJsonArray = new JSONArray();
+            for(String addon: addons){
+                addonsJsonArray.put(addon);
+            }
+            o.put("section", section);
+            o.put("addons", addonsJsonArray);
+            o.put("maxOne", maxOne);
+            return o;
+        }catch (JSONException e){
+            e.printStackTrace();
+            return null;
+        }
     }
 
     @Override

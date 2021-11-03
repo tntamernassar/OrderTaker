@@ -3,9 +3,13 @@ package com.example.ordertakerfrontend.BackEnd.Services;
 import android.app.Activity;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.graphics.Bitmap;
+import android.os.Build;
 import android.text.InputType;
+import android.util.Base64;
 import android.widget.EditText;
 
+import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AlertDialog;
 
 import com.example.ordertakerfrontend.FrontEnd.Menus.Menu;
@@ -14,9 +18,11 @@ import com.example.ordertakerfrontend.FrontEnd.Popups.TextInputCallback;
 import com.example.ordertakerfrontend.FrontEnd.Popups.YesNoCallbacks;
 import com.example.ordertakerfrontend.MainActivity;
 
+import java.io.ByteArrayOutputStream;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.util.Map;
+import java.util.Random;
 
 public class Utils {
 
@@ -66,17 +72,18 @@ public class Utils {
         return timestamp1.compareTo(timestamp2) > 0;
     }
 
-    public static void encode_menu_to_json(){
-        MenuProduct[] pr = Menu.getInstance().getMenuProductList().toArray(new MenuProduct[0]);
-        String res = "";
-        for(MenuProduct p : pr){
-            res += p.toString() + "},\n";
-        }
+    @RequiresApi(api = Build.VERSION_CODES.N)
+    public static String generateString(int targetStringLength) {
+        int leftLimit = 97; // letter 'a'
+        int rightLimit = 122; // letter 'z'
+        Random random = new Random();
 
-        res = res.substring(0, res.length()-1);
-        res = "{\n\t\"Menu\":[\n" + res + "\n\t]\n}";
+        String generatedString = random.ints(leftLimit, rightLimit + 1)
+                .limit(targetStringLength)
+                .collect(StringBuilder::new, StringBuilder::appendCodePoint, StringBuilder::append)
+                .toString();
 
-        FileManager.appendToFile("tmp", res);
+        return generatedString;
     }
 
 

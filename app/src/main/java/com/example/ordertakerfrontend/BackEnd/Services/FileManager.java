@@ -16,6 +16,23 @@ public class FileManager {
 
     private static String basePath = Constants.CONTEXT.getFilesDir().getAbsolutePath();
 
+
+    public static String getBasePath() {
+        return basePath;
+    }
+
+    public static String[] listFiles(String path){
+        File directory = new File(path);
+        File[] files = directory.listFiles();
+        String[] names = new String[files.length];
+        int i = 0;
+        for(File f : files){
+            names[i] = f.getName();
+            i++;
+        }
+        return names;
+    }
+
     public synchronized static boolean writeObject(Object object, String filename){
 
         try {
@@ -94,5 +111,23 @@ public class FileManager {
             e.printStackTrace();
             return null;
         }
+    }
+
+    public static boolean writeBytes(String path, byte[] bytes){
+        try {
+            File file = new File(path);
+            if(!file.exists()){
+                file.createNewFile();
+            }
+            FileOutputStream fos = new FileOutputStream(file);
+            ObjectOutputStream os = new ObjectOutputStream(fos);
+            os.write(bytes);
+            os.close();
+            fos.close();
+            return true;
+        }catch (Exception e){
+            return false;
+        }
+
     }
 }

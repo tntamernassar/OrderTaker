@@ -2,7 +2,6 @@ package com.example.ordertakerfrontend.FrontEnd.Menus;
 
 import android.content.Context;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,10 +12,13 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
-import com.example.ordertakerfrontend.BackEnd.Services.FileManager;
+import com.example.ordertakerfrontend.BackEnd.Services.ImagesManager;
 import com.example.ordertakerfrontend.R;
 
-import java.io.File;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.io.Serializable;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
@@ -44,7 +46,6 @@ public class Menu extends ArrayAdapter<MenuProduct> implements Serializable {
     public static void init(Context context, List<MenuProduct> menuProductList){
         instance = new Menu(context, menuProductList);
     }
-
 
     public String[] getCategories() {
         return this.categoriesProducts.keySet().toArray(new String[0]);
@@ -81,6 +82,10 @@ public class Menu extends ArrayAdapter<MenuProduct> implements Serializable {
         }
     }
 
+    public void removeProduct(MenuProduct menuProduct){
+        this.menuProductList.remove(menuProduct);
+        this.categoriesProducts.get(menuProduct.getCategory()).remove(menuProduct);
+    }
 
     public boolean containsProduct(MenuProduct menuProduct){
         for(MenuProduct mp: this.menuProductList){
@@ -95,6 +100,22 @@ public class Menu extends ArrayAdapter<MenuProduct> implements Serializable {
         return new Menu(this.context, this.categoriesProducts.get(category));
     }
 
+    public JSONObject toJSON(){
+        try{
+            JSONObject o = new JSONObject();
+            JSONArray objects = new JSONArray();
+            for (MenuProduct menuProduct : menuProductList){
+                objects.put(menuProduct.toJSON());
+            }
+            o.put("menuProductList", objects);
+            return o;
+        }catch (JSONException e){
+            e.printStackTrace();
+            return null;
+        }
+
+    }
+
     @NonNull
     @Override
     public View getView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {
@@ -107,9 +128,8 @@ public class Menu extends ArrayAdapter<MenuProduct> implements Serializable {
         ImageView image = row.findViewById(R.id.image);
         TextView price = row.findViewById(R.id.price);
 
-        File imgFile = new  File(this.context.getFilesDir().getAbsolutePath()+"/"+menuProduct.getImages()[0]);
-        Bitmap myBitmap = BitmapFactory.decodeFile(imgFile.getAbsolutePath());
-        image.setImageBitmap(myBitmap);
+        Bitmap bitmap = ImagesManager.Base64ToImage(menuProduct.getImages()[0]);
+        image.setImageBitmap(bitmap);
 
         nameTV.setText(menuProduct.getName());
         descTV.setText(menuProduct.getDescription());
@@ -117,6 +137,7 @@ public class Menu extends ArrayAdapter<MenuProduct> implements Serializable {
 
         return row;
     }
+
 
 
 }
