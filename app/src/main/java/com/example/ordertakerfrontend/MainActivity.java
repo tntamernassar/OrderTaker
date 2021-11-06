@@ -3,6 +3,7 @@ package com.example.ordertakerfrontend;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.content.res.Resources;
 import android.os.Bundle;
@@ -19,18 +20,32 @@ import com.example.ordertakerfrontend.BackEnd.Services.Utils;
 import com.example.ordertakerfrontend.FrontEnd.Menus.DiskMenu;
 import com.example.ordertakerfrontend.FrontEnd.Popups.YesNoCallbacks;
 import com.example.ordertakerfrontend.Network.NetworkManager.NetworkAdapter;
+import com.example.ordertakerfrontend.Network.NetworkMessages.In.MenuEditNotification;
+import com.example.ordertakerfrontend.Network.NetworkMessages.In.ServerImage;
+import com.example.ordertakerfrontend.Network.NetworkMessages.In.Tables.CancelTableNotification;
+import com.example.ordertakerfrontend.Network.NetworkMessages.In.Tables.CloseTableNotification;
+import com.example.ordertakerfrontend.Network.NetworkMessages.In.Tables.OpenTableNotification;
+import com.example.ordertakerfrontend.Network.NetworkMessages.In.initResponse;
+import com.example.ordertakerfrontend.Network.NetworkMessages.Out.Tables.OpenTable;
 import com.example.ordertakerfrontend.Network.NetworkMessages.Out.initRequest;
+import com.example.ordertakerfrontend.Network.NetworkMessages.tools.MessageObserver;
+import com.example.ordertakerfrontend.Network.NetworkMessages.tools.NetworkMessage;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 
 import java.util.LinkedList;
+import java.util.Objects;
 
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements MessageObserver {
 
+    private String id="mainActivity";
+    private Waitress waitress;
 
     @Override
     protected void onStart() {
         super.onStart();
+        NetworkAdapter.getInstance().register(id, this);
         if (Constants.WAITRESS != null) {
             Resources resources = getResources();
             for (Integer table : Constants.WAITRESS.getRestaurant().getTables()) {
@@ -54,15 +69,20 @@ public class MainActivity extends AppCompatActivity {
         getSupportActionBar().hide();
 
 
-        Waitress waitress;
         if(Constants.WAITRESS == null) {
-            waitress = initSystem();
+            this.waitress = initSystem();
         } else {
-            waitress = Constants.WAITRESS;
+            this.waitress = Constants.WAITRESS;
         }
 
-        Intent tmp = new Intent(this, MenuEditActivity.class);
-        startActivity(tmp);
+        NetworkAdapter.getInstance().register(id, this);
+
+
+        FloatingActionButton edit_menu = findViewById(R.id.edit_menu);
+        edit_menu.setOnClickListener(v->{
+            Intent menuEditActivity = new Intent(this, MenuEditActivity.class);
+            startActivity(menuEditActivity);
+        });
 
         Resources resources = getResources();
         for(Integer table: waitress.getRestaurant().getTables()){
@@ -70,37 +90,21 @@ public class MainActivity extends AppCompatActivity {
             Button table_btn = findViewById(table_id);
 
             table_btn.setOnClickListener(view ->{
-                Intent intent = new Intent(this, OrderActivity.class);
-                if(!waitress.getRestaurant().getTable(table).isActive()) {
-                    Log.d("OnCreat: MainActivity", "Table is not active");
-                    Utils.YesNoDialog(MainActivity.this, "فتح طاوله رقم 1 ؟", new YesNoCallbacks() {
-                        @Override
-                        public void yes() {
-                            waitress.openTable(table);
-                            intent.putExtra("table", table);
-                            startActivity(intent);
-                        }
-
-                        @Override
-                        public void no() { }
-                    });
-
-                }else{
-                    intent.putExtra("table", table);
-                    startActivity(intent);
-                }
-
-
+                openTable(table);
             });
         }
 
 
+    }
 
+    @Override
+    protected void onStop() {
+        super.onStop();
+        NetworkAdapter.getInstance().unregister(id);
     }
 
     private Waitress initSystem(){
         Constants.CONTEXT = getApplicationContext();
-
 
         /**
          * Set up Menu
@@ -176,9 +180,80 @@ public class MainActivity extends AppCompatActivity {
                 adapter.receive();
                 adapter.send(new initRequest());
             }
+
+            @Override
+            public void onError(Exception e) {
+                System.out.println("Not connected");
+            }
         });
         NetworkAdapter.getInstance().start();
         return waitress;
     }
+
+    private void openTable(int table){
+        MessageObserver that = this;
+        Intent intent = new Intent(this, OrderActivity.class);
+        if(!waitress.getRestaurant().getTable(table).isActive()) {
+            Utils.YesNoDialog(MainActivity.this, "فتح طاوله رقم 1 ؟", new YesNoCallbacks() {
+                @Override
+                public void yes() {
+                    waitress.openTable(table);
+                    NetworkAdapter.getInstance().send(new OpenTable(table));
+                    NetworkAdapter.getInstance().unregister(id);
+                    intent.putExtra("table", table);
+                    startActivity(intent);
+                }
+
+                @Override
+                public void no() { }
+            });
+        }else{
+            intent.putExtra("table", table);
+            startActivity(intent);
+        }
+    }
+
+    @Override
+    public void accept(OpenTableNotification message) {
+        int table = message.getTable();
+        Resources resources = getResources();
+        int table_id = resources.getIdentifier("table_"+table, "id", getApplicationContext().getPackageName());
+        Button table_btn = findViewById(table_id);
+        table_btn.setBackground(ContextCompat.getDrawable(getApplicationContext(), R.drawable.taken_table));
+        table_btn.setTextColor(this.getResources().getColor(R.color.white));
+    }
+
+    @Override
+    public void accept(CloseTableNotification message) {
+        int table = message.getTable();
+        Resources resources = getResources();
+        int table_id = resources.getIdentifier("table_"+table, "id", getApplicationContext().getPackageName());
+        Button table_btn = findViewById(table_id);
+        table_btn.setBackground(ContextCompat.getDrawable(getApplicationContext(), R.drawable.available_table));
+        table_btn.setTextColor(this.getResources().getColor(R.color.gold2));
+    }
+
+    @Override
+    public void accept(CancelTableNotification message) {
+        int table = message.getTable();
+        Resources resources = getResources();
+        int table_id = resources.getIdentifier("table_"+table, "id", getApplicationContext().getPackageName());
+        Button table_btn = findViewById(table_id);
+        table_btn.setBackground(ContextCompat.getDrawable(getApplicationContext(), R.drawable.available_table));
+        table_btn.setTextColor(this.getResources().getColor(R.color.gold2));
+    }
+
+    @Override
+    public void accept(NetworkMessage message) { }
+
+    @Override
+    public void accept(initResponse message) { }
+
+    @Override
+    public void accept(ServerImage message) { }
+
+    @Override
+    public void accept(MenuEditNotification message) { }
+
 
 }

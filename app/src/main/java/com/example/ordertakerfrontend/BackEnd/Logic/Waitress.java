@@ -9,11 +9,8 @@ import com.example.ordertakerfrontend.BackEnd.Services.Utils;
 
 public class Waitress {
 
-
     private Restaurant restaurant;
     private String name;
-    private boolean inited = false;
-
 
     /**
      *  Waitress class is responsible for the interaction
@@ -23,8 +20,6 @@ public class Waitress {
     public Waitress(String name, Restaurant restaurant){
         this.restaurant = restaurant;
         this.name = name;
-        inited = true;
-
     }
 
     public Restaurant getRestaurant() {

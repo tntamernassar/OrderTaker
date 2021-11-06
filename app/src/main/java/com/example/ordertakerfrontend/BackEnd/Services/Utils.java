@@ -4,6 +4,8 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.graphics.Bitmap;
+import android.net.wifi.WifiInfo;
+import android.net.wifi.WifiManager;
 import android.os.Build;
 import android.text.InputType;
 import android.util.Base64;
@@ -19,6 +21,7 @@ import com.example.ordertakerfrontend.FrontEnd.Popups.YesNoCallbacks;
 import com.example.ordertakerfrontend.MainActivity;
 
 import java.io.ByteArrayOutputStream;
+import java.lang.reflect.Method;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.util.Map;
@@ -139,6 +142,13 @@ public class Utils {
         });
 
         builder.show();
+    }
+
+    public static String getSerialNumber(Activity activity) {
+        WifiManager manager = (WifiManager) activity.getSystemService(Context.WIFI_SERVICE);
+        WifiInfo info = manager.getConnectionInfo();
+        String address = info.getMacAddress();
+        return address;
     }
 
 }

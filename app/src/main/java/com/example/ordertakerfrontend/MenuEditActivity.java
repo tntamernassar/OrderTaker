@@ -13,6 +13,7 @@ import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.AdapterView;
@@ -58,6 +59,7 @@ public class MenuEditActivity extends AppCompatActivity {
         setAddProductListener(menu);
 
     }
+
 
     private boolean havingPendingImage(){
         return productImage != null && productBitmap != null;
@@ -129,20 +131,54 @@ public class MenuEditActivity extends AppCompatActivity {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
                 MenuProduct menuProduct = subMenu.getMenuProductList().get(i);
-                setWorkingArea(menuProduct.getName(), menuProduct.getDescription(), menuProduct.getPrice(), menuProduct.getSections() != null ? menuProduct.getSections() : new LinkedList<>() , new AddProductCallback() {
+                setWorkingArea(menuProduct.getName(), menuProduct.getDescription(), menuProduct.getPrice(), menuProduct.getSections() != null ? menuProduct.getSections() : new LinkedList<>() , menuProduct.getImages(), new AddProductCallback() {
                     @Override
                     public void callback(MenuProduct newMenuProduct) {
                         Utils.YesNoDialog(that, "Are you sure you want to save " + menuProduct.getName() + " ? ", new YesNoCallbacks() {
+                            @RequiresApi(api = Build.VERSION_CODES.N)
                             @Override
                             public void yes() {
-                                menuProduct.setName(newMenuProduct.getName());
-                                menuProduct.setDescription(newMenuProduct.getDescription());
-                                menuProduct.setPrice(newMenuProduct.getPrice());
-                                menuProduct.setImages(newMenuProduct.getImages());
-                                menuProduct.setSections(newMenuProduct.getSections());
+
+                                boolean havingPendingImage = havingPendingImage();
+                                Bitmap chosenProductBitmap = productBitmap;
                                 resetWorkingArea();
-                                BuildMenuList(menu, category);
-                                writeMenu(menu);
+                                String imageName = ImagesManager.makeFileName();
+                                String previousImageName = menuProduct.getImages()[0];
+
+                                AsyncTask t = new AsyncTask() {
+                                    @Override
+                                    protected void onPreExecute() {
+                                        Toast.makeText(getApplicationContext(),"Started", Toast.LENGTH_SHORT).show();
+                                    }
+
+                                    @RequiresApi(api = Build.VERSION_CODES.O)
+                                    @Override
+                                    protected Object doInBackground(Object[] objects) {
+                                        if (havingPendingImage){
+                                            String imageBase64 = ImagesManager.imageToBase64(chosenProductBitmap);
+                                            ImagesManager.saveImage(imageName, imageBase64);
+                                            menuProduct.setImages(new String[]{imageName});
+                                            ImagesManager.sendImageInChucks(imageName, imageBase64);
+                                            ImagesManager.deleteImage(previousImageName);
+                                        }
+                                        return null;
+                                    }
+
+                                    @Override
+                                    protected void onPostExecute(Object o) {
+                                        Toast.makeText(getApplicationContext(),"Finished ", Toast.LENGTH_SHORT).show();
+                                        menuProduct.setName(newMenuProduct.getName());
+                                        menuProduct.setDescription(newMenuProduct.getDescription());
+                                        menuProduct.setPrice(newMenuProduct.getPrice());
+                                        menuProduct.setImages(havingPendingImage ? new String[]{imageName} : newMenuProduct.getImages());
+                                        menuProduct.setSections(newMenuProduct.getSections());
+                                        BuildMenuList(menu, category);
+                                        writeMenu(menu);
+                                        NetworkAdapter.getInstance().send(new MenuEdit(menu.toJSON(),havingPendingImage ? new String[]{imageName} : new String[]{}, havingPendingImage ? new String[]{previousImageName} : new String[]{}));
+                                    }
+                                };
+
+                                t.execute();
                             }
 
                             @Override
@@ -161,6 +197,9 @@ public class MenuEditActivity extends AppCompatActivity {
                                 resetWorkingArea();
                                 BuildMenuList(menu, category);
                                 writeMenu(menu);
+                                String imgName = menuProduct.getImages()[0];
+                                ImagesManager.deleteImage(imgName);
+                                NetworkAdapter.getInstance().send(new MenuEdit(menu.toJSON(), new String[]{}, new String[]{imgName}));
                             }
 
                             @Override
@@ -186,7 +225,7 @@ public class MenuEditActivity extends AppCompatActivity {
         working_area.removeAllViews();
     }
 
-    private void setWorkingArea(String productName, String productDescription, double productPrice, LinkedList<MenuSection> productMenuSections, AddProductCallback submitCallback, AddProductCallback cancelCallback) {
+    private void setWorkingArea(String productName, String productDescription, double productPrice, LinkedList<MenuSection> productMenuSections, String[] productImagesArray, AddProductCallback submitCallback, AddProductCallback cancelCallback) {
         TabLayout categories = findViewById(R.id.categories);
         ScrollView working_area = findViewById(R.id.working_area);
 
@@ -209,8 +248,10 @@ public class MenuEditActivity extends AppCompatActivity {
         TextView product_name = inflated.findViewById(R.id.product_name);
         TextView product_price = inflated.findViewById(R.id.product_price);
         TextView product_description = inflated.findViewById(R.id.product_description);
+        Bitmap bitmap = ImagesManager.Base64ToImage(productImagesArray[0]);
 
         header_title.setText(selectedCategory);
+        product_image.setImageBitmap(bitmap);
         product_name.setText(productName);
         product_price.setText(productPrice + "");
         product_description.setText(productDescription);
@@ -250,7 +291,7 @@ public class MenuEditActivity extends AppCompatActivity {
                     newMenuSection.add(menuSection);
                 }
             }
-            MenuProduct newMenuProduct = new MenuProduct(selectedCategory, name, description, price, menuSections, new String[]{"ham.png"});
+            MenuProduct newMenuProduct = new MenuProduct(selectedCategory, name, description, price, menuSections, productImagesArray);
             submitCallback.callback(newMenuProduct);
         });
 
@@ -264,7 +305,7 @@ public class MenuEditActivity extends AppCompatActivity {
         FloatingActionButton add_product = findViewById(R.id.add_product);
 
         add_product.setOnClickListener(add_product_view -> {
-            setWorkingArea("", "", 0, new LinkedList<>(), new AddProductCallback() {
+            setWorkingArea("", "", 0, new LinkedList<>(), new String[]{"default.png"}, new AddProductCallback() {
                 @RequiresApi(api = Build.VERSION_CODES.O)
                 @Override
                 public void callback(MenuProduct menuProduct) {
@@ -272,17 +313,16 @@ public class MenuEditActivity extends AppCompatActivity {
                     Bitmap chosenProductBitmap = productBitmap;
                     resetWorkingArea();
 
+                    String imageName = ImagesManager.makeFileName();
                     AsyncTask t = new AsyncTask() {
                         @Override
                         protected void onPreExecute() {
-
-                            Toast.makeText(getApplicationContext(),"started ,,,", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(getApplicationContext(),"Started", Toast.LENGTH_SHORT).show();
                         }
 
                         @Override
                         protected Object doInBackground(Object[] objects) {
                             if (havingPendingImage){
-                                String imageName = ImagesManager.makeFileName();
                                 String imageBase64 = ImagesManager.imageToBase64(chosenProductBitmap);
                                 ImagesManager.saveImage(imageName, imageBase64);
                                 menuProduct.setImages(new String[]{imageName});
@@ -294,12 +334,13 @@ public class MenuEditActivity extends AppCompatActivity {
 
                         @Override
                         protected void onPostExecute(Object o) {
-                            Toast.makeText(getApplicationContext(),"finished ,,,", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(getApplicationContext(),"Finished", Toast.LENGTH_SHORT).show();
                             menu.addProduct(menuProduct);
                             BuildMenuList(menu, menuProduct.getCategory());
                             setAddProductListener(menu);
                             writeMenu(menu);
-                            NetworkAdapter.getInstance().send(new MenuEdit(menu.toJSON(), ImagesManager.listImages()));
+
+                            NetworkAdapter.getInstance().send(new MenuEdit(menu.toJSON(),havingPendingImage ? new String[]{imageName} : new String[]{}, new String[]{}));
                         }
                     };
 
@@ -324,7 +365,6 @@ public class MenuEditActivity extends AppCompatActivity {
                 final Uri imageUri = data.getData();
                 final InputStream imageStream = getContentResolver().openInputStream(imageUri);
                 final Bitmap selectedImage = BitmapFactory.decodeStream(imageStream);
-                System.out.println(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>");
                 this.productBitmap = selectedImage;
                 this.productImage.setImageBitmap(selectedImage);
             }catch (Exception e){

@@ -1,7 +1,8 @@
 package com.example.ordertakerfrontend.Network.NetworkManager;
+import com.example.ordertakerfrontend.BackEnd.Services.Constants;
 import com.example.ordertakerfrontend.BackEnd.Services.Utils;
-import com.example.ordertakerfrontend.Network.NetworkMessages.NetworkMessage;
-import com.example.ordertakerfrontend.Network.NetworkMessages.NetworkMessageDecoder;
+import com.example.ordertakerfrontend.Network.NetworkMessages.tools.NetworkMessage;
+import com.example.ordertakerfrontend.Network.NetworkMessages.tools.NetworkMessageDecoder;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -15,12 +16,20 @@ public class NetworkReceiver extends Thread {
     private Socket socket;
     private boolean running;
     private boolean connected;
+    private NetworkAdapter adapter;
 
-    public NetworkReceiver(Socket socket) {
+    public NetworkReceiver(Socket socket, NetworkAdapter adapter) {
         this.socket = socket;
         this.running = true;
         this.connected = true;
+        this.adapter = adapter;
     }
+
+
+    public boolean isConnected() {
+        return connected;
+    }
+
 
 
     @Override
@@ -31,7 +40,10 @@ public class NetworkReceiver extends Thread {
                 String message = dataInputStream.readUTF();
                 JSONObject JSONMessage = new JSONObject(message);
                 NetworkMessage networkMessage = NetworkMessageDecoder.decode(JSONMessage);
-                networkMessage.visit(null);
+                networkMessage.visit(Constants.WAITRESS);
+                Constants.activity.runOnUiThread(()->{
+                    adapter.notifyObservers(networkMessage);
+                });
             }
         } catch (IOException e) {
             e.printStackTrace();

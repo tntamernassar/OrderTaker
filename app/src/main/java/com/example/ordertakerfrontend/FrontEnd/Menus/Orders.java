@@ -12,11 +12,10 @@ import android.widget.TextView;
 import com.example.ordertakerfrontend.BackEnd.Logic.OrderItem;
 import com.example.ordertakerfrontend.BackEnd.Services.Constants;
 import com.example.ordertakerfrontend.BackEnd.Services.Utils;
-import com.example.ordertakerfrontend.FrontEnd.Popups.OrderActivity;
+import com.example.ordertakerfrontend.FrontEnd.Popups.OnePageOrderActivity;
 import com.example.ordertakerfrontend.FrontEnd.Popups.YesNoCallbacks;
 import com.example.ordertakerfrontend.R;
 
-import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -27,13 +26,13 @@ import androidx.appcompat.app.AlertDialog;
 
 public class Orders extends ArrayAdapter<OrderItem> {
 
-    private OrderActivity orderActivity;
+    private OnePageOrderActivity orderActivity;
     private int tableId;
     private List<OrderItem> orders;
     private Context context;
 
 
-    public Orders(OrderActivity orderActivity, int tableId, Context context, List<OrderItem> orders){
+    public Orders(OnePageOrderActivity orderActivity, int tableId, Context context, List<OrderItem> orders){
         super(context, R.layout.order_item, orders);
         this.orderActivity = orderActivity;
         this.tableId = tableId;

@@ -6,16 +6,18 @@ import com.example.ordertakerfrontend.FrontEnd.Menus.DiskMenu;
 import com.example.ordertakerfrontend.FrontEnd.Menus.Menu;
 import com.example.ordertakerfrontend.FrontEnd.Menus.MenuProduct;
 import com.example.ordertakerfrontend.FrontEnd.Menus.MenuSection;
-import com.example.ordertakerfrontend.Network.NetworkMessages.NetworkMessage;
+import com.example.ordertakerfrontend.Network.NetworkMessages.tools.MessageObserver;
+import com.example.ordertakerfrontend.Network.NetworkMessages.tools.NetworkMessage;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.util.Arrays;
 import java.util.LinkedList;
 
 
-public class initResponse implements NetworkMessage {
+public class initResponse extends NetworkMessage {
 
     private JSONObject menu;
     private JSONArray serverImages;
@@ -25,13 +27,12 @@ public class initResponse implements NetworkMessage {
         this.serverImages = serverImages;
     }
 
-    @Override
-    public JSONObject encode() {
-        return null;
+    public JSONArray getServerImages() {
+        return serverImages;
     }
 
 
-    private void deleteExtraImages(){
+    public void deleteExtraImages(){
         try{
             String[] tabletImages = ImagesManager.listImages();
             LinkedList<String> serverImagesList = new LinkedList<>();
@@ -39,8 +40,12 @@ public class initResponse implements NetworkMessage {
                 serverImagesList.add(serverImages.getString(i));
             }
 
+            System.out.println("Tablet images : " + Arrays.toString(tabletImages));
+            System.out.println("Server images : " + Arrays.toString(serverImagesList.toArray()));
+
             for(String tabletImage: tabletImages){
                 if (!serverImagesList.contains(tabletImage)){
+                    System.out.println(tabletImage + " should be deleted !");
                     ImagesManager.deleteImage(tabletImage);
                 }
             }
@@ -49,7 +54,7 @@ public class initResponse implements NetworkMessage {
         }
     }
 
-    private LinkedList<MenuProduct> getMenuProducts(){
+    public LinkedList<MenuProduct> getMenuProducts(){
         try {
             LinkedList<MenuProduct> menuProducts = new LinkedList<>();
             JSONArray menuProductsJson = (JSONArray) menu.get("menuProductList");
@@ -103,6 +108,7 @@ public class initResponse implements NetworkMessage {
         }
     }
 
+
     @Override
     public void visit(Waitress waitress) {
         LinkedList<MenuProduct> serverMenuProducts = getMenuProducts();
@@ -112,4 +118,8 @@ public class initResponse implements NetworkMessage {
         deleteExtraImages();
     }
 
+    @Override
+    public void visitMessageObserver(MessageObserver messageObserver) {
+        messageObserver.accept(this);
+    }
 }

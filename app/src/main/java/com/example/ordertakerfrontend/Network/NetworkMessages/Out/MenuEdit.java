@@ -1,20 +1,22 @@
 package com.example.ordertakerfrontend.Network.NetworkMessages.Out;
 
 import com.example.ordertakerfrontend.BackEnd.Logic.Waitress;
-import com.example.ordertakerfrontend.Network.NetworkMessages.NetworkMessage;
+import com.example.ordertakerfrontend.Network.NetworkMessages.tools.NetworkMessage;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-public class MenuEdit implements NetworkMessage {
+public class MenuEdit extends NetworkMessage {
 
     private JSONObject menu;
-    private String[] images;
+    private String[] newImages;
+    private String[] shouldDeleteImages;
 
-    public MenuEdit(JSONObject menu, String[] images){
+    public MenuEdit(JSONObject menu, String[] newImages, String[] shouldDeleteImages){
         this.menu = menu;
-        this.images = images;
+        this.newImages = newImages;
+        this.shouldDeleteImages = shouldDeleteImages;
     }
 
     @Override
@@ -22,11 +24,18 @@ public class MenuEdit implements NetworkMessage {
         try {
             JSONObject result = makeJSONMessage("MenuEdit");
             result.put("menu", menu);
-            JSONArray jsonArray = new JSONArray();
-            for(String img: images){
-                jsonArray.put(img);
+
+            JSONArray newImagesArray = new JSONArray();
+            for(String img: newImages){
+                newImagesArray.put(img);
             }
-            result.put("images", jsonArray);
+
+            JSONArray shouldDeleteImagesArray = new JSONArray();
+            for(String img: shouldDeleteImages){
+                shouldDeleteImagesArray.put(img);
+            }
+            result.put("newImages", newImagesArray);
+            result.put("shouldDeleteImages", shouldDeleteImagesArray);
             return result;
         }catch (JSONException e){
             e.printStackTrace();

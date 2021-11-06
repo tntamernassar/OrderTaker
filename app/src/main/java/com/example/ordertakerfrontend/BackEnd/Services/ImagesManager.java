@@ -85,7 +85,6 @@ public class ImagesManager {
         if (base64 != null) {
             try {
                 String path = FileManager.getBasePath() + "/images/" + name;
-                FileManager.appendToFile("base64", base64);
                 byte[] decodedString = java.util.Base64.getDecoder().decode(base64);
                 Bitmap bitmap = BitmapFactory.decodeByteArray(decodedString, 0, decodedString.length);
 
@@ -105,9 +104,11 @@ public class ImagesManager {
     }
 
     public static void deleteImage(String name){
-        String path = FileManager.getBasePath() + "/images/" + name;
-        File file = new File(path);
-        file.delete();
+        if(!name.equals(Constants.DEFAULT_IMAGE_NAME)) {
+            String path = FileManager.getBasePath() + "/images/" + name;
+            File file = new File(path);
+            file.delete();
+        }
     }
 
 }

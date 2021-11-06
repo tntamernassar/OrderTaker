@@ -21,6 +21,13 @@ public class FileManager {
         return basePath;
     }
 
+    public static void mkdir(String name){
+        File file = new File(getBasePath() + "/" + name);
+        if (!file.exists()){
+            file.mkdir();
+        }
+    }
+
     public static String[] listFiles(String path){
         File directory = new File(path);
         File[] files = directory.listFiles();
@@ -54,9 +61,6 @@ public class FileManager {
     }
 
     public static Object readObject(String filename){
-
-        Log.d("TAG", basePath + " <<<<<<<<<<<<<<");
-
         try {
             File file = new File(basePath+ "/" + filename);
             FileInputStream fis = new FileInputStream(file);

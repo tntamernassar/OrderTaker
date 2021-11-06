@@ -1,10 +1,13 @@
 package com.example.ordertakerfrontend.BackEnd.Services;
 
+import android.app.Activity;
 import android.content.Context;
 
 import com.example.ordertakerfrontend.BackEnd.Logic.Waitress;
 
 public class Constants {
+
+    public static Activity activity = null;
 
     /**
      * Application Context, assigned at runtime
@@ -39,5 +42,6 @@ public class Constants {
 
     public static final double TCP_CHUNK_LENGTH = 500.0;
 
+    public static String DEFAULT_IMAGE_NAME = "default.png";
 
 }

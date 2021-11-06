@@ -1,15 +1,14 @@
-package com.example.ordertakerfrontend.Network.NetworkMessages;
+package com.example.ordertakerfrontend.Network.NetworkMessages.tools;
 
 
 import android.util.Log;
 
 import com.example.ordertakerfrontend.BackEnd.Logic.Waitress;
-import com.example.ordertakerfrontend.BackEnd.Services.Constants;
+import com.example.ordertakerfrontend.Network.NetworkMessages.tools.NetworkMessage;
 
-import org.json.JSONException;
 import org.json.JSONObject;
 
-public class TestMessage implements NetworkMessage{
+public class TestMessage extends NetworkMessage {
 
     @Override
     public JSONObject encode() {

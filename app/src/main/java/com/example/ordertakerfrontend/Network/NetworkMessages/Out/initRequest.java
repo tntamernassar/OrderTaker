@@ -1,16 +1,13 @@
 package com.example.ordertakerfrontend.Network.NetworkMessages.Out;
 
 import com.example.ordertakerfrontend.BackEnd.Logic.Waitress;
-import com.example.ordertakerfrontend.BackEnd.Services.FileManager;
 import com.example.ordertakerfrontend.BackEnd.Services.ImagesManager;
-import com.example.ordertakerfrontend.Network.NetworkMessages.NetworkMessage;
+import com.example.ordertakerfrontend.Network.NetworkMessages.tools.NetworkMessage;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
 
-import java.util.Arrays;
-
-public class initRequest implements NetworkMessage {
+public class initRequest extends NetworkMessage {
 
 
     @Override

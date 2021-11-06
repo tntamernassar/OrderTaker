@@ -7,11 +7,12 @@ import androidx.annotation.RequiresApi;
 import com.example.ordertakerfrontend.BackEnd.Logic.Waitress;
 import com.example.ordertakerfrontend.BackEnd.Services.ImagesManager;
 import com.example.ordertakerfrontend.BackEnd.Services.Utils;
-import com.example.ordertakerfrontend.Network.NetworkMessages.NetworkMessage;
+import com.example.ordertakerfrontend.Network.NetworkMessages.tools.MessageObserver;
+import com.example.ordertakerfrontend.Network.NetworkMessages.tools.NetworkMessage;
 
 import org.json.JSONObject;
 
-public class ServerImage implements NetworkMessage {
+public class ServerImage extends NetworkMessage {
 
     private String name;
     private String base64;
@@ -23,6 +24,18 @@ public class ServerImage implements NetworkMessage {
         this.base64 = base64;
         this.chunks = chunks;
         this.chunkNumber = chunkNumber;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public long getChunkNumber() {
+        return chunkNumber;
+    }
+
+    public long getChunks() {
+        return chunks;
     }
 
     @Override
@@ -41,6 +54,10 @@ public class ServerImage implements NetworkMessage {
                 Utils.writeToLog("Can't save image " + name);
             }
         }
+    }
 
+    @Override
+    public void visitMessageObserver(MessageObserver messageObserver) {
+        messageObserver.accept(this);
     }
 }

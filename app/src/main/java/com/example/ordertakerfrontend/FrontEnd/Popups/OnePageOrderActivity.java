@@ -5,7 +5,7 @@ import android.view.View;
 import com.example.ordertakerfrontend.FrontEnd.Menus.MenuProduct;
 import com.example.ordertakerfrontend.FrontEnd.Menus.OrderProduct;
 
-public interface OrderActivity {
+public interface OnePageOrderActivity {
 
     /** Create new Item popup **/
     void makeItemPopUp(MenuProduct menuProduct, View view, ItemSubmitCallback submitCallback);

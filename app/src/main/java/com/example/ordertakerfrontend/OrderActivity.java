@@ -3,7 +3,6 @@ package com.example.ordertakerfrontend;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
-import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -16,9 +15,11 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.ordertakerfrontend.BackEnd.Logic.OrderItem;
 import com.example.ordertakerfrontend.BackEnd.Services.Constants;
+import com.example.ordertakerfrontend.BackEnd.Services.ImagesManager;
 import com.example.ordertakerfrontend.BackEnd.Services.Utils;
 import com.example.ordertakerfrontend.FrontEnd.Menus.Menu;
 import com.example.ordertakerfrontend.FrontEnd.Menus.MenuProduct;
@@ -26,17 +27,31 @@ import com.example.ordertakerfrontend.FrontEnd.Menus.MenuSection;
 import com.example.ordertakerfrontend.FrontEnd.Menus.OrderProduct;
 import com.example.ordertakerfrontend.FrontEnd.Menus.Orders;
 import com.example.ordertakerfrontend.FrontEnd.Popups.ItemSubmitCallback;
+import com.example.ordertakerfrontend.FrontEnd.Popups.OnePageOrderActivity;
 import com.example.ordertakerfrontend.FrontEnd.Popups.PopupAddons;
 import com.example.ordertakerfrontend.FrontEnd.Popups.YesNoCallbacks;
+import com.example.ordertakerfrontend.Network.NetworkManager.NetworkAdapter;
+import com.example.ordertakerfrontend.Network.NetworkMessages.In.MenuEditNotification;
+import com.example.ordertakerfrontend.Network.NetworkMessages.In.ServerImage;
+import com.example.ordertakerfrontend.Network.NetworkMessages.In.Tables.CancelTableNotification;
+import com.example.ordertakerfrontend.Network.NetworkMessages.In.Tables.CloseTableNotification;
+import com.example.ordertakerfrontend.Network.NetworkMessages.In.Tables.OpenTableNotification;
+import com.example.ordertakerfrontend.Network.NetworkMessages.In.initResponse;
+import com.example.ordertakerfrontend.Network.NetworkMessages.Out.Tables.CancelTable;
+import com.example.ordertakerfrontend.Network.NetworkMessages.Out.Tables.CloseTable;
+import com.example.ordertakerfrontend.Network.NetworkMessages.tools.MessageObserver;
+import com.example.ordertakerfrontend.Network.NetworkMessages.tools.NetworkMessage;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.tabs.TabLayout;
 
 import java.io.File;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Objects;
 
-public class OrderActivity extends AppCompatActivity implements com.example.ordertakerfrontend.FrontEnd.Popups.OrderActivity {
+public class OrderActivity extends AppCompatActivity implements OnePageOrderActivity, MessageObserver {
 
+    private String id="orderActivity";
     private int tableId;
 
     @Override
@@ -45,6 +60,7 @@ public class OrderActivity extends AppCompatActivity implements com.example.orde
         setContentView(R.layout.activity_order);
         getSupportActionBar().hide();
 
+        NetworkAdapter.getInstance().register(id, this);
         Intent intent = getIntent();
         this.tableId = intent.getExtras().getInt("table");
 
@@ -85,6 +101,7 @@ public class OrderActivity extends AppCompatActivity implements com.example.orde
                     @Override
                     public void yes() {
                         Constants.WAITRESS.cancelOrder(tableId);
+                        NetworkAdapter.getInstance().send(new CancelTable(tableId));
                         Intent intent = new Intent(OrderActivity.this, MainActivity.class);
                         startActivity(intent);
                     }
@@ -116,10 +133,11 @@ public class OrderActivity extends AppCompatActivity implements com.example.orde
             @Override
             public void onClick(View view) {
 
-                Utils.YesNoDialog(OrderActivity.this, "لالغاء الطلب اضغط نعم", new YesNoCallbacks() {
+                Utils.YesNoDialog(OrderActivity.this, "لاغلاق الطلب اضغط نعم", new YesNoCallbacks() {
                     @Override
                     public void yes() {
                         Constants.WAITRESS.closeOrder(tableId);
+                        NetworkAdapter.getInstance().send(new CloseTable(tableId));
                         Intent intent = new Intent(OrderActivity.this, MainActivity.class);
                         startActivity(intent);
                     }
@@ -132,6 +150,11 @@ public class OrderActivity extends AppCompatActivity implements com.example.orde
         });
     }
 
+    @Override
+    protected void onStop() {
+        super.onStop();
+        NetworkAdapter.getInstance().unregister(id);
+    }
 
     private void createMenuList(String category) {
         ListView listView = findViewById(R.id.menu_holder);
@@ -207,9 +230,8 @@ public class OrderActivity extends AppCompatActivity implements com.example.orde
         TextView quantity = menuPopup.findViewById(R.id.quantity);
         TextView notes = menuPopup.findViewById(R.id.notes);
 
-        File imgFile = new File(getFilesDir().getAbsolutePath() + "/" + menuProduct.getImages()[0]);
-        Bitmap myBitmap = BitmapFactory.decodeFile(imgFile.getAbsolutePath());
-        image.setImageBitmap(myBitmap);
+        Bitmap bitmap = ImagesManager.Base64ToImage(menuProduct.getImages()[0]);
+        image.setImageBitmap(bitmap);
 
         nameTV.setText(menuProduct.getName());
         descTV.setText(menuProduct.getDescription());
@@ -293,4 +315,37 @@ public class OrderActivity extends AppCompatActivity implements com.example.orde
         dialog.show();
         dialog.getWindow().setLayout(1000, 1500);
     }
+
+    @Override
+    public void accept(NetworkMessage message) { }
+
+    @Override
+    public void accept(initResponse message) {
+        TabLayout categories = (TabLayout) findViewById(R.id.categories);
+        String selected = categories.getTabAt(categories.getSelectedTabPosition()).getText().toString();
+        createMenuList(selected);
+    }
+
+    @Override
+    public void accept(ServerImage message) { }
+
+    @Override
+    public void accept(MenuEditNotification message) {
+        TabLayout categories = (TabLayout) findViewById(R.id.categories);
+        String selected = categories.getTabAt(categories.getSelectedTabPosition()).getText().toString();
+        createMenuList(selected);
+    }
+
+    @Override
+    public void accept(OpenTableNotification message) { }
+
+    @Override
+    public void accept(CloseTableNotification message) { }
+
+    @Override
+    public void accept(CancelTableNotification message) {
+
+    }
+
+
 }

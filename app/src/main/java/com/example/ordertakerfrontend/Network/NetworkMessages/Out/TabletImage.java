@@ -1,12 +1,12 @@
 package com.example.ordertakerfrontend.Network.NetworkMessages.Out;
 
 import com.example.ordertakerfrontend.BackEnd.Logic.Waitress;
-import com.example.ordertakerfrontend.Network.NetworkMessages.NetworkMessage;
+import com.example.ordertakerfrontend.Network.NetworkMessages.tools.NetworkMessage;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
-public class TabletImage implements NetworkMessage {
+public class TabletImage extends NetworkMessage {
 
     private String name;
     private String base64;
