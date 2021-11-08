@@ -3,6 +3,9 @@ package com.example.ordertakerfrontend.BackEnd.Logic;
 
 import com.example.ordertakerfrontend.BackEnd.Services.Utils;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.io.Serializable;
 
 public class OrderItem implements Serializable {
@@ -37,6 +40,25 @@ public class OrderItem implements Serializable {
         this.waiterName = waiterName;
         this.timestamp = timestamp;
         this.isDistributed = isDistributed;
+    }
+
+    public OrderItem(JSONObject orderItem, Product product) throws JSONException {
+
+        int index = (int) orderItem.get("index");
+        int quantity = (int) orderItem.get("quantity");
+        String notes = (String) orderItem.get("notes");
+        String waiterName = (String) orderItem.get("waiterName");
+        String timestamp = (String) orderItem.get("timestamp");
+        boolean isDistributed = (boolean) orderItem.get("isDistributed");
+
+        this.index = (int) index;
+        this.product = product;
+        this.quantity = (int) quantity;
+        this.notes = notes;
+        this.waiterName = waiterName;
+        this.timestamp = timestamp;
+        this.isDistributed = isDistributed;
+
     }
 
     public int getIndex() {
@@ -84,6 +106,14 @@ public class OrderItem implements Serializable {
     }
 
     @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        OrderItem orderItem = (OrderItem) o;
+        return waiterName.equals(orderItem.waiterName) && timestamp.equals(orderItem.timestamp);
+    }
+
+    @Override
     public String toString() {
         return "OrderItem {" + "\n\t" +
                 "waiter = " + waiterName +"\n\t" +
@@ -93,5 +123,22 @@ public class OrderItem implements Serializable {
                 "quantity = " + quantity +"\n\t" +
                 "notes = " + notes  +"\n" +
                 "}\n";
+    }
+
+    public JSONObject toJSON(){
+        try{
+            JSONObject res = new JSONObject();
+            res.put("index", index);
+            res.put("product", product.toJSON());
+            res.put("quantity", quantity);
+            res.put("notes", notes);
+            res.put("waiterName", waiterName);
+            res.put("timestamp", timestamp);
+            res.put("isDistributed", isDistributed);
+            return res;
+        }catch (Exception e){
+            e.printStackTrace();
+            return null;
+        }
     }
 }

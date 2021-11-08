@@ -1,11 +1,21 @@
 package com.example.ordertakerfrontend.BackEnd.Logic;
 
 
+import android.os.Build;
+
+import androidx.annotation.RequiresApi;
+
 import com.example.ordertakerfrontend.BackEnd.Services.Utils;
+import com.example.ordertakerfrontend.FrontEnd.Menus.OrderProduct;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.concurrent.atomic.AtomicInteger;
 
 public class Order implements Serializable {
@@ -25,6 +35,77 @@ public class Order implements Serializable {
         this.distributeVersion = null;
         this.orderItems = new HashMap<>();
         this.startedAt = LocalDateTime.now();
+    }
+
+    public Order(JSONObject order) throws JSONException {
+
+        this.orderItems = new HashMap<>();
+        int itemsCounter = (int) order.get("itemsCounter");
+        String startedAt = (String) order.get("startedAt");
+        String startedBy = (String) order.get("startedBy");
+        boolean distributed = (boolean) order.get("distributed");
+        Order distributeVersion = null;
+        if (!order.isNull("distributeVersion")) {
+            distributeVersion = new Order((JSONObject) order.get("distributeVersion"));
+        }
+        JSONObject orderItems = (JSONObject) order.get("orderItems");
+        JSONArray indexes = (JSONArray) orderItems.get("indexes");
+        for (int i = 0; i < indexes.length(); i++) {
+            String indexStr = (String) indexes.get(i);
+            int index = Integer.parseInt(indexStr);
+            JSONObject orderItemObject = (JSONObject) orderItems.get(indexStr);
+            OrderItem orderItem = new OrderItem(orderItemObject, new OrderProduct((JSONObject) orderItemObject.get("product")));
+            this.orderItems.put(index, orderItem);
+        }
+
+        this.itemsCounter = new AtomicInteger((int) itemsCounter);
+        this.startedAt = LocalDateTime.parse(startedAt);
+        this.startedBy = startedBy;
+        this.distributed = distributed;
+        this.distributeVersion = distributeVersion;
+
+    }
+
+    public OrderItem getOrderItem(OrderItem orderItem){
+        for (OrderItem o : orderItems.values()){
+            if (o.equals(orderItem)){
+                return o;
+            }
+        }
+        return null;
+    }
+
+    public synchronized void mergerOrder(Order order, String tabletWaitressName){
+        HashMap<Integer, OrderItem> otherOrderItems = order.getOrderItems();
+
+        for (Integer index : otherOrderItems.keySet()){
+            OrderItem otherOrderItem = otherOrderItems.get(index);
+            OrderItem serverOrderItem = getOrderItem(otherOrderItem);
+
+            if (serverOrderItem == null){ // new order item
+                this.addItem(otherOrderItem.getWaiterName(), otherOrderItem.getTimestamp(), otherOrderItem.getProduct(), otherOrderItem.getQuantity(), otherOrderItem.getNotes(), otherOrderItem.isDistributed());
+            } else {
+                serverOrderItem.setProduct(otherOrderItem.getProduct());
+                serverOrderItem.setQuantity(otherOrderItem.getQuantity());
+                serverOrderItem.setDistributed(otherOrderItem.isDistributed());
+                serverOrderItem.setNotes(otherOrderItem.getNotes());
+            }
+        }
+
+        /**
+         * Check for items that is in the tablet but not in the server
+         * those items should be deleted
+         * */
+        for(Integer index : orderItems.keySet()){
+            OrderItem tabletOrderItems = orderItems.get(index);
+            if (!tabletOrderItems.getWaiterName().equals(tabletWaitressName)){
+                OrderItem serverOrderItems = order.getOrderItem(tabletOrderItems);
+
+                if(serverOrderItems == null){ // this item is deleted
+                    orderItems.remove(index);
+                }
+            }
+        }
     }
 
     public void distributeItems(){
@@ -100,5 +181,29 @@ public class Order implements Serializable {
                 "startedAt = " + Utils.dateToString(this.startedAt) + "\n\t" +
                 "orderItems = " + orderItems + "\n" +
                 '}';
+    }
+
+    public JSONObject toJSON(){
+        try{
+            JSONObject res = new JSONObject();
+            res.put("itemsCounter", itemsCounter.get());
+            res.put("startedAt", startedAt.toString());
+            res.put("startedBy", startedBy);
+            res.put("distributed", distributed);
+            res.put("distributeVersion", distributeVersion != null ? distributeVersion.toJSON() : null);
+
+            JSONObject orderItemsObject = new JSONObject();
+            JSONArray indexes = new JSONArray();
+            for (Integer index : orderItems.keySet()){
+                indexes.put(index.toString());
+                orderItemsObject.put(String.valueOf(index), orderItems.get(index).toJSON());
+            }
+                orderItemsObject.put("indexes", indexes);
+            res.put("orderItems", orderItemsObject);
+            return res;
+        }catch (Exception e){
+            e.printStackTrace();
+            return null;
+        }
     }
 }

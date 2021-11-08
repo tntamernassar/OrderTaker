@@ -44,4 +44,7 @@ public class Constants {
 
     public static String DEFAULT_IMAGE_NAME = "default.png";
 
+
+    public static int BLUETOOTH_RETRY_TIME = 3;
+
 }

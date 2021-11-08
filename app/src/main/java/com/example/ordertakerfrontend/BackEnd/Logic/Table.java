@@ -4,6 +4,9 @@ package com.example.ordertakerfrontend.BackEnd.Logic;
 
 import com.example.ordertakerfrontend.BackEnd.Services.Utils;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.io.Serializable;
 import java.util.concurrent.atomic.AtomicLong;
 
@@ -20,12 +23,38 @@ public class Table implements Serializable {
         this.number = number;
         this.isActive = false;
         this.currentOrder = null;
+        this.startedAt = "";
+        this.closedAt = "";
     }
 
-    public Table(int number,int version){
-        this.number = number;
-        this.isActive = false;
-        this.currentOrder = null;
+
+    public Table(JSONObject table) throws JSONException {
+
+        int number = (int) table.get("number");
+        boolean isActive = (boolean) table.get("isActive");
+        String startedAt = (String) table.get("startedAt");
+        String closedAt = (String) table.get("closedAt");
+        Order currentOrder = null;
+        if (table.get("currentOrder") != null) {
+            currentOrder = new Order((JSONObject) table.get("currentOrder"));
+        }
+        this.number = (int) number;
+        this.isActive = isActive;
+        this.startedAt = startedAt;
+        this.closedAt = closedAt;
+        this.currentOrder = currentOrder;
+    }
+
+    public void setTable(Table table){
+        this.number = table.getNumber();
+        this.isActive = table.isActive();
+        this.startedAt = table.getStartedAt();
+        this.closedAt = table.getClosedAt();
+        this.currentOrder = table.getCurrentOrder();
+    }
+
+    public void mergeTable(Table table, String tabletWaitressName){
+        currentOrder.mergerOrder(table.getCurrentOrder(), tabletWaitressName);
     }
 
     public int getNumber() {
@@ -46,6 +75,10 @@ public class Table implements Serializable {
 
     public String getStartedAt() {
         return startedAt;
+    }
+
+    public void setStartedAt(String startedAt) {
+        this.startedAt = startedAt;
     }
 
     public String getClosedAt() {
@@ -92,5 +125,20 @@ public class Table implements Serializable {
                 "isActive=" + isActive + ",\n\t" +
                 "currentOrder=" + currentOrder + "\n" +
                 "}";
+    }
+
+    public JSONObject toJSON(){
+        try {
+            JSONObject res = new JSONObject();
+            res.put("number", number);
+            res.put("isActive", isActive);
+            res.put("currentOrder", currentOrder != null ? currentOrder.toJSON() : null);
+            res.put("startedAt", startedAt);
+            res.put("closedAt", closedAt);
+            return res;
+        }catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
     }
 }

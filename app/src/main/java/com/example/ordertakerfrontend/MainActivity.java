@@ -4,18 +4,25 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
 
 import android.app.Activity;
+import android.bluetooth.BluetoothAdapter;
+import android.bluetooth.BluetoothDevice;
 import android.content.Intent;
 import android.content.res.Resources;
 import android.os.Bundle;
 import android.util.Log;
 import android.widget.Button;
 
+import com.dantsu.escposprinter.EscPosPrinter;
+import com.dantsu.escposprinter.connection.bluetooth.BluetoothConnection;
+import com.dantsu.escposprinter.connection.bluetooth.BluetoothPrintersConnections;
+import com.dantsu.escposprinter.textparser.PrinterTextParserImg;
 import com.example.ordertakerfrontend.BackEnd.Logic.OrderHistory;
 import com.example.ordertakerfrontend.BackEnd.Logic.Restaurant;
 import com.example.ordertakerfrontend.BackEnd.Logic.Table;
 import com.example.ordertakerfrontend.BackEnd.Logic.Waitress;
 import com.example.ordertakerfrontend.BackEnd.Services.Constants;
 import com.example.ordertakerfrontend.BackEnd.Services.FileManager;
+import com.example.ordertakerfrontend.BackEnd.Services.OrderDistribution.BluetoothPrinter;
 import com.example.ordertakerfrontend.BackEnd.Services.Utils;
 import com.example.ordertakerfrontend.FrontEnd.Menus.DiskMenu;
 import com.example.ordertakerfrontend.FrontEnd.Popups.YesNoCallbacks;
@@ -25,6 +32,7 @@ import com.example.ordertakerfrontend.Network.NetworkMessages.In.ServerImage;
 import com.example.ordertakerfrontend.Network.NetworkMessages.In.Tables.CancelTableNotification;
 import com.example.ordertakerfrontend.Network.NetworkMessages.In.Tables.CloseTableNotification;
 import com.example.ordertakerfrontend.Network.NetworkMessages.In.Tables.OpenTableNotification;
+import com.example.ordertakerfrontend.Network.NetworkMessages.In.Tables.SubmitTableNotification;
 import com.example.ordertakerfrontend.Network.NetworkMessages.In.initResponse;
 import com.example.ordertakerfrontend.Network.NetworkMessages.Out.Tables.OpenTable;
 import com.example.ordertakerfrontend.Network.NetworkMessages.Out.initRequest;
@@ -33,6 +41,7 @@ import com.example.ordertakerfrontend.Network.NetworkMessages.tools.NetworkMessa
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 
+import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.Objects;
 
@@ -61,6 +70,46 @@ public class MainActivity extends AppCompatActivity implements MessageObserver {
             }
         }
     }
+    public static void printTest(){
+        try {
+            BluetoothAdapter btAdapter = BluetoothAdapter.getDefaultAdapter();
+
+            Iterator<BluetoothDevice> iterator = btAdapter.getBondedDevices().iterator();
+
+            BluetoothDevice mBtDevice = iterator.next();
+            while (iterator.hasNext()) {
+                mBtDevice = iterator.next();
+                if (mBtDevice.getName().equals("MTP-II")){
+                    break;
+                }
+            }
+
+            final BluetoothPrinter mPrinter = new BluetoothPrinter(mBtDevice);
+            mPrinter.connectPrinter(new BluetoothPrinter.PrinterConnectListener() {
+
+                @Override
+                public void onConnected() {
+                    System.out.println(">>>>>>>>>>>>> connected to MTP-II");
+
+                    mPrinter.setAlign(BluetoothPrinter.ALIGN_CENTER);
+                    boolean success = mPrinter.printText("Hello World!");
+                    mPrinter.addNewLine();
+                    mPrinter.addNewLine();
+
+//                    mPrinter.finish();
+                }
+
+                @Override
+                public void onFailed() {
+                    Log.d("BluetoothPrinter >>>>", "Conection failed Retrying !");
+                    printTest();
+                }
+
+            });
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -68,7 +117,7 @@ public class MainActivity extends AppCompatActivity implements MessageObserver {
         setContentView(R.layout.activity_main);
         getSupportActionBar().hide();
 
-
+        printTest();
         if(Constants.WAITRESS == null) {
             this.waitress = initSystem();
         } else {
@@ -241,6 +290,11 @@ public class MainActivity extends AppCompatActivity implements MessageObserver {
         Button table_btn = findViewById(table_id);
         table_btn.setBackground(ContextCompat.getDrawable(getApplicationContext(), R.drawable.available_table));
         table_btn.setTextColor(this.getResources().getColor(R.color.gold2));
+    }
+
+    @Override
+    public void accept(SubmitTableNotification message) {
+
     }
 
     @Override

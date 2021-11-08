@@ -6,6 +6,7 @@ import com.example.ordertakerfrontend.Network.NetworkMessages.In.ServerImage;
 import com.example.ordertakerfrontend.Network.NetworkMessages.In.Tables.CancelTableNotification;
 import com.example.ordertakerfrontend.Network.NetworkMessages.In.Tables.CloseTableNotification;
 import com.example.ordertakerfrontend.Network.NetworkMessages.In.Tables.OpenTableNotification;
+import com.example.ordertakerfrontend.Network.NetworkMessages.In.Tables.SubmitTableNotification;
 import com.example.ordertakerfrontend.Network.NetworkMessages.In.initResponse;
 
 import org.json.JSONArray;
@@ -44,6 +45,9 @@ public class NetworkMessageDecoder {
         }else if(type.equals("CancelTableNotification")){
             int table = (int)JSONMessage.get("table");
             return new CancelTableNotification(table);
+        }else if(type.equals("SubmitTableNotification")){
+            JSONObject table = (JSONObject) JSONMessage.get("table");
+            return new SubmitTableNotification(table);
         }
 
         return null;

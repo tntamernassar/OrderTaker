@@ -5,11 +5,15 @@ import com.example.ordertakerfrontend.BackEnd.Services.Utils;
 
 public class OrderDistributor {
 
+
+
     public static void distribute(OrderDistributionRequest orderDistributionRequest){
         System.out.println("************************KITCHEN************************");
         System.out.println("Table : " + orderDistributionRequest.getTableNumber());
         System.out.println(Utils.MapToString(orderDistributionRequest.getOrder().getOrderItems()));
         System.out.println("************************KITCHEN************************\n\n\n");
+
+        int table = orderDistributionRequest.getTableNumber();
 
         Utils.writeToLog("Sent an order distribution to the kitchen for table " + orderDistributionRequest.getTableNumber() );
 

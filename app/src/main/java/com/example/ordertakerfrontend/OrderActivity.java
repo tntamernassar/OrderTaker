@@ -36,9 +36,11 @@ import com.example.ordertakerfrontend.Network.NetworkMessages.In.ServerImage;
 import com.example.ordertakerfrontend.Network.NetworkMessages.In.Tables.CancelTableNotification;
 import com.example.ordertakerfrontend.Network.NetworkMessages.In.Tables.CloseTableNotification;
 import com.example.ordertakerfrontend.Network.NetworkMessages.In.Tables.OpenTableNotification;
+import com.example.ordertakerfrontend.Network.NetworkMessages.In.Tables.SubmitTableNotification;
 import com.example.ordertakerfrontend.Network.NetworkMessages.In.initResponse;
 import com.example.ordertakerfrontend.Network.NetworkMessages.Out.Tables.CancelTable;
 import com.example.ordertakerfrontend.Network.NetworkMessages.Out.Tables.CloseTable;
+import com.example.ordertakerfrontend.Network.NetworkMessages.Out.Tables.SubmitTable;
 import com.example.ordertakerfrontend.Network.NetworkMessages.tools.MessageObserver;
 import com.example.ordertakerfrontend.Network.NetworkMessages.tools.NetworkMessage;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
@@ -120,6 +122,7 @@ public class OrderActivity extends AppCompatActivity implements OnePageOrderActi
                     @Override
                     public void yes() {
                         Constants.WAITRESS.submitOrder(tableId);
+                        NetworkAdapter.getInstance().send(new SubmitTable(Constants.WAITRESS.getRestaurant().getTable(tableId)));
                     }
 
                     @Override
@@ -345,6 +348,12 @@ public class OrderActivity extends AppCompatActivity implements OnePageOrderActi
     @Override
     public void accept(CancelTableNotification message) {
 
+    }
+
+    @Override
+    public void accept(SubmitTableNotification message) {
+        System.out.println("Updating Order List !");
+        createOrdersList();
     }
 
 

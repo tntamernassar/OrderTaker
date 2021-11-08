@@ -32,6 +32,28 @@ public class MenuProduct implements Product, Serializable {
 
     }
 
+    public MenuProduct(JSONObject menuProduct) throws JSONException {
+        String category = (String) menuProduct.get("category");
+        String name = (String) menuProduct.get("name");
+        String description = (String) menuProduct.get("description");
+        JSONArray images = (JSONArray) menuProduct.get("images");
+        JSONArray sections = (JSONArray) menuProduct.get("sections");
+
+        this.images = new String[images.length()];
+        for (int i = 0; i < images.length(); i++) {
+            this.images[i] = (String) images.get(i);
+        }
+
+        this.sections = new LinkedList<>();
+        for (int i = 0; i < sections.length(); i++) {
+            this.sections.add(new MenuSection((JSONObject) sections.get(i)));
+        }
+
+        this.category = category;
+        this.name = name;
+        this.description = description;
+    }
+
     public double getPrice() {
         return price;
     }

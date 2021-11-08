@@ -20,8 +20,27 @@ public class MenuSection implements Serializable {
         this.addons = addons;
         this.maxOne = maxOne;
     }
-    //this is just a test for writing some text on tis stand
-    //
+
+    public MenuSection(JSONObject menuSection){
+        try {
+            String section = (String) menuSection.get("section");
+            boolean maxOne = (boolean) menuSection.get("maxOne");
+            JSONArray addons = (JSONArray) menuSection.get("addons");
+
+            this.addons = new String[addons.length()];
+            for (int i = 0; i < addons.length(); i++) {
+                this.addons[i] = (String) addons.get(i);
+            }
+
+            this.section = section;
+            this.maxOne = maxOne;
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+
+    }
+
+
     public void setAddons(String[] addons) {
         this.addons = addons;
     }

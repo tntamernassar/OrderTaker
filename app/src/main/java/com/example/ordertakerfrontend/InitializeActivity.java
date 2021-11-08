@@ -28,6 +28,7 @@ import com.example.ordertakerfrontend.Network.NetworkMessages.In.ServerImage;
 import com.example.ordertakerfrontend.Network.NetworkMessages.In.Tables.CancelTableNotification;
 import com.example.ordertakerfrontend.Network.NetworkMessages.In.Tables.CloseTableNotification;
 import com.example.ordertakerfrontend.Network.NetworkMessages.In.Tables.OpenTableNotification;
+import com.example.ordertakerfrontend.Network.NetworkMessages.In.Tables.SubmitTableNotification;
 import com.example.ordertakerfrontend.Network.NetworkMessages.In.initResponse;
 import com.example.ordertakerfrontend.Network.NetworkMessages.Out.initRequest;
 import com.example.ordertakerfrontend.Network.NetworkMessages.tools.MessageObserver;
@@ -211,8 +212,6 @@ public class InitializeActivity extends AppCompatActivity implements MessageObse
 
     @Override
     public synchronized void accept(initResponse message) {
-        Toast.makeText(getApplicationContext(), "INIT", Toast.LENGTH_LONG).show();
-
         try {
             JSONArray serverImages = message.getServerImages();
             String[] tabletImages = ImagesManager.listImages();
@@ -264,6 +263,11 @@ public class InitializeActivity extends AppCompatActivity implements MessageObse
 
     @Override
     public void accept(CancelTableNotification message) {
+
+    }
+
+    @Override
+    public void accept(SubmitTableNotification message) {
 
     }
 
