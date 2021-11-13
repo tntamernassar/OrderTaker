@@ -59,7 +59,7 @@ public class Waitress {
             this.restaurant.getTable(table).startOrder(getName());
         }
         Utils.writeToLog("Table " + table + " Ordered Item : name : " + product.toString() + " quantity : " + quantity + " notes : " + notes);
-        return this.restaurant.getTable(table).getCurrentOrder().addItem(this.getName(), product, quantity, notes);
+        return this.restaurant.getTable(table).getCurrentOrder().addItem(this.getName(), product, quantity, notes, false);
     }
 
 
@@ -145,12 +145,6 @@ public class Waitress {
     public Order closeOrder(int table){
         Table theTable = restaurant.getTable(table);
         if(theTable.isActive()){
-            if(theTable.getCurrentOrder().getOrderItems().size() > 0){
-                boolean added = this.restaurant.getOrderHistory().addToHistory(table, theTable.getCurrentOrder());
-                if(added) {
-                    this.restaurant.getOrderHistory().write();
-                }
-            }
             Order closedOrder = theTable.closeOrder();
             Utils.writeToLog("Table " + table + " Closed the order");
             return closedOrder;

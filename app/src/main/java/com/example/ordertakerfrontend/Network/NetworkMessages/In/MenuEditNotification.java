@@ -29,12 +29,12 @@ public class MenuEditNotification extends NetworkMessage {
 
 
     @Override
-    public void visit(Waitress Waitress) {
+    public void visit(Waitress waitress) {
         System.out.println("New Images : " + newImages.toString());
         System.out.println("Should delete Images : " + shouldDelete.toString());
 
         /** Save menu **/
-        initResponse initResponse = new initResponse(this.menu, null);
+        initResponse initResponse = new initResponse(this.menu, null, null);
         LinkedList<MenuProduct> serverMenuProducts = initResponse.getMenuProducts();
         Menu.getInstance().setMenuProductList(serverMenuProducts);
         DiskMenu diskMenu = new DiskMenu(serverMenuProducts);

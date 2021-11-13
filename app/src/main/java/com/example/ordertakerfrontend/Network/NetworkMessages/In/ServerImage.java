@@ -45,7 +45,7 @@ public class ServerImage extends NetworkMessage {
 
     @RequiresApi(api = Build.VERSION_CODES.O)
     @Override
-    public void visit(Waitress Waitress) {
+    public void visit(Waitress waitress) {
         ImagesManager.addChunk(name, base64, (int)chunks, (int)chunkNumber);
         if(chunkNumber == chunks){
             String fullImageBase64 = ImagesManager.collectImage(name);

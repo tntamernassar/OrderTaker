@@ -84,6 +84,7 @@ public class Orders extends ArrayAdapter<OrderItem> {
                 public void yes() {
                     Constants.WAITRESS.removeItem(tableId, orderItem.getIndex());
                     orderActivity.createOrdersList();
+                    orderActivity.updateOrderPrice();
                 }
 
                 @Override
@@ -101,6 +102,7 @@ public class Orders extends ArrayAdapter<OrderItem> {
                 Constants.WAITRESS.editOrder(tableId, orderItem.getIndex(), newOrderProduct, newQuantity, newNotes);
                 alertDialog.cancel();
                 orderActivity.createOrdersList();
+                orderActivity.updateOrderPrice();
             });
         });
 

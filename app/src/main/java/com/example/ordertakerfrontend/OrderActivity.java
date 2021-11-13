@@ -11,6 +11,7 @@ import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ListView;
@@ -91,11 +92,12 @@ public class OrderActivity extends AppCompatActivity implements OnePageOrderActi
         });
 
         createOrdersList();
+        updateOrderPrice();
 
         String selected = categories.getTabAt(categories.getSelectedTabPosition()).getText().toString();
         createMenuList(selected);
 
-        FloatingActionButton cancel = findViewById(R.id.cancel);
+        Button cancel = findViewById(R.id.cancel);
         cancel.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -131,7 +133,7 @@ public class OrderActivity extends AppCompatActivity implements OnePageOrderActi
             }
         });
 
-        FloatingActionButton close = findViewById(R.id.close);
+        Button close = findViewById(R.id.close);
         close.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -159,23 +161,17 @@ public class OrderActivity extends AppCompatActivity implements OnePageOrderActi
         NetworkAdapter.getInstance().unregister(id);
     }
 
-    private void createMenuList(String category) {
-        ListView listView = findViewById(R.id.menu_holder);
-
-        Menu menu = Menu.getInstance().getSubMenu(category);
-        listView.setAdapter(menu);
-
-        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                MenuProduct menuProduct = menu.getMenuProductList().get(i);
-                makeItemPopUp(menuProduct, view, (AlertDialog alertDialog, OrderProduct orderProduct, int quantity, String notes)->{
-                    Constants.WAITRESS.orderItem(tableId, orderProduct, quantity, notes);
-                    alertDialog.cancel();
-                    createOrdersList();
-                });
+    @Override
+    public void updateOrderPrice(){
+        double price = 0;
+        for (OrderItem orderItem : Constants.WAITRESS.getRestaurant().getTable(tableId).getCurrentOrder().getOrderItems().values()) {
+            if( !orderItem.isDeleted() ) {
+                double orderItemPrice = orderItem.getQuantity() * ((OrderProduct) orderItem.getProduct()).getMenuProduct().getPrice();
+                price += orderItemPrice;
             }
-        });
+        }
+        TextView total_price = findViewById(R.id.total_price);
+        total_price.setText(price + "₪");
     }
 
     public int increaseDecreaseQuantity(View view, char ch) {
@@ -201,22 +197,41 @@ public class OrderActivity extends AppCompatActivity implements OnePageOrderActi
         }
     }
 
+
+    private void createMenuList(String category) {
+        ListView listView = findViewById(R.id.menu_holder);
+
+        Menu menu = Menu.getInstance().getSubMenu(category);
+        listView.setAdapter(menu);
+
+        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                MenuProduct menuProduct = menu.getMenuProductList().get(i);
+                makeItemPopUp(menuProduct, view, (AlertDialog alertDialog, OrderProduct orderProduct, int quantity, String notes)->{
+                    Constants.WAITRESS.orderItem(tableId, orderProduct, quantity, notes);
+                    alertDialog.cancel();
+                    createOrdersList();
+                    updateOrderPrice();
+                });
+            }
+        });
+    }
+
     @Override
     public void createOrdersList() {
         ListView parentList = findViewById(R.id.order_holder);
         List<OrderItem> orderItems = new LinkedList<>();
         for (OrderItem o : Constants.WAITRESS.getRestaurant().getTable(tableId).getCurrentOrder().getOrderItems().values()) {
-            orderItems.add(o);
+            if(!o.isDeleted()) {
+                orderItems.add(o);
+            }
         }
 
         Orders orders = new Orders(this, tableId,OrderActivity.this, orderItems);
         parentList.setAdapter(orders);
     }
 
-    @Override
-    public void makeItemPopUp(MenuProduct menuProduct, View view, ItemSubmitCallback submitCallback) {
-        makeItemPopUp(new OrderProduct(menuProduct), view, 1, "", submitCallback);
-    }
 
     @Override
     public void makeItemPopUp(OrderProduct orderProduct, View view, int previousQuantity, String previousNote, ItemSubmitCallback submitCallback) {
@@ -320,6 +335,12 @@ public class OrderActivity extends AppCompatActivity implements OnePageOrderActi
     }
 
     @Override
+    public void makeItemPopUp(MenuProduct menuProduct, View view, ItemSubmitCallback submitCallback) {
+        makeItemPopUp(new OrderProduct(menuProduct), view, 1, "", submitCallback);
+    }
+
+
+    @Override
     public void accept(NetworkMessage message) { }
 
     @Override
@@ -343,18 +364,25 @@ public class OrderActivity extends AppCompatActivity implements OnePageOrderActi
     public void accept(OpenTableNotification message) { }
 
     @Override
-    public void accept(CloseTableNotification message) { }
+    public void accept(CloseTableNotification message) {
+        if (message.getTable() == tableId){
+            Intent mainActivity = new Intent(this, MainActivity.class);
+            startActivity(mainActivity);
+        }
+    }
 
     @Override
     public void accept(CancelTableNotification message) {
-
+        if (message.getTable() == tableId){
+            Intent mainActivity = new Intent(this, MainActivity.class);
+            startActivity(mainActivity);
+        }
     }
 
     @Override
     public void accept(SubmitTableNotification message) {
-        System.out.println("Updating Order List !");
         createOrdersList();
+        updateOrderPrice();
     }
-
 
 }

@@ -20,6 +20,7 @@ import com.example.ordertakerfrontend.BackEnd.Logic.Waitress;
 import com.example.ordertakerfrontend.BackEnd.Services.Constants;
 import com.example.ordertakerfrontend.BackEnd.Services.FileManager;
 import com.example.ordertakerfrontend.BackEnd.Services.ImagesManager;
+import com.example.ordertakerfrontend.BackEnd.Services.OrderDistribution.PrinterService;
 import com.example.ordertakerfrontend.BackEnd.Services.Utils;
 import com.example.ordertakerfrontend.FrontEnd.Menus.DiskMenu;
 import com.example.ordertakerfrontend.Network.NetworkManager.NetworkAdapter;
@@ -30,6 +31,7 @@ import com.example.ordertakerfrontend.Network.NetworkMessages.In.Tables.CloseTab
 import com.example.ordertakerfrontend.Network.NetworkMessages.In.Tables.OpenTableNotification;
 import com.example.ordertakerfrontend.Network.NetworkMessages.In.Tables.SubmitTableNotification;
 import com.example.ordertakerfrontend.Network.NetworkMessages.In.initResponse;
+import com.example.ordertakerfrontend.Network.NetworkMessages.Out.GetOrderHistory;
 import com.example.ordertakerfrontend.Network.NetworkMessages.Out.initRequest;
 import com.example.ordertakerfrontend.Network.NetworkMessages.tools.MessageObserver;
 import com.example.ordertakerfrontend.Network.NetworkMessages.tools.NetworkMessage;
@@ -46,7 +48,6 @@ public class InitializeActivity extends AppCompatActivity implements MessageObse
     private String id="initActivity";
     private int shouldDownload;
     private LinkedList<String> missingImages;
-    private boolean done = false;
 
     private TextView label;
     @Override
@@ -85,13 +86,13 @@ public class InitializeActivity extends AppCompatActivity implements MessageObse
 
     private void initNetworkAdapter(){
         final Activity thatActivity = this;
-        final MessageObserver thatMessageObserver = this;
         /** Network init **/
         NetworkAdapter.init(new NetworkAdapter() {
             @Override
             public void onConnection(NetworkAdapter adapter) {
                 adapter.receive();
                 adapter.send(new initRequest());
+                adapter.send(new GetOrderHistory());
             }
 
             @Override
@@ -109,6 +110,7 @@ public class InitializeActivity extends AppCompatActivity implements MessageObse
     private Waitress initSystem(String waitressName){
         Constants.CONTEXT = getApplicationContext();
 
+        PrinterService.getInstance().init("MTP-II");
 
         /**
          * Set up Menu
@@ -156,15 +158,6 @@ public class InitializeActivity extends AppCompatActivity implements MessageObse
         final Restaurant restaurant = lastState;
 
 
-        /**
-         * Set up Order History, check if there is cached version in memory
-         * **/
-        OrderHistory orderHistory = (OrderHistory) FileManager.readObject(Constants.ORDER_HISTORY_FILE);
-        if(orderHistory == null){
-            orderHistory = new OrderHistory();
-            FileManager.writeObject(orderHistory, Constants.ORDER_HISTORY_FILE);
-        }
-        restaurant.setOrderHistory(orderHistory);
 
         /**
          * Set up Waitress Listeners
@@ -178,7 +171,9 @@ public class InitializeActivity extends AppCompatActivity implements MessageObse
          * **/
         FileManager.mkdir("images");
 
-        /** Cache this run in log **/
+        /**
+         * Cache this run in log
+         * **/
         Utils.writeToLog(waitress.getName() + " Started OrderTaker");
 
         return waitress;

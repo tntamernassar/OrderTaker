@@ -8,6 +8,8 @@ import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 import android.content.Intent;
 import android.content.res.Resources;
+import android.graphics.Bitmap;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.util.Log;
 import android.widget.Button;
@@ -22,6 +24,7 @@ import com.example.ordertakerfrontend.BackEnd.Logic.Table;
 import com.example.ordertakerfrontend.BackEnd.Logic.Waitress;
 import com.example.ordertakerfrontend.BackEnd.Services.Constants;
 import com.example.ordertakerfrontend.BackEnd.Services.FileManager;
+import com.example.ordertakerfrontend.BackEnd.Services.ImagesManager;
 import com.example.ordertakerfrontend.BackEnd.Services.OrderDistribution.BluetoothPrinter;
 import com.example.ordertakerfrontend.BackEnd.Services.Utils;
 import com.example.ordertakerfrontend.FrontEnd.Menus.DiskMenu;
@@ -70,46 +73,7 @@ public class MainActivity extends AppCompatActivity implements MessageObserver {
             }
         }
     }
-    public static void printTest(){
-        try {
-            BluetoothAdapter btAdapter = BluetoothAdapter.getDefaultAdapter();
 
-            Iterator<BluetoothDevice> iterator = btAdapter.getBondedDevices().iterator();
-
-            BluetoothDevice mBtDevice = iterator.next();
-            while (iterator.hasNext()) {
-                mBtDevice = iterator.next();
-                if (mBtDevice.getName().equals("MTP-II")){
-                    break;
-                }
-            }
-
-            final BluetoothPrinter mPrinter = new BluetoothPrinter(mBtDevice);
-            mPrinter.connectPrinter(new BluetoothPrinter.PrinterConnectListener() {
-
-                @Override
-                public void onConnected() {
-                    System.out.println(">>>>>>>>>>>>> connected to MTP-II");
-
-                    mPrinter.setAlign(BluetoothPrinter.ALIGN_CENTER);
-                    boolean success = mPrinter.printText("Hello World!");
-                    mPrinter.addNewLine();
-                    mPrinter.addNewLine();
-
-//                    mPrinter.finish();
-                }
-
-                @Override
-                public void onFailed() {
-                    Log.d("BluetoothPrinter >>>>", "Conection failed Retrying !");
-                    printTest();
-                }
-
-            });
-        }catch (Exception e){
-            e.printStackTrace();
-        }
-    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -117,7 +81,6 @@ public class MainActivity extends AppCompatActivity implements MessageObserver {
         setContentView(R.layout.activity_main);
         getSupportActionBar().hide();
 
-        printTest();
         if(Constants.WAITRESS == null) {
             this.waitress = initSystem();
         } else {
@@ -199,17 +162,6 @@ public class MainActivity extends AppCompatActivity implements MessageObserver {
         }
 
         final Restaurant restaurant = lastState;
-
-
-        /**
-         * Set up Order History, check if there is cached version in memory
-         * **/
-        OrderHistory orderHistory = (OrderHistory) FileManager.readObject(Constants.ORDER_HISTORY_FILE);
-        if(orderHistory == null){
-            orderHistory = new OrderHistory();
-            FileManager.writeObject(orderHistory, Constants.ORDER_HISTORY_FILE);
-        }
-        restaurant.setOrderHistory(orderHistory);
 
         /**
          * Set up Waitress Listeners

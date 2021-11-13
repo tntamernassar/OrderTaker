@@ -63,19 +63,16 @@ public class PrinterService {
 
     private BluetoothDevice findDevice(String deviceName){
         BluetoothAdapter btAdapter = BluetoothAdapter.getDefaultAdapter();
-        Iterator<BluetoothDevice> iterator = btAdapter.getBondedDevices().iterator();
-        BluetoothDevice mBtDevice = iterator.next();
-        while (iterator.hasNext()) {
-            mBtDevice = iterator.next();
-            if (mBtDevice.getName().equals(deviceName)){
-                break;
+        for (BluetoothDevice device : btAdapter.getBondedDevices()){
+            if (device.getName().equals(deviceName)){
+                return device;
             }
         }
-        return mBtDevice;
+        return null;
     }
 
 
-    private static void init(String printerName){
+    public static void init(String printerName){
         PrinterService printerService = new PrinterService("MTP-II");
         instance = printerService;
     }

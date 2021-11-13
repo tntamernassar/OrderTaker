@@ -19,7 +19,7 @@ public class CloseTableNotification extends NetworkMessage {
 
     @Override
     public void visit(Waitress waitress) {
-        waitress.openTable(table);
+        waitress.closeOrder(table);
     }
 
     @Override

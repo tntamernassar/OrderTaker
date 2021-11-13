@@ -29,7 +29,7 @@
         <entry key="app/src/main/res/layout/activity_initialize.xml" value="0.18" />
         <entry key="app/src/main/res/layout/activity_main.xml" value="0.25" />
         <entry key="app/src/main/res/layout/activity_menu_edit.xml" value="0.22" />
-        <entry key="app/src/main/res/layout/activity_order.xml" value="0.67" />
+        <entry key="app/src/main/res/layout/activity_order.xml" value="0.25" />
         <entry key="app/src/main/res/layout/activity_scrolling.xml" value="0.1" />
         <entry key="app/src/main/res/layout/content_scrolling.xml" value="0.25" />
         <entry key="app/src/main/res/layout/editable_section_addons.xml" value="0.22" />

@@ -2,6 +2,7 @@ package com.example.ordertakerfrontend.Network.NetworkMessages.tools;
 
 
 import com.example.ordertakerfrontend.Network.NetworkMessages.In.MenuEditNotification;
+import com.example.ordertakerfrontend.Network.NetworkMessages.In.OrderHistoryContainer;
 import com.example.ordertakerfrontend.Network.NetworkMessages.In.ServerImage;
 import com.example.ordertakerfrontend.Network.NetworkMessages.In.Tables.CancelTableNotification;
 import com.example.ordertakerfrontend.Network.NetworkMessages.In.Tables.CloseTableNotification;
@@ -24,7 +25,8 @@ public class NetworkMessageDecoder {
         }else if(type.equals("initResponse")){
             JSONObject menuObject = (JSONObject) JSONMessage.get("menu");
             JSONArray serverImages = JSONMessage.getJSONArray("serverImages");
-            return new initResponse(menuObject, serverImages);
+            JSONArray tables = JSONMessage.getJSONArray("tables");
+            return new initResponse(menuObject, serverImages, tables);
         }else if(type.equals("ServerImage")){
             String name = JSONMessage.getString("name");
             String base64 = JSONMessage.getString("base64");
@@ -48,6 +50,9 @@ public class NetworkMessageDecoder {
         }else if(type.equals("SubmitTableNotification")){
             JSONObject table = (JSONObject) JSONMessage.get("table");
             return new SubmitTableNotification(table);
+        }else if(type.equals("OrderHistoryContainer")){
+            JSONArray history = (JSONArray) JSONMessage.get("history");
+            return new OrderHistoryContainer(history);
         }
 
         return null;

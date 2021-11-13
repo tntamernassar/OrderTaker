@@ -15,16 +15,12 @@ public class Table implements Serializable {
     private int number;
     private boolean isActive;
     private Order currentOrder;
-    private String startedAt;
-    private String closedAt;
 
 
     public Table(int number){
         this.number = number;
         this.isActive = false;
         this.currentOrder = null;
-        this.startedAt = "";
-        this.closedAt = "";
     }
 
 
@@ -32,24 +28,18 @@ public class Table implements Serializable {
 
         int number = (int) table.get("number");
         boolean isActive = (boolean) table.get("isActive");
-        String startedAt = (String) table.get("startedAt");
-        String closedAt = (String) table.get("closedAt");
         Order currentOrder = null;
-        if (table.get("currentOrder") != null) {
+        if (!table.isNull("currentOrder")) {
             currentOrder = new Order((JSONObject) table.get("currentOrder"));
         }
         this.number = (int) number;
         this.isActive = isActive;
-        this.startedAt = startedAt;
-        this.closedAt = closedAt;
         this.currentOrder = currentOrder;
     }
 
     public void setTable(Table table){
         this.number = table.getNumber();
         this.isActive = table.isActive();
-        this.startedAt = table.getStartedAt();
-        this.closedAt = table.getClosedAt();
         this.currentOrder = table.getCurrentOrder();
     }
 
@@ -73,17 +63,7 @@ public class Table implements Serializable {
         return currentOrder;
     }
 
-    public String getStartedAt() {
-        return startedAt;
-    }
 
-    public void setStartedAt(String startedAt) {
-        this.startedAt = startedAt;
-    }
-
-    public String getClosedAt() {
-        return closedAt;
-    }
 
     public Order startOrder(String startedBy){
         return this.startOrder(new Order(startedBy));
@@ -92,7 +72,6 @@ public class Table implements Serializable {
     public Order startOrder(Order order){
         this.isActive = true;
         this.currentOrder = order;
-        this.startedAt = Utils.getTimeStamp();
         return this.currentOrder;
     }
 
@@ -100,7 +79,6 @@ public class Table implements Serializable {
         Order o = this.currentOrder;
         this.currentOrder = null;
         this.isActive = false;
-        this.closedAt = Utils.getTimeStamp();
         return o;
     }
 
@@ -133,8 +111,6 @@ public class Table implements Serializable {
             res.put("number", number);
             res.put("isActive", isActive);
             res.put("currentOrder", currentOrder != null ? currentOrder.toJSON() : null);
-            res.put("startedAt", startedAt);
-            res.put("closedAt", closedAt);
             return res;
         }catch (Exception e) {
             e.printStackTrace();

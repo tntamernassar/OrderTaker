@@ -4,6 +4,10 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.graphics.Bitmap;
+import android.graphics.Canvas;
+import android.graphics.Color;
+import android.graphics.Paint;
+import android.graphics.Typeface;
 import android.net.wifi.WifiInfo;
 import android.net.wifi.WifiManager;
 import android.os.Build;
@@ -54,6 +58,27 @@ public class Utils {
                 Integer.parseInt(hour_minute[0]),
                 Integer.parseInt(hour_minute[1])
         );
+    }
+
+    public static Bitmap textAsBitmap(String text, float textSize) {
+        /**
+         *  see
+         *  https://snipplr.com/view/73714/android-draw-text-to-dynamically-sized-bitmap
+         *  for creating height dynamic bitmap
+         * **/
+        Paint paint = new Paint(Paint.ANTI_ALIAS_FLAG);
+        paint.setTextSize(textSize);
+        paint.setColor(Color.BLACK);
+        paint.setTextAlign(Paint.Align.RIGHT);
+        paint.setTypeface(Typeface.create(Typeface.DEFAULT, Typeface.BOLD));
+        float baseline = -paint.ascent(); // ascent() is negative
+        int width = (int) 500; // round
+        int height = (int) 70;
+        Bitmap image = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888);
+        Canvas canvas = new Canvas(image);
+        canvas.drawColor(Color.WHITE);
+        canvas.drawText(text, 370, baseline, paint);
+        return image;
     }
 
 

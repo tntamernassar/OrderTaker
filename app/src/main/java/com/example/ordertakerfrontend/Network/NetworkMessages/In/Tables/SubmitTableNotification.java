@@ -23,13 +23,10 @@ public class SubmitTableNotification extends NetworkMessage {
     @Override
     public void visit(Waitress waitress) {
         try{
-            System.out.println(table.toString());
             Table serverTable = new Table(table);
             Table tabletTable = waitress.getRestaurant().getTable(serverTable.getNumber());
             if (tabletTable.isActive()){
-                if (tabletTable.getStartedAt() == null){
-                    tabletTable.setStartedAt(serverTable.getStartedAt());
-                }
+                tabletTable.getCurrentOrder().setDistributed(serverTable.getCurrentOrder().isDistributed());
                 tabletTable.mergeTable(serverTable, waitress.getName());
             }else{
                 tabletTable.setTable(serverTable);

@@ -17,10 +17,10 @@ public class OrderItem implements Serializable {
     private String waiterName;
     private String timestamp;
     private boolean isDistributed;
-
+    private boolean deleted;
 
     /** Main Constructor **/
-    public OrderItem(int index, String waiterName, Product product, int quantity, String notes) {
+    public OrderItem(int index, String waiterName, Product product, int quantity, String notes, boolean deleted) {
         this.index = index;
         this.waiterName = waiterName;
         this.product = product;
@@ -28,11 +28,12 @@ public class OrderItem implements Serializable {
         this.notes = notes;
         this.timestamp = Utils.getTimeStamp();
         this.isDistributed = false;
+        this.deleted = deleted;
     }
 
 
     /** Copy Constructor **/
-    public OrderItem(int index, String timestamp, String waiterName, Product product, int quantity, String notes, boolean isDistributed) {
+    public OrderItem(int index, String timestamp, String waiterName, Product product, int quantity, String notes, boolean isDistributed, boolean deleted) {
         this.index = index;
         this.product = product;
         this.quantity = quantity;
@@ -40,6 +41,7 @@ public class OrderItem implements Serializable {
         this.waiterName = waiterName;
         this.timestamp = timestamp;
         this.isDistributed = isDistributed;
+        this.deleted = deleted;
     }
 
     public OrderItem(JSONObject orderItem, Product product) throws JSONException {
@@ -50,6 +52,7 @@ public class OrderItem implements Serializable {
         String waiterName = (String) orderItem.get("waiterName");
         String timestamp = (String) orderItem.get("timestamp");
         boolean isDistributed = (boolean) orderItem.get("isDistributed");
+        boolean isDeleted = (boolean) orderItem.get("deleted");
 
         this.index = (int) index;
         this.product = product;
@@ -58,6 +61,7 @@ public class OrderItem implements Serializable {
         this.waiterName = waiterName;
         this.timestamp = timestamp;
         this.isDistributed = isDistributed;
+        this.deleted = isDeleted;
 
     }
 
@@ -71,6 +75,14 @@ public class OrderItem implements Serializable {
 
     public void setDistributed(boolean distributed) {
         isDistributed = distributed;
+    }
+
+    public boolean isDeleted() {
+        return deleted;
+    }
+
+    public void setDeleted(boolean deleted) {
+        this.deleted = deleted;
     }
 
     public String getWaiterName() {
@@ -135,6 +147,7 @@ public class OrderItem implements Serializable {
             res.put("waiterName", waiterName);
             res.put("timestamp", timestamp);
             res.put("isDistributed", isDistributed);
+            res.put("deleted", deleted);
             return res;
         }catch (Exception e){
             e.printStackTrace();

@@ -10,7 +10,6 @@ public class Restaurant implements Serializable {
 
     public Restaurant(){
         this.tables = new HashMap<>();
-        this.orderHistory = new OrderHistory();
     }
 
     public int[] getTables() {

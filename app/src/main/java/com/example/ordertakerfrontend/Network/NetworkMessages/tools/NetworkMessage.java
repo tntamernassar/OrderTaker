@@ -10,7 +10,7 @@ import java.io.Serializable;
 public abstract class NetworkMessage implements Serializable {
 
 
-    public abstract void visit(Waitress Waitress);
+    public abstract void visit(Waitress waitress);
 
     public JSONObject encode() {
         return null;

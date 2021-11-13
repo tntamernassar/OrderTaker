@@ -1,9 +1,6 @@
 package com.example.ordertakerfrontend.BackEnd.Logic;
 
 
-import android.os.Build;
-
-import androidx.annotation.RequiresApi;
 
 import com.example.ordertakerfrontend.BackEnd.Services.Utils;
 import com.example.ordertakerfrontend.FrontEnd.Menus.OrderProduct;
@@ -15,7 +12,6 @@ import org.json.JSONObject;
 import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.HashMap;
-import java.util.LinkedList;
 import java.util.concurrent.atomic.AtomicInteger;
 
 public class Order implements Serializable {
@@ -38,7 +34,6 @@ public class Order implements Serializable {
     }
 
     public Order(JSONObject order) throws JSONException {
-
         this.orderItems = new HashMap<>();
         int itemsCounter = (int) order.get("itemsCounter");
         String startedAt = (String) order.get("startedAt");
@@ -83,12 +78,13 @@ public class Order implements Serializable {
             OrderItem serverOrderItem = getOrderItem(otherOrderItem);
 
             if (serverOrderItem == null){ // new order item
-                this.addItem(otherOrderItem.getWaiterName(), otherOrderItem.getTimestamp(), otherOrderItem.getProduct(), otherOrderItem.getQuantity(), otherOrderItem.getNotes(), otherOrderItem.isDistributed());
+                this.addItem(otherOrderItem.getWaiterName(), otherOrderItem.getTimestamp(), otherOrderItem.getProduct(), otherOrderItem.getQuantity(), otherOrderItem.getNotes(), otherOrderItem.isDistributed(), otherOrderItem.isDeleted());
             } else {
                 serverOrderItem.setProduct(otherOrderItem.getProduct());
                 serverOrderItem.setQuantity(otherOrderItem.getQuantity());
                 serverOrderItem.setDistributed(otherOrderItem.isDistributed());
                 serverOrderItem.setNotes(otherOrderItem.getNotes());
+                serverOrderItem.setDeleted(otherOrderItem.isDeleted());
             }
         }
 
@@ -142,20 +138,20 @@ public class Order implements Serializable {
         return orderItems;
     }
 
-    public int addItem(String waiterName, Product product, int quantity, String notes){
+    public int addItem(String waiterName, Product product, int quantity, String notes, boolean deleted){
         int newItemIndex = itemsCounter.incrementAndGet();
-        this.orderItems.put(newItemIndex, new OrderItem(newItemIndex, waiterName, product, quantity, notes));
+        this.orderItems.put(newItemIndex, new OrderItem(newItemIndex, waiterName, product, quantity, notes, deleted));
         return newItemIndex;
     }
 
-    public int addItem(String waiterName, String timestamp, Product product, int quantity, String notes, boolean distributed){
+    public int addItem(String waiterName, String timestamp, Product product, int quantity, String notes, boolean distributed, boolean deleted){
         int newItemIndex = itemsCounter.incrementAndGet();
-        this.orderItems.put(newItemIndex, new OrderItem(newItemIndex, timestamp, waiterName, product, quantity, notes, distributed));
+        this.orderItems.put(newItemIndex, new OrderItem(newItemIndex, timestamp, waiterName, product, quantity, notes, distributed, deleted));
         return newItemIndex;
     }
 
     public void removeItem(int itemIndex){
-        this.orderItems.remove(itemIndex);
+        this.orderItems.get(itemIndex).setDeleted(true);
     }
 
     public void editOrder(int itemIndex, Product newProduct, int newQuantity, String newNotes){
@@ -170,7 +166,7 @@ public class Order implements Serializable {
         Order o = new Order(getStartedBy());
         for(Integer oi: this.orderItems.keySet()){
             OrderItem orderItem = this.orderItems.get(oi);
-            o.orderItems.put(oi, new OrderItem(orderItem.getIndex(), orderItem.getTimestamp(), orderItem.getWaiterName(), orderItem.getProduct(), orderItem.getQuantity(), orderItem.getNotes(), orderItem.isDistributed()));
+            o.orderItems.put(oi, new OrderItem(orderItem.getIndex(), orderItem.getTimestamp(), orderItem.getWaiterName(), orderItem.getProduct(), orderItem.getQuantity(), orderItem.getNotes(), orderItem.isDistributed(), orderItem.isDeleted()));
         }
         return o;
     }
@@ -198,7 +194,7 @@ public class Order implements Serializable {
                 indexes.put(index.toString());
                 orderItemsObject.put(String.valueOf(index), orderItems.get(index).toJSON());
             }
-                orderItemsObject.put("indexes", indexes);
+            orderItemsObject.put("indexes", indexes);
             res.put("orderItems", orderItemsObject);
             return res;
         }catch (Exception e){

@@ -36,7 +36,7 @@ public class TabletImage extends NetworkMessage {
     }
 
     @Override
-    public void visit(Waitress Waitress) {
+    public void visit(Waitress waitress) {
 
     }
 }

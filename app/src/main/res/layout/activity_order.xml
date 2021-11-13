@@ -36,28 +36,32 @@
             android:layout_height="wrap_content"
             android:orientation="horizontal">
 
-
-            <com.google.android.material.floatingactionbutton.FloatingActionButton
+            <Button
                 android:id="@+id/close"
-                android:layout_width="wrap_content"
+                android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
+                android:padding="16dp"
+                android:text="انهاء الطلبيه"
                 android:layout_marginLeft="20dp"
-                android:layout_marginTop="20dp"
-                android:contentDescription="Submit Order"
-                app:backgroundTint="@color/gold"
-                app:srcCompat="@android:drawable/ic_lock_lock"
-                app:tint="@color/white" />
+                android:layout_marginTop="10dp"
+                android:backgroundTint="@color/gold"
+                android:drawableTint="@color/white"
+                android:drawableLeft="@android:drawable/ic_lock_lock"
+                android:textSize="20dp"/>
 
-            <com.google.android.material.floatingactionbutton.FloatingActionButton
+            <Button
                 android:id="@+id/cancel"
-                android:layout_width="wrap_content"
+                android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
+                android:padding="16dp"
+                android:text="الغاء الطلبيه"
                 android:layout_marginLeft="20dp"
-                android:layout_marginTop="20dp"
-                android:contentDescription="Submit Order"
-                app:backgroundTint="@color/gold"
-                app:srcCompat="@android:drawable/ic_menu_close_clear_cancel"
-                app:tint="@color/white" />
+                android:layout_marginTop="10dp"
+                android:backgroundTint="@color/gold"
+                android:drawableTint="@color/white"
+                android:drawableLeft="@drawable/ic_baseline_delete_forever_24"
+                android:textSize="20dp"/>
+
 
         </LinearLayout>
 
@@ -110,12 +114,13 @@
                 android:layout_height="60dp">
 
                 <TextView
+                    android:id="@+id/total_price"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_alignParentLeft="true"
                     android:layout_marginLeft="10dp"
                     android:layout_marginTop="15dp"
-                    android:text="₪34"
+                    android:text="₪0"
                     android:textAlignment="center"
                     android:textSize="30dp"
                     android:textStyle="bold"

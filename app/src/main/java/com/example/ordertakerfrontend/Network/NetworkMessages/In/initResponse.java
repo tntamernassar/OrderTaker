@@ -1,5 +1,6 @@
 package com.example.ordertakerfrontend.Network.NetworkMessages.In;
 
+import com.example.ordertakerfrontend.BackEnd.Logic.Table;
 import com.example.ordertakerfrontend.BackEnd.Logic.Waitress;
 import com.example.ordertakerfrontend.BackEnd.Services.ImagesManager;
 import com.example.ordertakerfrontend.FrontEnd.Menus.DiskMenu;
@@ -21,16 +22,17 @@ public class initResponse extends NetworkMessage {
 
     private JSONObject menu;
     private JSONArray serverImages;
+    private JSONArray tables;
 
-    public initResponse(JSONObject menu, JSONArray serverImages){
+    public initResponse(JSONObject menu, JSONArray serverImages, JSONArray tables){
         this.menu = menu;
         this.serverImages = serverImages;
+        this.tables = tables;
     }
 
     public JSONArray getServerImages() {
         return serverImages;
     }
-
 
     public void deleteExtraImages(){
         try{
@@ -45,7 +47,6 @@ public class initResponse extends NetworkMessage {
 
             for(String tabletImage: tabletImages){
                 if (!serverImagesList.contains(tabletImage)){
-                    System.out.println(tabletImage + " should be deleted !");
                     ImagesManager.deleteImage(tabletImage);
                 }
             }
@@ -108,6 +109,19 @@ public class initResponse extends NetworkMessage {
         }
     }
 
+    public void mergeTables(Waitress waitress){
+        try {
+            for(int i = 0 ; i < tables.length(); i++){
+                JSONObject tablesJSONObject = tables.getJSONObject(i);
+                Table serverTable = new Table(tablesJSONObject);
+                Table clientTable = waitress.getRestaurant().getTable(serverTable.getNumber());
+
+                clientTable.setTable(serverTable);
+            }
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+    }
 
     @Override
     public void visit(Waitress waitress) {
@@ -116,6 +130,7 @@ public class initResponse extends NetworkMessage {
         DiskMenu diskMenu = new DiskMenu(serverMenuProducts);
         diskMenu.execute();
         deleteExtraImages();
+        mergeTables(waitress);
     }
 
     @Override

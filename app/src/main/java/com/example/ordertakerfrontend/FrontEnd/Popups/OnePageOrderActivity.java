@@ -15,4 +15,5 @@ public interface OnePageOrderActivity {
 
     void createOrdersList();
 
+    void updateOrderPrice();
 }
