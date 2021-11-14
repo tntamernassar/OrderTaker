@@ -36,6 +36,7 @@ public class MenuProduct implements Product, Serializable {
         String category = (String) menuProduct.get("category");
         String name = (String) menuProduct.get("name");
         String description = (String) menuProduct.get("description");
+        double price = (double) menuProduct.get("price");
         JSONArray images = (JSONArray) menuProduct.get("images");
         JSONArray sections = (JSONArray) menuProduct.get("sections");
 
@@ -52,6 +53,7 @@ public class MenuProduct implements Product, Serializable {
         this.category = category;
         this.name = name;
         this.description = description;
+        this.price = price;
     }
 
     public double getPrice() {

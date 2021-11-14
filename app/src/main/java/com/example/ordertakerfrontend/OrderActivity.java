@@ -33,6 +33,7 @@ import com.example.ordertakerfrontend.FrontEnd.Popups.PopupAddons;
 import com.example.ordertakerfrontend.FrontEnd.Popups.YesNoCallbacks;
 import com.example.ordertakerfrontend.Network.NetworkManager.NetworkAdapter;
 import com.example.ordertakerfrontend.Network.NetworkMessages.In.MenuEditNotification;
+import com.example.ordertakerfrontend.Network.NetworkMessages.In.OrderHistoryContainer;
 import com.example.ordertakerfrontend.Network.NetworkMessages.In.ServerImage;
 import com.example.ordertakerfrontend.Network.NetworkMessages.In.Tables.CancelTableNotification;
 import com.example.ordertakerfrontend.Network.NetworkMessages.In.Tables.CloseTableNotification;
@@ -163,13 +164,7 @@ public class OrderActivity extends AppCompatActivity implements OnePageOrderActi
 
     @Override
     public void updateOrderPrice(){
-        double price = 0;
-        for (OrderItem orderItem : Constants.WAITRESS.getRestaurant().getTable(tableId).getCurrentOrder().getOrderItems().values()) {
-            if( !orderItem.isDeleted() ) {
-                double orderItemPrice = orderItem.getQuantity() * ((OrderProduct) orderItem.getProduct()).getMenuProduct().getPrice();
-                price += orderItemPrice;
-            }
-        }
+        double price = Constants.WAITRESS.getRestaurant().getTable(tableId).getCurrentOrder().calculatePrice();
         TextView total_price = findViewById(R.id.total_price);
         total_price.setText(price + "₪");
     }
@@ -383,6 +378,11 @@ public class OrderActivity extends AppCompatActivity implements OnePageOrderActi
     public void accept(SubmitTableNotification message) {
         createOrdersList();
         updateOrderPrice();
+    }
+
+    @Override
+    public void accept(OrderHistoryContainer message) {
+
     }
 
 }

@@ -2,7 +2,9 @@ package com.example.ordertakerfrontend.BackEnd.Logic;
 
 
 
+import com.example.ordertakerfrontend.BackEnd.Services.Constants;
 import com.example.ordertakerfrontend.BackEnd.Services.Utils;
+import com.example.ordertakerfrontend.FrontEnd.Menus.OrderProduct;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -65,8 +67,8 @@ public class Table implements Serializable {
 
 
 
-    public Order startOrder(String startedBy){
-        return this.startOrder(new Order(startedBy));
+    public Order startOrder(int table, String startedBy){
+        return this.startOrder(new Order(table, startedBy));
     }
 
     public Order startOrder(Order order){
@@ -85,6 +87,8 @@ public class Table implements Serializable {
     public boolean containsOrder(String waiterName, String timestamp){
         return getOrderItem(waiterName, timestamp) != null;
     }
+
+
 
     public OrderItem getOrderItem(String waiterName, String timestamp){
         for(Integer i : this.currentOrder.getOrderItems().keySet()){

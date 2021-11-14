@@ -10,12 +10,24 @@
 
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/order_history"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="332dp"
+        android:layout_marginTop="40dp"
+        android:contentDescription="Order History"
+        app:backgroundTint="@color/amber"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/ic_baseline_bar_chart_24" />
+
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/edit_menu"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="372dp"
+        android:layout_marginStart="408dp"
         android:layout_marginTop="40dp"
-        android:contentDescription="Edie Menu"
+        android:contentDescription="Edit Menu"
         app:backgroundTint="@color/amber"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"

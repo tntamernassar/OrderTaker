@@ -1,9 +1,83 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".OrderHistoryActivity">
+    android:orientation="vertical"
+    tools:context=".MenuEditActivity">
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="100dp"
+        android:background="@color/gold">
+
+        <TextView
+            android:layout_marginRight="20dp"
+            android:layout_marginTop="20dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="اوردار هيستوري"
+            android:textColor="@color/white"
+            android:layout_alignParentRight="true"
+            android:textSize="40dp">
+
+        </TextView>
+
+        <com.google.android.material.button.MaterialButtonToggleGroup
+            android:id="@+id/toggle"
+            app:singleSelection="true"
+            android:layout_alignParentLeft="true"
+            android:layout_width="wrap_content"
+            android:layout_marginLeft="40dp"
+            android:layout_marginTop="25dp"
+            android:layout_height="wrap_content">
+
+            <Button
+                android:id="@+id/charts"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                style="@style/ToggleButtonWithIconOnly"
+                app:icon="@drawable/ic_baseline_bar_chart_24" />
+
+            <Button
+                android:id="@+id/table"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                style="@style/ToggleButtonWithIconOnly"
+                app:icon="@drawable/ic_baseline_table_rows_24" />
+
+
+        </com.google.android.material.button.MaterialButtonToggleGroup>
+
+
+
+    </RelativeLayout>
+
+
+    <LinearLayout
+        android:id="@+id/container"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:gravity="center">
+
+
+        <ProgressBar
+            android:id="@+id/progress"
+            android:layout_height="300dp"
+            android:layout_width="300dp"
+            android:layout_marginTop="200dp"
+            android:backgroundTint="@color/gold"
+            />
+
+    </LinearLayout>
+
+
+</LinearLayout>
+
+
+
+
+

@@ -25,6 +25,7 @@ import com.example.ordertakerfrontend.BackEnd.Services.Utils;
 import com.example.ordertakerfrontend.FrontEnd.Menus.DiskMenu;
 import com.example.ordertakerfrontend.Network.NetworkManager.NetworkAdapter;
 import com.example.ordertakerfrontend.Network.NetworkMessages.In.MenuEditNotification;
+import com.example.ordertakerfrontend.Network.NetworkMessages.In.OrderHistoryContainer;
 import com.example.ordertakerfrontend.Network.NetworkMessages.In.ServerImage;
 import com.example.ordertakerfrontend.Network.NetworkMessages.In.Tables.CancelTableNotification;
 import com.example.ordertakerfrontend.Network.NetworkMessages.In.Tables.CloseTableNotification;
@@ -92,7 +93,6 @@ public class InitializeActivity extends AppCompatActivity implements MessageObse
             public void onConnection(NetworkAdapter adapter) {
                 adapter.receive();
                 adapter.send(new initRequest());
-                adapter.send(new GetOrderHistory());
             }
 
             @Override
@@ -263,6 +263,11 @@ public class InitializeActivity extends AppCompatActivity implements MessageObse
 
     @Override
     public void accept(SubmitTableNotification message) {
+
+    }
+
+    @Override
+    public void accept(OrderHistoryContainer message) {
 
     }
 

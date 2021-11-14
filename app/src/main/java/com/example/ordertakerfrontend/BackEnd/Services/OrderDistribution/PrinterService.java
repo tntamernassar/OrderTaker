@@ -73,7 +73,7 @@ public class PrinterService {
 
 
     public static void init(String printerName){
-        PrinterService printerService = new PrinterService("MTP-II");
+        PrinterService printerService = new PrinterService(printerName);
         instance = printerService;
     }
 

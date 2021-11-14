@@ -39,7 +39,7 @@ public class Waitress {
     public void openTable(int table){
         Table theTable = restaurant.getTable(table);
         if (!theTable.isActive()){
-            theTable.startOrder(getName());
+            theTable.startOrder(table, getName());
             Utils.writeToLog("Opened Table " + table);
         }else {
             Utils.writeToLog("Tried to open Table " + table + " While it Was opened");
@@ -56,7 +56,7 @@ public class Waitress {
      * **/
     public int orderItem(int table, Product product, int quantity, String notes){
         if(!this.restaurant.getTable(table).isActive()){
-            this.restaurant.getTable(table).startOrder(getName());
+            this.restaurant.getTable(table).startOrder(table, getName());
         }
         Utils.writeToLog("Table " + table + " Ordered Item : name : " + product.toString() + " quantity : " + quantity + " notes : " + notes);
         return this.restaurant.getTable(table).getCurrentOrder().addItem(this.getName(), product, quantity, notes, false);

@@ -16,6 +16,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 public class Order implements Serializable {
 
+    private int table;
     private AtomicInteger itemsCounter;
     private LocalDateTime startedAt;
     private String startedBy;
@@ -24,7 +25,8 @@ public class Order implements Serializable {
     private HashMap<Integer, OrderItem> orderItems;
 
 
-    public Order(String startedBy){
+    public Order(int table, String startedBy){
+        this.table = table;
         this.startedBy = startedBy;
         this.itemsCounter = new AtomicInteger(0);
         this.distributed = false;
@@ -35,6 +37,8 @@ public class Order implements Serializable {
 
     public Order(JSONObject order) throws JSONException {
         this.orderItems = new HashMap<>();
+
+        int table = (int) order.get("table");
         int itemsCounter = (int) order.get("itemsCounter");
         String startedAt = (String) order.get("startedAt");
         String startedBy = (String) order.get("startedBy");
@@ -53,6 +57,7 @@ public class Order implements Serializable {
             this.orderItems.put(index, orderItem);
         }
 
+        this.table = table;
         this.itemsCounter = new AtomicInteger((int) itemsCounter);
         this.startedAt = LocalDateTime.parse(startedAt);
         this.startedBy = startedBy;
@@ -110,6 +115,10 @@ public class Order implements Serializable {
         }
     }
 
+    public int getTable() {
+        return table;
+    }
+
     public boolean isDistributed() {
         return distributed;
     }
@@ -162,8 +171,19 @@ public class Order implements Serializable {
         }
     }
 
+    public double calculatePrice(){
+        double price = 0;
+        for (OrderItem orderItem : getOrderItems().values()) {
+            if( !orderItem.isDeleted() ) {
+                double orderItemPrice = orderItem.getQuantity() * ((OrderProduct) orderItem.getProduct()).getMenuProduct().getPrice();
+                price += orderItemPrice;
+            }
+        }
+        return price;
+    }
+
     public Order clone() {
-        Order o = new Order(getStartedBy());
+        Order o = new Order(table, getStartedBy());
         for(Integer oi: this.orderItems.keySet()){
             OrderItem orderItem = this.orderItems.get(oi);
             o.orderItems.put(oi, new OrderItem(orderItem.getIndex(), orderItem.getTimestamp(), orderItem.getWaiterName(), orderItem.getProduct(), orderItem.getQuantity(), orderItem.getNotes(), orderItem.isDistributed(), orderItem.isDeleted()));
@@ -182,6 +202,7 @@ public class Order implements Serializable {
     public JSONObject toJSON(){
         try{
             JSONObject res = new JSONObject();
+            res.put("table", table);
             res.put("itemsCounter", itemsCounter.get());
             res.put("startedAt", startedAt.toString());
             res.put("startedBy", startedBy);

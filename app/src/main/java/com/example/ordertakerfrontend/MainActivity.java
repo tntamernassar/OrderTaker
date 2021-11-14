@@ -3,34 +3,24 @@ package com.example.ordertakerfrontend;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
 
-import android.app.Activity;
-import android.bluetooth.BluetoothAdapter;
-import android.bluetooth.BluetoothDevice;
+
 import android.content.Intent;
 import android.content.res.Resources;
-import android.graphics.Bitmap;
-import android.graphics.Color;
 import android.os.Bundle;
-import android.util.Log;
 import android.widget.Button;
 
-import com.dantsu.escposprinter.EscPosPrinter;
-import com.dantsu.escposprinter.connection.bluetooth.BluetoothConnection;
-import com.dantsu.escposprinter.connection.bluetooth.BluetoothPrintersConnections;
-import com.dantsu.escposprinter.textparser.PrinterTextParserImg;
-import com.example.ordertakerfrontend.BackEnd.Logic.OrderHistory;
+
 import com.example.ordertakerfrontend.BackEnd.Logic.Restaurant;
 import com.example.ordertakerfrontend.BackEnd.Logic.Table;
 import com.example.ordertakerfrontend.BackEnd.Logic.Waitress;
 import com.example.ordertakerfrontend.BackEnd.Services.Constants;
 import com.example.ordertakerfrontend.BackEnd.Services.FileManager;
-import com.example.ordertakerfrontend.BackEnd.Services.ImagesManager;
-import com.example.ordertakerfrontend.BackEnd.Services.OrderDistribution.BluetoothPrinter;
 import com.example.ordertakerfrontend.BackEnd.Services.Utils;
 import com.example.ordertakerfrontend.FrontEnd.Menus.DiskMenu;
 import com.example.ordertakerfrontend.FrontEnd.Popups.YesNoCallbacks;
 import com.example.ordertakerfrontend.Network.NetworkManager.NetworkAdapter;
 import com.example.ordertakerfrontend.Network.NetworkMessages.In.MenuEditNotification;
+import com.example.ordertakerfrontend.Network.NetworkMessages.In.OrderHistoryContainer;
 import com.example.ordertakerfrontend.Network.NetworkMessages.In.ServerImage;
 import com.example.ordertakerfrontend.Network.NetworkMessages.In.Tables.CancelTableNotification;
 import com.example.ordertakerfrontend.Network.NetworkMessages.In.Tables.CloseTableNotification;
@@ -81,6 +71,7 @@ public class MainActivity extends AppCompatActivity implements MessageObserver {
         setContentView(R.layout.activity_main);
         getSupportActionBar().hide();
 
+
         if(Constants.WAITRESS == null) {
             this.waitress = initSystem();
         } else {
@@ -94,6 +85,12 @@ public class MainActivity extends AppCompatActivity implements MessageObserver {
         edit_menu.setOnClickListener(v->{
             Intent menuEditActivity = new Intent(this, MenuEditActivity.class);
             startActivity(menuEditActivity);
+        });
+
+        FloatingActionButton order_history = findViewById(R.id.order_history);
+        order_history.setOnClickListener(v->{
+            Intent orderHistoryActivity = new Intent(this, OrderHistoryActivity.class);
+            startActivity(orderHistoryActivity);
         });
 
         Resources resources = getResources();
@@ -246,6 +243,11 @@ public class MainActivity extends AppCompatActivity implements MessageObserver {
 
     @Override
     public void accept(SubmitTableNotification message) {
+
+    }
+
+    @Override
+    public void accept(OrderHistoryContainer message) {
 
     }
 

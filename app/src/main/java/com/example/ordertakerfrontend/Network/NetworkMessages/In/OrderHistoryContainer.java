@@ -3,6 +3,7 @@ package com.example.ordertakerfrontend.Network.NetworkMessages.In;
 import com.example.ordertakerfrontend.BackEnd.Logic.Order;
 import com.example.ordertakerfrontend.BackEnd.Logic.OrderHistory;
 import com.example.ordertakerfrontend.BackEnd.Logic.Waitress;
+import com.example.ordertakerfrontend.Network.NetworkMessages.tools.MessageObserver;
 import com.example.ordertakerfrontend.Network.NetworkMessages.tools.NetworkMessage;
 
 import org.json.JSONArray;
@@ -30,5 +31,10 @@ public class OrderHistoryContainer extends NetworkMessage {
         }catch (Exception e){
             e.printStackTrace();
         }
+    }
+
+    @Override
+    public void visitMessageObserver(MessageObserver messageObserver) {
+        messageObserver.accept(this);
     }
 }
