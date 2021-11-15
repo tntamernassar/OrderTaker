@@ -63,10 +63,14 @@ public class PrinterService {
 
     private BluetoothDevice findDevice(String deviceName){
         BluetoothAdapter btAdapter = BluetoothAdapter.getDefaultAdapter();
-        for (BluetoothDevice device : btAdapter.getBondedDevices()){
-            if (device.getName().equals(deviceName)){
-                return device;
+        try {
+            for (BluetoothDevice device : btAdapter.getBondedDevices()) {
+                if (device.getName().equals(deviceName)) {
+                    return device;
+                }
             }
+        }catch(Exception e){
+            return null;
         }
         return null;
     }

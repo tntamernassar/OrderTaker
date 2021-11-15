@@ -67,6 +67,7 @@ public class InitializeActivity extends AppCompatActivity implements MessageObse
         if(prefs.contains("name")){
             initSystem(prefs.getString("name", "unknown"));
             initNetworkAdapter();
+
         }else {
             Utils.AcquireInputDialog(this, "Enter Waitress Name", input -> {
                 editor.putString("name", input);
@@ -93,10 +94,13 @@ public class InitializeActivity extends AppCompatActivity implements MessageObse
             public void onConnection(NetworkAdapter adapter) {
                 adapter.receive();
                 adapter.send(new initRequest());
+                System.out.println("onConnection.************");
+
             }
 
             @Override
             public void onError(Exception e) {
+
                 NetworkAdapter.getInstance().unregister(id);
                 Intent mainActivity = new Intent(thatActivity, MainActivity.class);
                 startActivity(mainActivity);

@@ -64,6 +64,8 @@
         android:gravity="center">
 
 
+
+
         <ProgressBar
             android:id="@+id/progress"
             android:layout_height="300dp"
