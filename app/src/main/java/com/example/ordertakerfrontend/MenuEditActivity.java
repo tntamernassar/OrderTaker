@@ -14,7 +14,6 @@ import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
-import android.os.Handler;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.AdapterView;
@@ -36,13 +35,11 @@ import com.example.ordertakerfrontend.FrontEnd.Popups.AddProductCallback;
 import com.example.ordertakerfrontend.FrontEnd.Popups.YesNoCallbacks;
 import com.example.ordertakerfrontend.Network.NetworkManager.NetworkAdapter;
 import com.example.ordertakerfrontend.Network.NetworkMessages.Out.MenuEdit;
-import com.example.ordertakerfrontend.Network.NetworkMessages.Out.TabletImage;
 import com.github.dhaval2404.imagepicker.ImagePicker;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.tabs.TabLayout;
 
 import java.io.InputStream;
-import java.util.Arrays;
 import java.util.LinkedList;
 
 public class MenuEditActivity extends AppCompatActivity {
@@ -284,7 +281,7 @@ public class MenuEditActivity extends AppCompatActivity {
         TextView product_name = inflated.findViewById(R.id.product_name);
         TextView product_price = inflated.findViewById(R.id.product_price);
         TextView product_description = inflated.findViewById(R.id.product_description);
-        Bitmap bitmap = ImagesManager.Base64ToImage(productImagesArray[0]);
+        Bitmap bitmap = ImagesManager.readImage(productImagesArray[0]);
 
         header_title.setText(selectedCategory);
         product_image.setImageBitmap(bitmap);

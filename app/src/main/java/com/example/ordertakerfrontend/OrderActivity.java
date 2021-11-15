@@ -5,7 +5,6 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -16,7 +15,6 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.example.ordertakerfrontend.BackEnd.Logic.OrderItem;
 import com.example.ordertakerfrontend.BackEnd.Services.Constants;
@@ -48,10 +46,8 @@ import com.example.ordertakerfrontend.Network.NetworkMessages.tools.NetworkMessa
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.tabs.TabLayout;
 
-import java.io.File;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Objects;
 
 public class OrderActivity extends AppCompatActivity implements OnePageOrderActivity, MessageObserver {
 
@@ -246,7 +242,7 @@ public class OrderActivity extends AppCompatActivity implements OnePageOrderActi
         TextView quantity = menuPopup.findViewById(R.id.quantity);
         TextView notes = menuPopup.findViewById(R.id.notes);
 
-        Bitmap bitmap = ImagesManager.Base64ToImage(menuProduct.getImages()[0]);
+        Bitmap bitmap = ImagesManager.readImage(menuProduct.getImages()[0]);
         image.setImageBitmap(bitmap);
 
         nameTV.setText(menuProduct.getName());

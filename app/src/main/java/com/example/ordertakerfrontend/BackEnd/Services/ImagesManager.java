@@ -18,6 +18,7 @@ import java.util.concurrent.ConcurrentHashMap;
 
 public class ImagesManager {
 
+    private static ConcurrentHashMap<String, Bitmap> imagesCache = new ConcurrentHashMap<>();
     private static ConcurrentHashMap<String, ImageCollector> imageCollectorHashMap = new ConcurrentHashMap<>();
 
     public static void sendImageInChucks(String name, String base64){
@@ -73,11 +74,16 @@ public class ImagesManager {
         return encoded;
     }
 
-    public static Bitmap Base64ToImage(String name){
-        String path = FileManager.getBasePath() + "/images/" + name;
-        File imgFile = new File(path);
-        Bitmap bitmap = BitmapFactory.decodeFile(imgFile.getAbsolutePath());
-        return bitmap;
+    public static Bitmap readImage(String name){
+        if(imagesCache.containsKey(name)){
+            return imagesCache.get(name);
+        }else{
+            String path = FileManager.getBasePath() + "/images/" + name;
+            File imgFile = new File(path);
+            Bitmap bitmap = BitmapFactory.decodeFile(imgFile.getAbsolutePath());
+            imagesCache.put(name, bitmap);
+            return bitmap;
+        }
     }
 
     @RequiresApi(api = Build.VERSION_CODES.O)

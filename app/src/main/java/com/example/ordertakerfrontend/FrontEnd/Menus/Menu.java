@@ -136,7 +136,7 @@ public class Menu extends ArrayAdapter<MenuProduct> implements Serializable {
         ImageView image = row.findViewById(R.id.image);
         TextView price = row.findViewById(R.id.price);
 
-        Bitmap bitmap = ImagesManager.Base64ToImage(menuProduct.getImages()[0]);
+        Bitmap bitmap = ImagesManager.readImage(menuProduct.getImages()[0]);
         image.setImageBitmap(bitmap);
 
         nameTV.setText(menuProduct.getName());
