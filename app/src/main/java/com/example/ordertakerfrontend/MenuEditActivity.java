@@ -3,6 +3,7 @@ package com.example.ordertakerfrontend;
 import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.SwitchCompat;
 
 import android.app.Activity;
 import android.content.Context;
@@ -131,7 +132,7 @@ public class MenuEditActivity extends AppCompatActivity {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
                 MenuProduct menuProduct = subMenu.getMenuProductList().get(i);
-                setWorkingArea(menuProduct.getName(), menuProduct.getDescription(), menuProduct.getPrice(), menuProduct.getSections() != null ? menuProduct.getSections() : new LinkedList<>() , menuProduct.getImages(), new AddProductCallback() {
+                setWorkingArea(menuProduct.getName(), menuProduct.getDescription(), menuProduct.getPrice(), menuProduct.isAvailable(), menuProduct.getSections() != null ? menuProduct.getSections() : new LinkedList<>() , menuProduct.getImages(), new AddProductCallback() {
                     @Override
                     public void callback(MenuProduct newMenuProduct) {
                         Utils.YesNoDialog(that, "Are you sure you want to save " + menuProduct.getName() + " ? ", new YesNoCallbacks() {
@@ -170,6 +171,7 @@ public class MenuEditActivity extends AppCompatActivity {
                                         menuProduct.setName(newMenuProduct.getName());
                                         menuProduct.setDescription(newMenuProduct.getDescription());
                                         menuProduct.setPrice(newMenuProduct.getPrice());
+                                        menuProduct.setAvailable(newMenuProduct.isAvailable());
                                         menuProduct.setImages(havingPendingImage ? new String[]{imageName} : newMenuProduct.getImages());
                                         menuProduct.setSections(newMenuProduct.getSections());
                                         BuildMenuList(menu, category);
@@ -225,7 +227,7 @@ public class MenuEditActivity extends AppCompatActivity {
         working_area.removeAllViews();
     }
 
-    private void setWorkingArea(String productName, String productDescription, double productPrice, LinkedList<MenuSection> productMenuSections, String[] productImagesArray, AddProductCallback submitCallback, AddProductCallback cancelCallback) {
+    private void setWorkingArea(String productName, String productDescription, double productPrice, boolean productAvailable, LinkedList<MenuSection> productMenuSections, String[] productImagesArray, AddProductCallback submitCallback, AddProductCallback cancelCallback) {
         TabLayout categories = findViewById(R.id.categories);
         ScrollView working_area = findViewById(R.id.working_area);
 
@@ -239,6 +241,7 @@ public class MenuEditActivity extends AppCompatActivity {
         ImageView product_image = inflated.findViewById(R.id.product_image);
         FloatingActionButton upload_image = inflated.findViewById(R.id.upload_image);
         TextView header_title = inflated.findViewById(R.id.header_title);
+        SwitchCompat available = inflated.findViewById(R.id.available);
         FloatingActionButton add_section = inflated.findViewById(R.id.add_section);
         LinearLayout linearLayout = inflated.findViewById(R.id.sections_holder);
         FloatingActionButton submit_product = inflated.findViewById(R.id.submit_product);
@@ -255,6 +258,7 @@ public class MenuEditActivity extends AppCompatActivity {
         product_name.setText(productName);
         product_price.setText(productPrice + "");
         product_description.setText(productDescription);
+        available.setChecked(productAvailable);
         this.productImage = product_image;
 
         upload_image.setOnClickListener(v -> {
@@ -276,7 +280,7 @@ public class MenuEditActivity extends AppCompatActivity {
             String name = product_name.getText().toString();
             double price = Double.parseDouble(product_price.getText().toString());
             String description = product_description.getText().toString();
-
+            boolean isAvailable = available.isActivated();
             if(name.length() == 0){
                 Toast.makeText(getApplicationContext(), "Please Enter product name", Toast.LENGTH_LONG).show();
                 return;
@@ -291,7 +295,7 @@ public class MenuEditActivity extends AppCompatActivity {
                     newMenuSection.add(menuSection);
                 }
             }
-            MenuProduct newMenuProduct = new MenuProduct(selectedCategory, name, description, price, menuSections, productImagesArray);
+            MenuProduct newMenuProduct = new MenuProduct(selectedCategory, name, description, price, isAvailable, menuSections, productImagesArray);
             submitCallback.callback(newMenuProduct);
         });
 
@@ -305,7 +309,7 @@ public class MenuEditActivity extends AppCompatActivity {
         FloatingActionButton add_product = findViewById(R.id.add_product);
 
         add_product.setOnClickListener(add_product_view -> {
-            setWorkingArea("", "", 0, new LinkedList<>(), new String[]{"default.png"}, new AddProductCallback() {
+            setWorkingArea("", "", 0, true, new LinkedList<>(), new String[]{"default.png"}, new AddProductCallback() {
                 @RequiresApi(api = Build.VERSION_CODES.O)
                 @Override
                 public void callback(MenuProduct menuProduct) {

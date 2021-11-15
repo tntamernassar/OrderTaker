@@ -34,9 +34,8 @@ import com.example.ordertakerfrontend.Network.NetworkMessages.tools.NetworkMessa
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 
-import java.util.Iterator;
 import java.util.LinkedList;
-import java.util.Objects;
+
 
 
 public class MainActivity extends AppCompatActivity implements MessageObserver {

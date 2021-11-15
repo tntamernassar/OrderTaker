@@ -64,6 +64,7 @@ public class initResponse extends NetworkMessage {
 
                 String category, name, description;
                 int price;
+                boolean available;
                 String[] images = null;
                 LinkedList<MenuSection> menuSections = null;
 
@@ -71,6 +72,7 @@ public class initResponse extends NetworkMessage {
                 name = menuProductJson.getString("name");
                 description = menuProductJson.getString("description");
                 price = menuProductJson.getInt("price");
+                available = menuProductJson.getBoolean("available");
 
                 JSONArray imagesArray = (JSONArray) menuProductJson.get("images");
                 if (imagesArray.length() != 0){
@@ -100,7 +102,7 @@ public class initResponse extends NetworkMessage {
                     }
                 }
 
-                menuProducts.add(new MenuProduct(category,name, description, price, menuSections, images));
+                menuProducts.add(new MenuProduct(category,name, description, price, available, menuSections, images));
             }
             return menuProducts;
         } catch (JSONException e) {

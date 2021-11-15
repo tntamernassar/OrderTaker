@@ -18,18 +18,19 @@ public class MenuProduct implements Product, Serializable {
     private String name;
     private String description;
     private double price;
+    private boolean available;
     private String[] images;
     private LinkedList<MenuSection> sections;
 
 
-    public MenuProduct(String category, String name, String description, double price, LinkedList<MenuSection> sections, String[] images){
+    public MenuProduct(String category, String name, String description, double price, boolean available, LinkedList<MenuSection> sections, String[] images){
         this.category = category;
         this.name = name;
         this.description = description;
         this.price = price;
         this.sections = sections;
         this.images = images;
-
+        this.available = available;
     }
 
     public MenuProduct(JSONObject menuProduct) throws JSONException {
@@ -37,6 +38,7 @@ public class MenuProduct implements Product, Serializable {
         String name = (String) menuProduct.get("name");
         String description = (String) menuProduct.get("description");
         double price = (double) menuProduct.get("price");
+        boolean available = (boolean) menuProduct.get("available");
         JSONArray images = (JSONArray) menuProduct.get("images");
         JSONArray sections = (JSONArray) menuProduct.get("sections");
 
@@ -54,6 +56,15 @@ public class MenuProduct implements Product, Serializable {
         this.name = name;
         this.description = description;
         this.price = price;
+        this.available = available;
+    }
+
+    public boolean isAvailable() {
+        return available;
+    }
+
+    public void setAvailable(boolean available) {
+        this.available = available;
     }
 
     public double getPrice() {
@@ -120,6 +131,7 @@ public class MenuProduct implements Product, Serializable {
             o.put("name", name);
             o.put("description", description);
             o.put("price", price);
+            o.put("available", available);
             JSONArray objects = new JSONArray();
             if(sections != null) {
                 for (MenuSection menuSection : sections) {
