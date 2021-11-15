@@ -42,6 +42,7 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.tabs.TabLayout;
 
 import java.io.InputStream;
+import java.util.Arrays;
 import java.util.LinkedList;
 
 public class MenuEditActivity extends AppCompatActivity {
@@ -82,6 +83,7 @@ public class MenuEditActivity extends AppCompatActivity {
     private void BuildTabLayout(Menu menu){
         TabLayout categories = (TabLayout) findViewById(R.id.categories);
         FloatingActionButton add_section = findViewById(R.id.add_section);
+        FloatingActionButton remove_category = findViewById(R.id.remove_category);
 
         for (String category : menu.getCategories()) {
             TabLayout.Tab tab = categories.newTab();
@@ -100,6 +102,37 @@ public class MenuEditActivity extends AppCompatActivity {
                 }
             });
         });
+
+        remove_category.setOnClickListener(view->{
+            String selected = categories.getTabAt(categories.getSelectedTabPosition()).getText().toString();
+            Utils.YesNoDialog(this, "Are you sre you want to delete " + selected, new YesNoCallbacks() {
+                @Override
+                public void yes() {
+                    LinkedList<String> shouldDeleteImages = new LinkedList<>();
+                    for (MenuProduct menuProduct : menu.getSubMenu(selected).getMenuProductList()){
+                        if(!shouldDeleteImages.contains(menuProduct.getImages()[0])){
+                            shouldDeleteImages.add(menuProduct.getImages()[0]);
+                        }
+                    }
+                    int n = menu.removeCategory(selected);
+                    if (n > 0) {
+                        NetworkAdapter.getInstance().send(new MenuEdit(menu.toJSON(), new String[]{}, shouldDeleteImages.toArray(new String[]{})));
+                        for (String img : shouldDeleteImages){
+                            ImagesManager.deleteImage(img);
+                        }
+                    }
+                    categories.removeTab(categories.getTabAt(categories.getSelectedTabPosition()));
+                    categories.selectTab(categories.getTabAt(0));
+                }
+
+                @Override
+                public void no() {
+
+                }
+            });
+        });
+
+
 
         categories.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
             @Override

@@ -55,6 +55,13 @@ public class Menu extends ArrayAdapter<MenuProduct> implements Serializable {
         this.categoriesProducts.put(category, new LinkedList<>());
     }
 
+    public int removeCategory(String category){
+        int n = this.categoriesProducts.get(category).size();
+        this.menuProductList.removeIf(menuProduct -> menuProduct.getCategory().equals(category));
+        this.categoriesProducts.remove(category);
+        return n;
+    }
+
     public static Menu getInstance() {
         return instance;
     }
