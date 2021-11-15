@@ -53,6 +53,7 @@ public class Orders extends ArrayAdapter<OrderItem> {
         OrderProduct orderedProduct = (OrderProduct)orderItem.getProduct();
 
         TextView order_name = (TextView) row.findViewById(R.id.order_name);
+        TextView name_note = (TextView) row.findViewById(R.id.name_note);
         TextView order_notes = (TextView) row.findViewById(R.id.order_notes);
         TextView quantity = (TextView) row.findViewById(R.id.order_quantity);
         Button delete_item = (Button) row.findViewById(R.id.delete_item);
@@ -72,8 +73,13 @@ public class Orders extends ArrayAdapter<OrderItem> {
 
 
         order_name.setText(orderedProduct.getMenuProduct().getName());
+        if(!orderedProduct.getMenuProduct().isAvailable()){
+            name_note.setText("- غير متاح");
+        }
         order_notes.setText(addons_string);
         quantity.setText(orderItem.getQuantity()+"");
+
+
 
         /**
          * Delete item

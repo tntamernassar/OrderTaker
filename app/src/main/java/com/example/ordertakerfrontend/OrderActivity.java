@@ -203,12 +203,14 @@ public class OrderActivity extends AppCompatActivity implements OnePageOrderActi
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
                 MenuProduct menuProduct = menu.getMenuProductList().get(i);
-                makeItemPopUp(menuProduct, view, (AlertDialog alertDialog, OrderProduct orderProduct, int quantity, String notes)->{
-                    Constants.WAITRESS.orderItem(tableId, orderProduct, quantity, notes);
-                    alertDialog.cancel();
-                    createOrdersList();
-                    updateOrderPrice();
-                });
+                if(menuProduct.isAvailable()) {
+                    makeItemPopUp(menuProduct, view, (AlertDialog alertDialog, OrderProduct orderProduct, int quantity, String notes) -> {
+                        Constants.WAITRESS.orderItem(tableId, orderProduct, quantity, notes);
+                        alertDialog.cancel();
+                        createOrdersList();
+                        updateOrderPrice();
+                    });
+                }
             }
         });
     }
@@ -218,6 +220,7 @@ public class OrderActivity extends AppCompatActivity implements OnePageOrderActi
         ListView parentList = findViewById(R.id.order_holder);
         List<OrderItem> orderItems = new LinkedList<>();
         for (OrderItem o : Constants.WAITRESS.getRestaurant().getTable(tableId).getCurrentOrder().getOrderItems().values()) {
+            System.out.println(o.toJSON());
             if(!o.isDeleted()) {
                 orderItems.add(o);
             }
@@ -343,6 +346,7 @@ public class OrderActivity extends AppCompatActivity implements OnePageOrderActi
         TabLayout categories = (TabLayout) findViewById(R.id.categories);
         String selected = categories.getTabAt(categories.getSelectedTabPosition()).getText().toString();
         createMenuList(selected);
+        createOrdersList();
     }
 
     @Override

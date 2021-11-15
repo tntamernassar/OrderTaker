@@ -280,7 +280,8 @@ public class MenuEditActivity extends AppCompatActivity {
             String name = product_name.getText().toString();
             double price = Double.parseDouble(product_price.getText().toString());
             String description = product_description.getText().toString();
-            boolean isAvailable = available.isActivated();
+            boolean isAvailable = available.isChecked();
+            System.out.println("Available : " + isAvailable);
             if(name.length() == 0){
                 Toast.makeText(getApplicationContext(), "Please Enter product name", Toast.LENGTH_LONG).show();
                 return;

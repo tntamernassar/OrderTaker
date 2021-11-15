@@ -124,6 +124,7 @@ public class Menu extends ArrayAdapter<MenuProduct> implements Serializable {
         MenuProduct menuProduct = menuProductList.get(position);
 
         TextView nameTV = row.findViewById(R.id.name);
+        TextView name_noteTV = row.findViewById(R.id.name_note);
         TextView descTV = row.findViewById(R.id.description);
         ImageView image = row.findViewById(R.id.image);
         TextView price = row.findViewById(R.id.price);
@@ -135,6 +136,9 @@ public class Menu extends ArrayAdapter<MenuProduct> implements Serializable {
         descTV.setText(menuProduct.getDescription());
         price.setText((menuProduct.getPrice() + "₪").replace(".0", ""));
 
+        if(!menuProduct.isAvailable()){
+            name_noteTV.setText("- غير متاح");
+        }
         return row;
     }
 

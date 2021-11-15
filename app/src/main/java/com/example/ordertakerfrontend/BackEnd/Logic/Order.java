@@ -47,6 +47,7 @@ public class Order implements Serializable {
         if (!order.isNull("distributeVersion")) {
             distributeVersion = new Order((JSONObject) order.get("distributeVersion"));
         }
+        System.out.println(">>>>>>>>>>>>>>" + order.toString());
         JSONObject orderItems = (JSONObject) order.get("orderItems");
         JSONArray indexes = (JSONArray) orderItems.get("indexes");
         for (int i = 0; i < indexes.length(); i++) {
