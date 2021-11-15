@@ -175,13 +175,8 @@ public class OrderHistoryActivity extends AppCompatActivity implements MessageOb
             cartesian.legend().enabled(true);
             cartesian.legend().fontSize(13d);
             cartesian.legend().padding(0d, 0d, 10d, 0d);
-            cartesian.xScroller(true);
 
-            ViewGroup.LayoutParams params = lineChart.getLayoutParams();
-            params.width = ViewGroup.LayoutParams.MATCH_PARENT;
-            params.height = 1000;
-            lineChart.setLayoutParams(params);
-            lineChart.requestLayout();
+
 
             lineChart.setChart(cartesian);
 
