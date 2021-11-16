@@ -137,7 +137,7 @@ public class OrderHistoryCharts {
     /**
      * Pie Chart
      **/
-    public static void createPieChart(View parent, int day){
+    public static void createPieChart(View parent){
         AnyChartView anyChartView = (AnyChartView) parent.findViewById(R.id.pieChart);
         APIlib.getInstance().setActiveAnyChartView(anyChartView);
 
@@ -145,14 +145,22 @@ public class OrderHistoryCharts {
 
 
         List<DataEntry> seriesData = new ArrayList<>();
+        HashMap<String, Integer> sectionCounter = new HashMap<>();
+        for(Integer day: quantityPerSection.get(currentMonth).keySet()){
+            for (String section: quantityPerSection.get(currentMonth).get(day).keySet()){
+                if(!sectionCounter.containsKey(section))
+                    sectionCounter.put(section, 0);
 
-        for(String section: quantityPerSection.get(currentMonth).get(day).keySet()){
-            seriesData.add(new ValueDataEntry(section, quantityPerSection.get(currentMonth).get(day).get(section)));
+                int oldValue = sectionCounter.get(section);
+                sectionCounter.put(section, oldValue + 1);
+            }
         }
+        for(String section: sectionCounter.keySet())
+            seriesData.add(new ValueDataEntry(section, sectionCounter.get(section)));
 
         pie.data(seriesData);
 
-        pie.title(String.format("نسب الاصناف في تاريخ:  %d/%d ", currentMonth, day));
+        pie.title(String.format("نسب الاصناف في تاريخ:  %d", currentMonth));
         pie.legend().title().enabled(true);
         pie.legend().title()
                 .text("Retail channels")
@@ -163,8 +171,6 @@ public class OrderHistoryCharts {
                 .itemsLayout(LegendLayout.HORIZONTAL)
                 .align(Align.RIGHT);
 
-        pie.width(300);
-        pie.height(300);
         anyChartView.setChart(pie);
     }
 
