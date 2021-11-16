@@ -135,7 +135,7 @@ public class OrderHistoryCharts {
     }
 
     /**
-     * Pie Chart
+     * Pie Charta
      **/
     public static void createPieChart(View parent){
         AnyChartView anyChartView = (AnyChartView) parent.findViewById(R.id.pieChart);
