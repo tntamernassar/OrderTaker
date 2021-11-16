@@ -101,32 +101,34 @@ public class MenuEditActivity extends AppCompatActivity {
         });
 
         remove_category.setOnClickListener(view->{
-            String selected = categories.getTabAt(categories.getSelectedTabPosition()).getText().toString();
-            Utils.YesNoDialog(this, "Are you sre you want to delete " + selected, new YesNoCallbacks() {
-                @Override
-                public void yes() {
-                    LinkedList<String> shouldDeleteImages = new LinkedList<>();
-                    for (MenuProduct menuProduct : menu.getSubMenu(selected).getMenuProductList()){
-                        if(!shouldDeleteImages.contains(menuProduct.getImages()[0])){
-                            shouldDeleteImages.add(menuProduct.getImages()[0]);
+            if (menu.getCategories().length > 0){
+                String selected = categories.getTabAt(categories.getSelectedTabPosition()).getText().toString();
+                Utils.YesNoDialog(this, "Are you sre you want to delete " + selected, new YesNoCallbacks() {
+                    @Override
+                    public void yes() {
+                        LinkedList<String> shouldDeleteImages = new LinkedList<>();
+                        for (MenuProduct menuProduct : menu.getSubMenu(selected).getMenuProductList()){
+                            if(!shouldDeleteImages.contains(menuProduct.getImages()[0])){
+                                shouldDeleteImages.add(menuProduct.getImages()[0]);
+                            }
                         }
-                    }
-                    int n = menu.removeCategory(selected);
-                    if (n > 0) {
-                        NetworkAdapter.getInstance().send(new MenuEdit(menu.toJSON(), new String[]{}, shouldDeleteImages.toArray(new String[]{})));
-                        for (String img : shouldDeleteImages){
-                            ImagesManager.deleteImage(img);
+                        int n = menu.removeCategory(selected);
+                        if (n > 0) {
+                            NetworkAdapter.getInstance().send(new MenuEdit(menu.toJSON(), new String[]{}, shouldDeleteImages.toArray(new String[]{})));
+                            for (String img : shouldDeleteImages){
+                                ImagesManager.deleteImage(img);
+                            }
                         }
+                        categories.removeTab(categories.getTabAt(categories.getSelectedTabPosition()));
+                        categories.selectTab(categories.getTabAt(0));
                     }
-                    categories.removeTab(categories.getTabAt(categories.getSelectedTabPosition()));
-                    categories.selectTab(categories.getTabAt(0));
-                }
 
-                @Override
-                public void no() {
+                    @Override
+                    public void no() {
 
-                }
-            });
+                    }
+                });
+            }
         });
 
 
@@ -147,12 +149,20 @@ public class MenuEditActivity extends AppCompatActivity {
 
             }
         });
-        String selected = categories.getTabAt(categories.getSelectedTabPosition()).getText().toString();
-        BuildMenuList(menu, selected);
+        if (menu.getCategories().length > 0){
+            String selected = categories.getTabAt(categories.getSelectedTabPosition()).getText().toString();
+            BuildMenuList(menu, selected);
+        }else{
+            categories.removeAllTabs();
+            ListView listView = findViewById(R.id.menu_holder);
+            BuildMenuList(menu, null);
+
+        }
     }
 
     private void BuildMenuList(Menu menu, String category) {
         ListView listView = findViewById(R.id.menu_holder);
+
         Menu subMenu = menu.getSubMenu(category);
         listView.setAdapter(subMenu);
 

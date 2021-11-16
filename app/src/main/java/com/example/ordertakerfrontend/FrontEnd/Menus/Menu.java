@@ -104,7 +104,7 @@ public class Menu extends ArrayAdapter<MenuProduct> implements Serializable {
     }
 
     public Menu getSubMenu(String category){
-        return new Menu(this.context, this.categoriesProducts.get(category));
+        return category != null ? new Menu(this.context, this.categoriesProducts.get(category)): this;
     }
 
     public JSONObject toJSON(){

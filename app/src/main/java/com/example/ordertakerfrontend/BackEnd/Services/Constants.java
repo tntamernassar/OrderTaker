@@ -22,23 +22,32 @@ public class Constants {
     /**
      * Log file.
      * **/
-    public static String LOG_FILE = "log.txt";
+    public static final String LOG_FILE = "log.txt";
 
 
     /**
      * Restaurant State File,
      * Hold last Restaurant state
      * **/
-    public static String RESTAURANT_STATE_FILE = "restaurant";
+    public static final String RESTAURANT_STATE_FILE = "restaurant";
 
 
+    /**
+     * TCP Chunk length used while chunking a large message (e.g: image)
+     * each chunk size will be as stated in this variable
+     * **/
     public static final double TCP_CHUNK_LENGTH = 500.0;
 
 
-    public static String DEFAULT_IMAGE_NAME = "default.png";
+    /**
+     * Name of the default image that is used for products
+     * **/
+    public static final String DEFAULT_IMAGE_NAME = "default.png";
 
 
-
-    public static int NETWORK_DEMON_INTERVAL = 20 * 1000;
+    /**
+     * The interval that the network demon is checking the health of the connection
+     * **/
+    public static final int NETWORK_DEMON_INTERVAL = 20 * 1000;
 
 }

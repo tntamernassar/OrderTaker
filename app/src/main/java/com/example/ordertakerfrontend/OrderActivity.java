@@ -70,8 +70,10 @@ public class OrderActivity extends AppCompatActivity implements OnePageOrderActi
         updateOrderPrice();
 
         TabLayout categories = (TabLayout) findViewById(R.id.categories);
-        String selected = categories.getTabAt(categories.getSelectedTabPosition()).getText().toString();
-        createMenuList(selected);
+        if(Menu.getInstance().getCategories().length > 0) {
+            String selected = categories.getTabAt(categories.getSelectedTabPosition()).getText().toString();
+            createMenuList(selected);
+        }
 
         Button cancel = findViewById(R.id.cancel);
         cancel.setOnClickListener(new View.OnClickListener() {
@@ -143,8 +145,6 @@ public class OrderActivity extends AppCompatActivity implements OnePageOrderActi
         int currentTabsCount = categories.getTabCount();
         if (currentTabsCount == 0){
             for (String category : Menu.getInstance().getCategories()) {
-                TabLayout.Tab tab = categories.newTab();
-                tab.setText(category);
                 categories.addTab(categories.newTab().setText(category));
             }
         }else{
@@ -380,8 +380,10 @@ public class OrderActivity extends AppCompatActivity implements OnePageOrderActi
         runOnUiThread(()->{
             buildTabs();
             TabLayout categories = (TabLayout) findViewById(R.id.categories);
-            String selected = categories.getTabAt(categories.getSelectedTabPosition()).getText().toString();
-            createMenuList(selected);
+            if (Menu.getInstance().getCategories().length > 0 ) {
+                String selected = categories.getTabAt(categories.getSelectedTabPosition()).getText().toString();
+                createMenuList(selected);
+            }
         });
     }
 
