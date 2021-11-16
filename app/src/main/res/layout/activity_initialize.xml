@@ -8,18 +8,18 @@
     tools:context=".InitializeActivity">
 
 
-    <ProgressBar
-        android:layout_width="300dp"
-        android:backgroundTint="@color/gold"
-        android:progressBackgroundTint="@color/gold"
-        android:layout_height="300dp"/>
 
+    <pl.droidsonroids.gif.GifImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/loading"
+        />
     <TextView
         android:id="@+id/label"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="20dp"
-        android:text="Initializing"
+        android:text=""
         android:textSize="40dp"
         android:textStyle="bold" />
 

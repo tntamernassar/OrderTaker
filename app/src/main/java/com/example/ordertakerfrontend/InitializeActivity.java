@@ -62,7 +62,6 @@ public class InitializeActivity extends AppCompatActivity implements MessageObse
         if(prefs.contains("name")){
             initSystem(prefs.getString("name", "unknown"));
             initNetworkAdapter();
-
         }else {
             Utils.AcquireInputDialog(this, "Enter Waitress Name", input -> {
                 editor.putString("name", input);
@@ -193,10 +192,9 @@ public class InitializeActivity extends AppCompatActivity implements MessageObse
         if(remains > 0) {
             double done = shouldDownload - remains;
             int progress = (int)((done / shouldDownload) * 100);
-            System.out.println(done );
             txt = progress + "%";
         }else {
-            txt = "Done";
+            txt = "";
         }
         label.setText(txt);
     }
