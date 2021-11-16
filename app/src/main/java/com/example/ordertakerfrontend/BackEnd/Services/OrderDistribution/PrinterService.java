@@ -18,15 +18,23 @@ public class PrinterService {
     private String printerName;
     private BluetoothDevice device;
     private BluetoothPrinter printer;
+    private boolean inConnectingState;
 
     public PrinterService(String printerName){
+        this.inConnectingState = true;
         this.printerName = printerName;
         this.device = findDevice(printerName);
         if(this.device != null) {
             connect();
+        }else {
+            inConnectingState = false;
         }
     }
 
+
+    public String getPrinterName() {
+        return printerName;
+    }
 
     public BluetoothPrinter getPrinter() {
         return printer;
@@ -34,6 +42,10 @@ public class PrinterService {
 
     public boolean isConnected(){
         return this.device != null && this.printer != null && this.printer.isConnected();
+    }
+
+    public BluetoothDevice getDevice() {
+        return device;
     }
 
     private void connect(){
@@ -44,6 +56,7 @@ public class PrinterService {
                 System.out.println("connected to " + printerName);
                 Utils.writeToLog("connected to " + printerName);
                 printer = mPrinter;
+                inConnectingState = false;
             }
 
             @Override
@@ -54,11 +67,18 @@ public class PrinterService {
         });
     }
 
-    private void reconnect(){
+    public void reconnect(){
+        this.inConnectingState = true;
         this.device = findDevice(printerName);
         if(this.device != null) {
             connect();
+        }else{
+            inConnectingState = false;
         }
+    }
+
+    public boolean isInConnectingState() {
+        return inConnectingState;
     }
 
     private BluetoothDevice findDevice(String deviceName){

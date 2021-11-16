@@ -30,8 +30,6 @@ public class NetworkReceiver extends Thread {
         return connected;
     }
 
-
-
     @Override
     public void run() {
         try {
@@ -46,12 +44,10 @@ public class NetworkReceiver extends Thread {
                 });
             }
         } catch (IOException e) {
-            e.printStackTrace();
             this.connected = false;
             this.running = false;
             Utils.writeToLog("NetworkReceiver Lost the connection with the server");
         } catch (JSONException e){
-            e.printStackTrace();
             this.connected = false;
             this.running = false;
         }

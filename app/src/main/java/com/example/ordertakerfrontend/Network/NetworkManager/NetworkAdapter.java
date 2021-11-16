@@ -96,6 +96,8 @@ public abstract class NetworkAdapter extends Thread {
 
     }
 
+
+
     public abstract void onConnection(NetworkAdapter adapter);
     public abstract void onError(Exception e);
 

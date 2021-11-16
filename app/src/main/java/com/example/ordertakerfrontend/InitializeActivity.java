@@ -9,11 +9,8 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Build;
 import android.os.Bundle;
-import android.os.Handler;
 import android.widget.TextView;
-import android.widget.Toast;
 
-import com.example.ordertakerfrontend.BackEnd.Logic.OrderHistory;
 import com.example.ordertakerfrontend.BackEnd.Logic.Restaurant;
 import com.example.ordertakerfrontend.BackEnd.Logic.Table;
 import com.example.ordertakerfrontend.BackEnd.Logic.Waitress;
@@ -24,6 +21,7 @@ import com.example.ordertakerfrontend.BackEnd.Services.OrderDistribution.Printer
 import com.example.ordertakerfrontend.BackEnd.Services.Utils;
 import com.example.ordertakerfrontend.FrontEnd.Menus.DiskMenu;
 import com.example.ordertakerfrontend.Network.NetworkManager.NetworkAdapter;
+import com.example.ordertakerfrontend.Network.NetworkManager.NetworkDemon;
 import com.example.ordertakerfrontend.Network.NetworkMessages.In.MenuEditNotification;
 import com.example.ordertakerfrontend.Network.NetworkMessages.In.OrderHistoryContainer;
 import com.example.ordertakerfrontend.Network.NetworkMessages.In.ServerImage;
@@ -32,7 +30,6 @@ import com.example.ordertakerfrontend.Network.NetworkMessages.In.Tables.CloseTab
 import com.example.ordertakerfrontend.Network.NetworkMessages.In.Tables.OpenTableNotification;
 import com.example.ordertakerfrontend.Network.NetworkMessages.In.Tables.SubmitTableNotification;
 import com.example.ordertakerfrontend.Network.NetworkMessages.In.initResponse;
-import com.example.ordertakerfrontend.Network.NetworkMessages.Out.GetOrderHistory;
 import com.example.ordertakerfrontend.Network.NetworkMessages.Out.initRequest;
 import com.example.ordertakerfrontend.Network.NetworkMessages.tools.MessageObserver;
 import com.example.ordertakerfrontend.Network.NetworkMessages.tools.NetworkMessage;
@@ -42,7 +39,6 @@ import org.json.JSONArray;
 import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Objects;
 
 public class InitializeActivity extends AppCompatActivity implements MessageObserver {
 
@@ -94,20 +90,19 @@ public class InitializeActivity extends AppCompatActivity implements MessageObse
             public void onConnection(NetworkAdapter adapter) {
                 adapter.receive();
                 adapter.send(new initRequest());
-                System.out.println("onConnection.************");
-
+                NetworkDemon.init(adapter).start();
             }
 
             @Override
             public void onError(Exception e) {
-
                 NetworkAdapter.getInstance().unregister(id);
+                NetworkDemon.init(null).start();
                 Intent mainActivity = new Intent(thatActivity, MainActivity.class);
                 startActivity(mainActivity);
             }
         });
-        NetworkAdapter.getInstance().register(id, this);
 
+        NetworkAdapter.getInstance().register(id, this);
         NetworkAdapter.getInstance().start();
     }
 

@@ -42,9 +42,13 @@ public class Constants {
 
     public static final double TCP_CHUNK_LENGTH = 500.0;
 
+
     public static String DEFAULT_IMAGE_NAME = "default.png";
 
 
-    public static int BLUETOOTH_RETRY_TIME = 3;
+    public static int PRINTER_DEMON_INTERVAL = 20 * 1000;
+
+
+    public static int NETWORK_DEMON_INTERVAL = 20 * 1000;
 
 }
