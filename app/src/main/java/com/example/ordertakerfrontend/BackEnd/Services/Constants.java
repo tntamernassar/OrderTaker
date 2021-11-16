@@ -1,13 +1,10 @@
 package com.example.ordertakerfrontend.BackEnd.Services;
 
-import android.app.Activity;
 import android.content.Context;
 
 import com.example.ordertakerfrontend.BackEnd.Logic.Waitress;
 
 public class Constants {
-
-    public static Activity activity = null;
 
     /**
      * Application Context, assigned at runtime

@@ -53,7 +53,6 @@ public class InitializeActivity extends AppCompatActivity implements MessageObse
         setContentView(R.layout.activity_initialize);
         getSupportActionBar().hide();
 
-        Constants.activity = this;
         Constants.CONTEXT = getApplicationContext();
         this.label = findViewById(R.id.label);
 
