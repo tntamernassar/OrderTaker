@@ -2,7 +2,6 @@ package com.example.ordertakerfrontend.FrontEnd.OrderHistory;
 
 import android.os.Build;
 import android.view.View;
-import android.view.ViewGroup;
 
 import com.anychart.APIlib;
 import com.anychart.AnyChart;
@@ -10,10 +9,17 @@ import com.anychart.AnyChartView;
 import com.anychart.chart.common.dataentry.DataEntry;
 import com.anychart.chart.common.dataentry.ValueDataEntry;
 import com.anychart.charts.Cartesian;
+import com.anychart.charts.Pie;
 import com.anychart.core.cartesian.series.Line;
+import com.anychart.enums.Align;
 import com.anychart.enums.Anchor;
+import com.anychart.enums.LegendLayout;
 import com.anychart.enums.MarkerType;
 import com.example.ordertakerfrontend.BackEnd.Logic.Order;
+import com.example.ordertakerfrontend.BackEnd.Logic.OrderItem;
+import com.example.ordertakerfrontend.BackEnd.Logic.Product;
+import com.example.ordertakerfrontend.FrontEnd.Menus.Menu;
+import com.example.ordertakerfrontend.FrontEnd.Menus.OrderProduct;
 import com.example.ordertakerfrontend.R;
 
 import java.time.LocalDateTime;
@@ -21,20 +27,21 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Random;
-import java.util.concurrent.ThreadLocalRandom;
 
 import androidx.annotation.RequiresApi;
 
 public class OrderHistoryCharts {
     public static HashMap<Integer, HashMap<Integer, ArrayList<Order>>> ordersPerMonthPerDays;
     public static HashMap<Integer, Integer> quantityPerDays;
+
+    public static HashMap<Integer, HashMap<Integer, HashMap<String, Integer>>> quantityPerSection;
     static int currentMonth;
 
     @RequiresApi(api = Build.VERSION_CODES.O)
     public OrderHistoryCharts(LinkedList<Order> orders){
         ordersPerMonthPerDays = new HashMap<>();
         quantityPerDays = new HashMap<>();
+        quantityPerSection = new HashMap<>();
         currentMonth = (int) LocalDateTime.now().getMonth().getValue();
         init(orders);
     }
@@ -58,7 +65,31 @@ public class OrderHistoryCharts {
             if (!quantityPerDays.containsKey(day))
                 quantityPerDays.put(day, ordersPerMonthPerDays.get(currentMonth).get(day).size());
         }
+        List<String> allCategories = List.of(Menu.getInstance().getCategories());
+        // build the quantity X section for pieChart
+        for(Integer month: ordersPerMonthPerDays.keySet()){
+            for(Integer day: ordersPerMonthPerDays.get(month).keySet()){
+                for(Order o: ordersPerMonthPerDays.get(month).get(day)){
 
+                    if(!quantityPerSection.containsKey(month))
+                        quantityPerSection.put(month, new HashMap<>());
+                    if(!quantityPerSection.get(month).containsKey(day))
+                        quantityPerSection.get(month).put(day, new HashMap<>());
+
+                    for(OrderItem  orderitem: o.getOrderItems().values()){
+                        OrderProduct p = (OrderProduct) orderitem.getProduct();
+                        String section = p.getMenuProduct().getCategory();
+                        if(allCategories.contains(section))
+                         if(!quantityPerSection.get(month).get(day).containsKey(section))
+                             quantityPerSection.get(month).get(day).put(section, 0);
+
+                         int oldQuantity = quantityPerSection.get(month).get(day).get(section);
+                         quantityPerSection.get(month).get(day).put(section, oldQuantity + 1);
+
+                    }
+                }
+            }
+        }
     }
 
     /**
@@ -100,14 +131,41 @@ public class OrderHistoryCharts {
         for(Integer day: pricePerDay.keySet())
             seriesData.add(new ValueDataEntry(day + "/" + currentMonth, pricePerDay.get(day)));
 
-        initializeLineChart(priceChart, seriesData, "كمية المبيعات", "מחיר ₪", "", "red");
+        initializeLineChart(priceChart, seriesData, "الايرادات", "מחיר ₪", "", "red");
     }
 
     /**
      * Pie Chart
      **/
-    public static void createPieChart(View parent){
+    public static void createPieChart(View parent, int day){
+        AnyChartView anyChartView = (AnyChartView) parent.findViewById(R.id.pieChart);
+        APIlib.getInstance().setActiveAnyChartView(anyChartView);
 
+        Pie pie = AnyChart.pie();
+
+
+        List<DataEntry> seriesData = new ArrayList<>();
+
+        for(String section: quantityPerSection.get(currentMonth).get(day).keySet()){
+            seriesData.add(new ValueDataEntry(section, quantityPerSection.get(currentMonth).get(day).get(section)));
+        }
+
+        pie.data(seriesData);
+
+        pie.title(String.format("نسب الاصناف في تاريخ:  %d/%d ", currentMonth, day));
+        pie.legend().title().enabled(true);
+        pie.legend().title()
+                .text("Retail channels")
+                .padding(0d, 0d, 10d, 0d);
+
+        pie.legend()
+                .position("center-bottom")
+                .itemsLayout(LegendLayout.HORIZONTAL)
+                .align(Align.RIGHT);
+
+        pie.width(300);
+        pie.height(300);
+        anyChartView.setChart(pie);
     }
 
 

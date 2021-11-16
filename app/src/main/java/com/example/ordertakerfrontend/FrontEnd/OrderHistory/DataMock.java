@@ -5,6 +5,7 @@ import android.os.Build;
 import androidx.annotation.RequiresApi;
 
 import com.example.ordertakerfrontend.BackEnd.Logic.Order;
+import com.example.ordertakerfrontend.FrontEnd.Menus.Menu;
 import com.example.ordertakerfrontend.FrontEnd.Menus.MenuProduct;
 import com.example.ordertakerfrontend.FrontEnd.Menus.OrderProduct;
 
@@ -23,6 +24,7 @@ public class DataMock {
     private static LinkedList<Order> makeRandomOrders(Month month){
 
         LinkedList<Order> orders = new LinkedList<>();
+        List<String> allCategories = List.of(Menu.getInstance().getCategories());
 
         for (int day = 1; day <= 30; day++){
             int numOfOrders = ThreadLocalRandom.current().nextInt(0, 100);
@@ -30,6 +32,7 @@ public class DataMock {
                 int table = ThreadLocalRandom.current().nextInt(1, 9);
                 int hour = ThreadLocalRandom.current().nextInt(8, 23);
                 int minutes = ThreadLocalRandom.current().nextInt(0, 60);
+                int sectionIndex = ThreadLocalRandom.current().nextInt(0, allCategories.size());
                 LocalDateTime localDateTime = LocalDateTime.of(2021, month, day, hour, minutes);
                 String startedBy = "B2b2";
 
@@ -42,7 +45,7 @@ public class DataMock {
                 for (int i = 0; i < numOfProducts; i ++){
                     int price = ThreadLocalRandom.current().nextInt(10, 100);
                     int quantity = ThreadLocalRandom.current().nextInt(1, 5);
-                    order.addItem(startedBy, new OrderProduct(new MenuProduct("cat1", "p1", "desc", price, true, new LinkedList<>(), new String[]{})), quantity, "", false);
+                    order.addItem(startedBy, new OrderProduct(new MenuProduct(allCategories.get(sectionIndex), "p1", "desc", price, true, new LinkedList<>(), new String[]{})), quantity, "", false);
                 }
                 orders.add(order);
             }

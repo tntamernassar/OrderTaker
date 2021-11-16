@@ -111,6 +111,7 @@ public class OrderHistoryActivity extends AppCompatActivity implements MessageOb
             // chart for quantity X days.
             orderHistoryCharts.createTrafficChart(inflated);
             orderHistoryCharts.createTrafficChartForPrice(inflated);
+            orderHistoryCharts.createPieChart(inflated, 15);
 
         }
     }

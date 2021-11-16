@@ -74,7 +74,7 @@ public abstract class NetworkAdapter extends Thread {
         boolean notifiedError = false;
         while (!connected){
             try {
-                this.socket = new Socket("10.0.0.5",2222);
+                this.socket = new Socket("10.42.0.1",2222);
                 this.receiver = new NetworkReceiver(this.socket, this);
                 connected = true;
                 onConnection(this);
