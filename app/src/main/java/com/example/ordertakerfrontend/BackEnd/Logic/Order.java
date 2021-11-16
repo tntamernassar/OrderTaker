@@ -78,16 +78,16 @@ public class Order implements Serializable {
 
         for (Integer index : otherOrderItems.keySet()){
             OrderItem otherOrderItem = otherOrderItems.get(index);
-            OrderItem serverOrderItem = getOrderItem(otherOrderItem);
+            OrderItem tabletOrderItem = getOrderItem(otherOrderItem);
 
-            if (serverOrderItem == null){ // new order item
+            if (tabletOrderItem == null){ // new order item
                 this.addItem(otherOrderItem.getWaiterName(), otherOrderItem.getTimestamp(), otherOrderItem.getProduct(), otherOrderItem.getQuantity(), otherOrderItem.getNotes(), otherOrderItem.isDistributed(), otherOrderItem.isDeleted());
             } else {
-                serverOrderItem.setProduct(otherOrderItem.getProduct());
-                serverOrderItem.setQuantity(otherOrderItem.getQuantity());
-                serverOrderItem.setDistributed(otherOrderItem.isDistributed());
-                serverOrderItem.setNotes(otherOrderItem.getNotes());
-                serverOrderItem.setDeleted(otherOrderItem.isDeleted());
+                tabletOrderItem.setProduct(otherOrderItem.getProduct());
+                tabletOrderItem.setQuantity(otherOrderItem.getQuantity());
+                tabletOrderItem.setDistributed(otherOrderItem.isDistributed());
+                tabletOrderItem.setNotes(otherOrderItem.getNotes());
+                tabletOrderItem.setDeleted(tabletOrderItem.isDeleted() || otherOrderItem.isDeleted());
             }
         }
 

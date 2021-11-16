@@ -64,33 +64,12 @@ public class OrderActivity extends AppCompatActivity implements OnePageOrderActi
         Intent intent = getIntent();
         this.tableId = intent.getExtras().getInt("table");
 
-        TabLayout categories = (TabLayout) findViewById(R.id.categories);
-        for (String category : Menu.getInstance().getCategories()) {
-            TabLayout.Tab tab = categories.newTab();
-            tab.setText(category);
-            categories.addTab(categories.newTab().setText(category));
-        }
-
-        categories.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
-            @Override
-            public void onTabSelected(TabLayout.Tab tab) {
-                createMenuList(tab.getText().toString());
-            }
-
-            @Override
-            public void onTabUnselected(TabLayout.Tab tab) {
-
-            }
-
-            @Override
-            public void onTabReselected(TabLayout.Tab tab) {
-
-            }
-        });
+        buildTabs();
 
         createOrdersList();
         updateOrderPrice();
 
+        TabLayout categories = (TabLayout) findViewById(R.id.categories);
         String selected = categories.getTabAt(categories.getSelectedTabPosition()).getText().toString();
         createMenuList(selected);
 
@@ -156,6 +135,60 @@ public class OrderActivity extends AppCompatActivity implements OnePageOrderActi
     protected void onStop() {
         super.onStop();
         NetworkAdapter.getInstance().unregister(id);
+    }
+
+    public void buildTabs(){
+        TabLayout categories = (TabLayout) findViewById(R.id.categories);
+
+        int currentTabsCount = categories.getTabCount();
+        if (currentTabsCount == 0){
+            for (String category : Menu.getInstance().getCategories()) {
+                TabLayout.Tab tab = categories.newTab();
+                tab.setText(category);
+                categories.addTab(categories.newTab().setText(category));
+            }
+        }else{
+            String[] menuCategories = Menu.getInstance().getCategories();
+            if (currentTabsCount != menuCategories.length){
+                String selected = categories.getTabAt(categories.getSelectedTabPosition()).getText().toString();
+
+                categories.removeAllTabs();
+                int new_index = -1;
+                int i = 0;
+                for (String category : Menu.getInstance().getCategories()) {
+                    categories.addTab(categories.newTab().setText(category));
+                    if (category.equals(selected)){
+                        new_index = i;
+                    }
+                    i++;
+                }
+
+                if(!List.of(menuCategories).contains(selected)){
+                    categories.selectTab(categories.getTabAt(0));
+                }else{
+                    categories.selectTab(categories.getTabAt(new_index));
+                }
+            }
+        }
+
+
+
+        categories.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
+            @Override
+            public void onTabSelected(TabLayout.Tab tab) {
+                createMenuList(tab.getText().toString());
+            }
+
+            @Override
+            public void onTabUnselected(TabLayout.Tab tab) {
+
+            }
+
+            @Override
+            public void onTabReselected(TabLayout.Tab tab) {
+
+            }
+        });
     }
 
     @Override
@@ -225,7 +258,6 @@ public class OrderActivity extends AppCompatActivity implements OnePageOrderActi
         Orders orders = new Orders(this, tableId,OrderActivity.this, orderItems);
         parentList.setAdapter(orders);
     }
-
 
     @Override
     public void makeItemPopUp(OrderProduct orderProduct, View view, int previousQuantity, String previousNote, ItemSubmitCallback submitCallback) {
@@ -333,7 +365,6 @@ public class OrderActivity extends AppCompatActivity implements OnePageOrderActi
         makeItemPopUp(new OrderProduct(menuProduct), view, 1, "", submitCallback);
     }
 
-
     @Override
     public void accept(NetworkMessage message) { }
 
@@ -350,6 +381,7 @@ public class OrderActivity extends AppCompatActivity implements OnePageOrderActi
 
     @Override
     public void accept(MenuEditNotification message) {
+        buildTabs();
         TabLayout categories = (TabLayout) findViewById(R.id.categories);
         String selected = categories.getTabAt(categories.getSelectedTabPosition()).getText().toString();
         createMenuList(selected);

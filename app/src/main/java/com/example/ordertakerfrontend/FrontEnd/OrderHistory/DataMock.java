@@ -25,7 +25,7 @@ public class DataMock {
         LinkedList<Order> orders = new LinkedList<>();
 
         for (int day = 1; day <= 30; day++){
-            int numOfOrders = ThreadLocalRandom.current().nextInt(0, 9);
+            int numOfOrders = ThreadLocalRandom.current().nextInt(0, 100);
             for(int n = 0 ; n < numOfOrders ; n ++){
                 int table = ThreadLocalRandom.current().nextInt(1, 9);
                 int hour = ThreadLocalRandom.current().nextInt(8, 23);
