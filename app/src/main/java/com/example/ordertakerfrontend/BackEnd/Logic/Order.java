@@ -133,6 +133,10 @@ public class Order implements Serializable {
         this.distributeVersion = distributeVersion;
     }
 
+    public void setStartedAt(LocalDateTime startedAt) {
+        this.startedAt = startedAt;
+    }
+
     public LocalDateTime getStartedAt() {
         return startedAt;
     }

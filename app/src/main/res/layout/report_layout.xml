@@ -1,26 +1,46 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-             android:layout_width="match_parent"
-             android:layout_height="match_parent"
-             android:orientation="vertical">
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
 
-
-
-    <com.anychart.AnyChartView
-        android:id="@+id/trafficChartForQuantity"
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="200dp"
-        android:layout_weight="1"/>
+        android:layout_height="match_parent"
+        android:orientation="vertical">
 
 
-    <com.anychart.AnyChartView
-        android:id="@+id/trafficChartForPrice"
-        android:layout_width="match_parent"
-        android:layout_height="200dp"
-        android:layout_weight="1"/>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="300dp"
+            android:background="@color/amber">
+
+            <com.anychart.AnyChartView
+                android:id="@+id/trafficChartForQuantity"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent" />
+
+        </LinearLayout>
+
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="300dp"
+            android:background="@color/red">
+
+            <com.anychart.AnyChartView
+                android:id="@+id/trafficChartForPrice"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent" />
+
+        </LinearLayout>
 
 
 
 
 
-</LinearLayout>
+
+
+    </LinearLayout>
+
+
+</ScrollView>

@@ -112,7 +112,7 @@ public class OrderHistoryCharts {
     }
 
     public static void createTrafficChartForPrice(View parent){
-        AnyChartView priceChart = (AnyChartView) parent.findViewById(R.id.trafficChartForQuantity);
+        AnyChartView priceChart = (AnyChartView) parent.findViewById(R.id.trafficChartForPrice);
         APIlib.getInstance().setActiveAnyChartView(priceChart);
 
 //        priceChart.setProgressBar(parent.findViewById(R.id.progressBar));

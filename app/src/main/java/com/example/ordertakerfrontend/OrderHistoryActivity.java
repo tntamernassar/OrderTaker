@@ -32,6 +32,7 @@ import com.anychart.enums.MarkerType;
 import com.example.ordertakerfrontend.BackEnd.Logic.Order;
 import com.example.ordertakerfrontend.BackEnd.Logic.OrderHistory;
 import com.example.ordertakerfrontend.BackEnd.Services.Constants;
+import com.example.ordertakerfrontend.FrontEnd.OrderHistory.DataMock;
 import com.example.ordertakerfrontend.FrontEnd.OrderHistory.OrderHistoryCharts;
 import com.example.ordertakerfrontend.FrontEnd.OrderHistory.OrderHistoryTable;
 import com.example.ordertakerfrontend.Network.NetworkManager.NetworkAdapter;
@@ -176,7 +177,8 @@ public class OrderHistoryActivity extends AppCompatActivity implements MessageOb
         System.out.println("accepted...***********************");
         this.syncing = false;
         this.orderHistory = Constants.WAITRESS.getRestaurant().getOrderHistory();
-        table();
+        this.orderHistory = new OrderHistory(DataMock.data_set_1);
+        charts();
     }
 
     private class CustomDataEntry extends ValueDataEntry{
