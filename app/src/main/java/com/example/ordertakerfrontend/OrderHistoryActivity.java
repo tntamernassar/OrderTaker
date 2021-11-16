@@ -172,6 +172,7 @@ public class OrderHistoryActivity extends AppCompatActivity implements MessageOb
 
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.O)
     @Override
     public void accept(OrderHistoryContainer message) {
         System.out.println("accepted...***********************");

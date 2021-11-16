@@ -12,6 +12,7 @@ import com.anychart.chart.common.dataentry.ValueDataEntry;
 import com.anychart.charts.Cartesian;
 import com.anychart.core.cartesian.series.Line;
 import com.anychart.enums.Anchor;
+import com.anychart.enums.MarkerType;
 import com.example.ordertakerfrontend.BackEnd.Logic.Order;
 import com.example.ordertakerfrontend.R;
 
@@ -28,7 +29,7 @@ import androidx.annotation.RequiresApi;
 public class OrderHistoryCharts {
     public static HashMap<Integer, HashMap<Integer, ArrayList<Order>>> ordersPerMonthPerDays;
     public static HashMap<Integer, Integer> quantityPerDays;
-    int currentMonth;
+    static int currentMonth;
 
     @RequiresApi(api = Build.VERSION_CODES.O)
     public OrderHistoryCharts(LinkedList<Order> orders){
@@ -58,99 +59,82 @@ public class OrderHistoryCharts {
                 quantityPerDays.put(day, ordersPerMonthPerDays.get(currentMonth).get(day).size());
         }
 
-        // for testing
-            for(int i = 16; i < 31; i++){
-                Random r = new Random();
-                int random = ThreadLocalRandom.current().nextInt(13, 100);
-                quantityPerDays.put(i, random);
-            }
-        //
     }
 
+    /**
+     * Line Charts
+     **/
     public static void createTrafficChart(View parent){
 
         AnyChartView lineChart = (AnyChartView) parent.findViewById(R.id.trafficChartForQuantity);
 //        lineChart.setProgressBar(parent.findViewById(R.id.progressBar));
         APIlib.getInstance().setActiveAnyChartView(lineChart);
 
-        // adding line chart
-        Cartesian cartesian = AnyChart.line();
-        cartesian.yAxis(0).title("כמות המוצרים");
-        cartesian.xAxis(0).title();
-//            cartesian.animation(true);
-
         // building the line chart:
         List<DataEntry> seriesData = new ArrayList<>();
         for(Integer day: quantityPerDays.keySet())
-            seriesData.add(new ValueDataEntry(day + "", quantityPerDays.get(day)));
+            seriesData.add(new ValueDataEntry(day + "/" + currentMonth, quantityPerDays.get(day)));
 
 
-
-        Line series = cartesian.line(seriesData);
-        series.name("كمية المبيعات");
-        series.hovered().markers().enabled(true);
-
-        series.tooltip()
-                .position("right")
-                .anchor(Anchor.LEFT_CENTER)
-                .offsetX(5d)
-                .offsetY(5d);
-
-        cartesian.legend().enabled(true);
-        cartesian.legend().fontSize(13d);
-        cartesian.legend().padding(0d, 0d, 10d, 0d);
-//
-//        ViewGroup.LayoutParams params = lineChart.getLayoutParams();
-//        params.width = ViewGroup.LayoutParams.MATCH_PARENT;
-//        params.height = 600;
-//        lineChart.setLayoutParams(params);
-//        lineChart.requestLayout();
-
-
-        lineChart.setChart(cartesian);
+        initializeLineChart(lineChart, seriesData, "كمية المبيعات", "כמות המוצרים", "", "blue");
 
     }
-
     public static void createTrafficChartForPrice(View parent){
         AnyChartView priceChart = (AnyChartView) parent.findViewById(R.id.trafficChartForPrice);
         APIlib.getInstance().setActiveAnyChartView(priceChart);
 
-//        priceChart.setProgressBar(parent.findViewById(R.id.progressBar));
-// adding line chart
-        Cartesian cartesian = AnyChart.line();
-        cartesian.yAxis(0).title("כמות המוצרים");
-        cartesian.xAxis(0).title();
-//            cartesian.animation(true);
+        HashMap<Integer, Integer> pricePerDay = new HashMap<>();
+
+        for(Integer day: ordersPerMonthPerDays.get(currentMonth).keySet()){
+            int totalPerDay = 0;
+            for(Order o: ordersPerMonthPerDays.get(currentMonth).get(day)){
+                totalPerDay += o.calculatePrice();
+            }
+
+            pricePerDay.put(day, totalPerDay);
+        }
+
 
         // building the line chart:
         List<DataEntry> seriesData = new ArrayList<>();
-        for(Integer day: quantityPerDays.keySet())
-            seriesData.add(new ValueDataEntry(day + "", quantityPerDays.get(day)));
+        for(Integer day: pricePerDay.keySet())
+            seriesData.add(new ValueDataEntry(day + "/" + currentMonth, pricePerDay.get(day)));
+
+        initializeLineChart(priceChart, seriesData, "كمية المبيعات", "מחיר ₪", "", "red");
+    }
+
+    /**
+     * Pie Chart
+     **/
+    public static void createPieChart(View parent){
+
+    }
 
 
 
+
+
+    public static void initializeLineChart(AnyChartView someChart, List<DataEntry> seriesData, String chartName, String yTitle, String xTitle, String LineColor){
+        Cartesian cartesian = AnyChart.line();
+        cartesian.yAxis(0).title(yTitle);
+        cartesian.xAxis(0).title(xTitle);
         Line series = cartesian.line(seriesData);
-        series.name("aaaaaaaaaaaa");
+        series.name(chartName);
         series.hovered().markers().enabled(true);
-
+        series.hovered().markers()
+                .type(MarkerType.CIRCLE)
+                .size(4d);
         series.tooltip()
                 .position("right")
                 .anchor(Anchor.LEFT_CENTER)
                 .offsetX(5d)
                 .offsetY(5d);
 
+        series.stroke(LineColor);
+
         cartesian.legend().enabled(true);
         cartesian.legend().fontSize(13d);
         cartesian.legend().padding(0d, 0d, 10d, 0d);
-//
-//        ViewGroup.LayoutParams params = lineChart.getLayoutParams();
-//        params.width = ViewGroup.LayoutParams.MATCH_PARENT;
-//        params.height = 600;
-//        lineChart.setLayoutParams(params);
-//        lineChart.requestLayout();
-
-
-        priceChart.setChart(cartesian);
+        someChart.setChart(cartesian);
     }
-
 }
