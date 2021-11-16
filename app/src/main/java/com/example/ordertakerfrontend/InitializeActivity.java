@@ -206,39 +206,42 @@ public class InitializeActivity extends AppCompatActivity implements MessageObse
 
     @Override
     public synchronized void accept(initResponse message) {
-        try {
-            JSONArray serverImages = message.getServerImages();
-            String[] tabletImages = ImagesManager.listImages();
-            List<String> tabletImagesList = Arrays.asList(tabletImages);
-            LinkedList<String> missingImages = new LinkedList<>();
-            for (int i = 0; i < serverImages.length(); i++) {
-                String serverImage = serverImages.getString(i);
-                if (!tabletImagesList.contains(serverImage)) {
-                    missingImages.add(serverImage);
+        runOnUiThread(()->{
+            try {
+                JSONArray serverImages = message.getServerImages();
+                String[] tabletImages = ImagesManager.listImages();
+                List<String> tabletImagesList = Arrays.asList(tabletImages);
+                LinkedList<String> missingImages = new LinkedList<>();
+                for (int i = 0; i < serverImages.length(); i++) {
+                    String serverImage = serverImages.getString(i);
+                    if (!tabletImagesList.contains(serverImage)) {
+                        missingImages.add(serverImage);
+                    }
                 }
+                this.missingImages = missingImages;
+                this.shouldDownload = this.missingImages.size();
+                this.checkIfDone();
+                this.updateProgress();
+            }catch (Exception e){
+                e.printStackTrace();
             }
-            this.missingImages = missingImages;
-            this.shouldDownload = this.missingImages.size();
-            this.checkIfDone();
-            this.updateProgress();
-        }catch (Exception e){
-            e.printStackTrace();
-        }
-
+        });
     }
 
 
 
     @Override
     public synchronized void accept(ServerImage message) {
-        if(this.missingImages != null){
-            boolean doneThisImage = message.getChunks() == message.getChunkNumber();
-            if(doneThisImage){
-                this.missingImages.remove(message.getName());
-                checkIfDone();
-                updateProgress();
+        runOnUiThread(()->{
+            if(this.missingImages != null){
+                boolean doneThisImage = message.getChunks() == message.getChunkNumber();
+                if(doneThisImage){
+                    this.missingImages.remove(message.getName());
+                    checkIfDone();
+                    updateProgress();
+                }
             }
-        }
+        });
     }
 
     @Override

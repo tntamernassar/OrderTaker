@@ -366,51 +366,61 @@ public class OrderActivity extends AppCompatActivity implements OnePageOrderActi
     }
 
     @Override
-    public void accept(NetworkMessage message) { }
-
-    @Override
     public void accept(initResponse message) {
-        TabLayout categories = (TabLayout) findViewById(R.id.categories);
-        String selected = categories.getTabAt(categories.getSelectedTabPosition()).getText().toString();
-        createMenuList(selected);
-        createOrdersList();
+        runOnUiThread(()->{
+            TabLayout categories = (TabLayout) findViewById(R.id.categories);
+            String selected = categories.getTabAt(categories.getSelectedTabPosition()).getText().toString();
+            createMenuList(selected);
+            createOrdersList();
+        });
     }
-
-    @Override
-    public void accept(ServerImage message) { }
 
     @Override
     public void accept(MenuEditNotification message) {
-        buildTabs();
-        TabLayout categories = (TabLayout) findViewById(R.id.categories);
-        String selected = categories.getTabAt(categories.getSelectedTabPosition()).getText().toString();
-        createMenuList(selected);
+        runOnUiThread(()->{
+            buildTabs();
+            TabLayout categories = (TabLayout) findViewById(R.id.categories);
+            String selected = categories.getTabAt(categories.getSelectedTabPosition()).getText().toString();
+            createMenuList(selected);
+        });
     }
+
+    @Override
+    public void accept(CloseTableNotification message) {
+        runOnUiThread(()->{
+            if (message.getTable() == tableId){
+                Intent mainActivity = new Intent(this, MainActivity.class);
+                startActivity(mainActivity);
+            }
+        });
+    }
+
+    @Override
+    public void accept(CancelTableNotification message) {
+        runOnUiThread(()->{
+            if (message.getTable() == tableId){
+                Intent mainActivity = new Intent(this, MainActivity.class);
+                startActivity(mainActivity);
+            }
+        });
+    }
+
+    @Override
+    public void accept(SubmitTableNotification message) {
+        runOnUiThread(()->{
+            createOrdersList();
+            updateOrderPrice();
+        });
+    }
+
+    @Override
+    public void accept(NetworkMessage message) { }
 
     @Override
     public void accept(OpenTableNotification message) { }
 
     @Override
-    public void accept(CloseTableNotification message) {
-        if (message.getTable() == tableId){
-            Intent mainActivity = new Intent(this, MainActivity.class);
-            startActivity(mainActivity);
-        }
-    }
-
-    @Override
-    public void accept(CancelTableNotification message) {
-        if (message.getTable() == tableId){
-            Intent mainActivity = new Intent(this, MainActivity.class);
-            startActivity(mainActivity);
-        }
-    }
-
-    @Override
-    public void accept(SubmitTableNotification message) {
-        createOrdersList();
-        updateOrderPrice();
-    }
+    public void accept(ServerImage message) { }
 
     @Override
     public void accept(OrderHistoryContainer message) {

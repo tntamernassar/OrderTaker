@@ -132,6 +132,17 @@ public class OrderHistoryActivity extends AppCompatActivity implements MessageOb
         }
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.O)
+    @Override
+    public void accept(OrderHistoryContainer message) {
+        runOnUiThread(()->{
+            this.syncing = false;
+            this.orderHistory = Constants.WAITRESS.getRestaurant().getOrderHistory();
+            this.orderHistory = new OrderHistory(DataMock.data_set_1);
+            charts();
+        });
+    }
+
     @Override
     public void accept(NetworkMessage message) {
 
@@ -172,19 +183,4 @@ public class OrderHistoryActivity extends AppCompatActivity implements MessageOb
 
     }
 
-    @RequiresApi(api = Build.VERSION_CODES.O)
-    @Override
-    public void accept(OrderHistoryContainer message) {
-        System.out.println("accepted...***********************");
-        this.syncing = false;
-        this.orderHistory = Constants.WAITRESS.getRestaurant().getOrderHistory();
-        this.orderHistory = new OrderHistory(DataMock.data_set_1);
-        charts();
-    }
-
-    private class CustomDataEntry extends ValueDataEntry{
-        CustomDataEntry(String x, Number value) {
-            super(x, value);
-        }
-    }
 }

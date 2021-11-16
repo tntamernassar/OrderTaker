@@ -27,11 +27,6 @@ public class Constants {
      * **/
     public static String LOG_FILE = "log.txt";
 
-    /**
-     * Order History File,
-     * The Order History File holds all the orders from all the devices
-     * **/
-    public static String ORDER_HISTORY_FILE = "orders";
 
     /**
      * Restaurant State File,
@@ -45,8 +40,6 @@ public class Constants {
 
     public static String DEFAULT_IMAGE_NAME = "default.png";
 
-
-    public static int PRINTER_DEMON_INTERVAL = 20 * 1000;
 
 
     public static int NETWORK_DEMON_INTERVAL = 20 * 1000;

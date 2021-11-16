@@ -212,32 +212,38 @@ public class MainActivity extends AppCompatActivity implements MessageObserver {
 
     @Override
     public void accept(OpenTableNotification message) {
-        int table = message.getTable();
-        Resources resources = getResources();
-        int table_id = resources.getIdentifier("table_"+table, "id", getApplicationContext().getPackageName());
-        Button table_btn = findViewById(table_id);
-        table_btn.setBackground(ContextCompat.getDrawable(getApplicationContext(), R.drawable.taken_table));
-        table_btn.setTextColor(this.getResources().getColor(R.color.white));
+        runOnUiThread(()->{
+            int table = message.getTable();
+            Resources resources = getResources();
+            int table_id = resources.getIdentifier("table_"+table, "id", getApplicationContext().getPackageName());
+            Button table_btn = findViewById(table_id);
+            table_btn.setBackground(ContextCompat.getDrawable(getApplicationContext(), R.drawable.taken_table));
+            table_btn.setTextColor(this.getResources().getColor(R.color.white));
+        });
     }
 
     @Override
     public void accept(CloseTableNotification message) {
-        int table = message.getTable();
-        Resources resources = getResources();
-        int table_id = resources.getIdentifier("table_"+table, "id", getApplicationContext().getPackageName());
-        Button table_btn = findViewById(table_id);
-        table_btn.setBackground(ContextCompat.getDrawable(getApplicationContext(), R.drawable.available_table));
-        table_btn.setTextColor(this.getResources().getColor(R.color.gold2));
+        runOnUiThread(()->{
+            int table = message.getTable();
+            Resources resources = getResources();
+            int table_id = resources.getIdentifier("table_"+table, "id", getApplicationContext().getPackageName());
+            Button table_btn = findViewById(table_id);
+            table_btn.setBackground(ContextCompat.getDrawable(getApplicationContext(), R.drawable.available_table));
+            table_btn.setTextColor(this.getResources().getColor(R.color.gold2));
+        });
     }
 
     @Override
     public void accept(CancelTableNotification message) {
-        int table = message.getTable();
-        Resources resources = getResources();
-        int table_id = resources.getIdentifier("table_"+table, "id", getApplicationContext().getPackageName());
-        Button table_btn = findViewById(table_id);
-        table_btn.setBackground(ContextCompat.getDrawable(getApplicationContext(), R.drawable.available_table));
-        table_btn.setTextColor(this.getResources().getColor(R.color.gold2));
+        runOnUiThread(()->{
+            int table = message.getTable();
+            Resources resources = getResources();
+            int table_id = resources.getIdentifier("table_"+table, "id", getApplicationContext().getPackageName());
+            Button table_btn = findViewById(table_id);
+            table_btn.setBackground(ContextCompat.getDrawable(getApplicationContext(), R.drawable.available_table));
+            table_btn.setTextColor(this.getResources().getColor(R.color.gold2));
+        });
     }
 
     @Override

@@ -39,9 +39,7 @@ public class NetworkReceiver extends Thread {
                 JSONObject JSONMessage = new JSONObject(message);
                 NetworkMessage networkMessage = NetworkMessageDecoder.decode(JSONMessage);
                 networkMessage.visit(Constants.WAITRESS);
-                Constants.activity.runOnUiThread(()->{
-                    adapter.notifyObservers(networkMessage);
-                });
+                adapter.notifyObservers(networkMessage);
             }
         } catch (IOException e) {
             this.connected = false;
