@@ -10,11 +10,15 @@ import com.anychart.chart.common.dataentry.DataEntry;
 import com.anychart.chart.common.dataentry.ValueDataEntry;
 import com.anychart.charts.Cartesian;
 import com.anychart.charts.Pie;
+import com.anychart.core.cartesian.series.Column;
 import com.anychart.core.cartesian.series.Line;
 import com.anychart.enums.Align;
 import com.anychart.enums.Anchor;
+import com.anychart.enums.HoverMode;
 import com.anychart.enums.LegendLayout;
 import com.anychart.enums.MarkerType;
+import com.anychart.enums.Position;
+import com.anychart.enums.TooltipPositionMode;
 import com.example.ordertakerfrontend.BackEnd.Logic.Order;
 import com.example.ordertakerfrontend.BackEnd.Logic.OrderItem;
 import com.example.ordertakerfrontend.BackEnd.Logic.Product;
@@ -24,9 +28,14 @@ import com.example.ordertakerfrontend.R;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.TreeMap;
 
 import androidx.annotation.RequiresApi;
 
@@ -35,6 +44,7 @@ public class OrderHistoryCharts {
     public static HashMap<Integer, Integer> quantityPerDays;
 
     public static HashMap<Integer, HashMap<Integer, HashMap<String, Integer>>> quantityPerSection;
+    public static HashMap<Integer, HashMap<Integer, HashMap<String, Integer>>> quantityPerProduct;
     static int currentMonth;
 
     @RequiresApi(api = Build.VERSION_CODES.O)
@@ -42,6 +52,7 @@ public class OrderHistoryCharts {
         ordersPerMonthPerDays = new HashMap<>();
         quantityPerDays = new HashMap<>();
         quantityPerSection = new HashMap<>();
+        quantityPerProduct = new HashMap<>();
         currentMonth = (int) LocalDateTime.now().getMonth().getValue();
         init(orders);
     }
@@ -76,15 +87,28 @@ public class OrderHistoryCharts {
                     if(!quantityPerSection.get(month).containsKey(day))
                         quantityPerSection.get(month).put(day, new HashMap<>());
 
+                    if(!quantityPerProduct.containsKey(month))
+                        quantityPerProduct.put(month, new HashMap<>());
+                    if(!quantityPerProduct.get(month).containsKey(day))
+                        quantityPerProduct.get(month).put(day, new HashMap<>());
+
                     for(OrderItem  orderitem: o.getOrderItems().values()){
                         OrderProduct p = (OrderProduct) orderitem.getProduct();
                         String section = p.getMenuProduct().getCategory();
-                        if(allCategories.contains(section))
-                         if(!quantityPerSection.get(month).get(day).containsKey(section))
-                             quantityPerSection.get(month).get(day).put(section, 0);
+                        String product = p.getMenuProduct().getName();
 
-                         int oldQuantity = quantityPerSection.get(month).get(day).get(section);
-                         quantityPerSection.get(month).get(day).put(section, oldQuantity + 1);
+                        if(allCategories.contains(section))
+                            if(!quantityPerSection.get(month).get(day).containsKey(section))
+                                quantityPerSection.get(month).get(day).put(section, 0);
+
+                        if(!quantityPerProduct.get(month).get(day).containsKey(product))
+                            quantityPerProduct.get(month).get(day).put(product, 0);
+
+                         int oldSectionQuantity = quantityPerSection.get(month).get(day).get(section);
+                         quantityPerSection.get(month).get(day).put(section, oldSectionQuantity + 1);
+
+                        int oldProductQuantity = quantityPerProduct.get(month).get(day).get(product);
+                        quantityPerProduct.get(month).get(day).put(product, oldProductQuantity + 1);
 
                     }
                 }
@@ -135,7 +159,7 @@ public class OrderHistoryCharts {
     }
 
     /**
-     * Pie Charta
+     * Pie Chart
      **/
     public static void createPieChart(View parent){
         AnyChartView anyChartView = (AnyChartView) parent.findViewById(R.id.pieChart);
@@ -174,6 +198,74 @@ public class OrderHistoryCharts {
         anyChartView.setChart(pie);
     }
 
+    /**
+     * Column Chart
+     **/
+    public static void createColumnChart(View parent){
+        AnyChartView anyChartView = (AnyChartView) parent.findViewById(R.id.columnChart);
+        APIlib.getInstance().setActiveAnyChartView(anyChartView);
+
+        Cartesian cartesian = AnyChart.column();
+        // for testing
+        int top = 5;
+
+        // extract useful informations
+        HashMap<String, Integer> productPerQuantity = new HashMap<>();
+        for(Integer day: quantityPerProduct.get(currentMonth).keySet()){
+            for(String product: quantityPerProduct.get(currentMonth).get(day).keySet()){
+                if(!productPerQuantity.containsKey(product))
+                    productPerQuantity.put(product, 0);
+
+                int oldProductQuantity = productPerQuantity.get(product);
+                productPerQuantity.put(product, oldProductQuantity + 1);
+            }
+        }
+
+        // sort the above hash by values
+        Set<Map.Entry<String, Integer>> entries = productPerQuantity.entrySet();
+        Comparator<Map.Entry<String, Integer>> valueComparator = new Comparator<Map.Entry<String, Integer>>() {
+            @Override
+            public int compare(Map.Entry<String, Integer> stringIntegerEntry, Map.Entry<String, Integer> t1) {
+                int e1 = stringIntegerEntry.getValue();
+                int e2 = t1.getValue();
+                return Integer.compare(e2, e1);
+            }
+        };
+
+        List<Map.Entry<String, Integer>> listOfEntries = new ArrayList<>(entries);
+        Collections.sort(listOfEntries, valueComparator);
+
+        List<DataEntry> data = new ArrayList<>();
+        for(int i =0; i < top; i++){
+            Map.Entry<String, Integer> entry = listOfEntries.get(i);
+            data.add(new ValueDataEntry(entry.getKey(), entry.getValue()));
+        }
+
+        Column column = cartesian.column(data);
+
+        column.tooltip()
+                .titleFormat("{%X}")
+                .position(Position.CENTER_BOTTOM)
+                .anchor(Anchor.CENTER_BOTTOM)
+                .offsetX(0d)
+                .offsetY(5d)
+                .format("${%Value}{groupsSeparator: }");
+
+        cartesian.animation(true);
+        cartesian.title("Top 10 Cosmetic Products by Revenue");
+
+        cartesian.yScale().minimum(0d);
+
+        cartesian.yAxis(0).labels().format("${%Value}{groupsSeparator: }");
+
+        cartesian.tooltip().positionMode(TooltipPositionMode.POINT);
+        cartesian.interactivity().hoverMode(HoverMode.BY_X);
+
+        cartesian.xAxis(0).title("Product");
+        cartesian.yAxis(0).title("Revenue");
+
+        anyChartView.setChart(cartesian);
+    }
 
 
 

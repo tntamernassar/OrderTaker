@@ -71,14 +71,17 @@ public class OrderHistoryActivity extends AppCompatActivity implements MessageOb
         setContentView(R.layout.activity_order_history);
         getSupportActionBar().hide();
 
+
+
         this.container = findViewById(R.id.container);
         this.syncing = true;
+
         NetworkAdapter.getInstance().register(id, this);
         NetworkAdapter.getInstance().send(new GetOrderHistory());
 
+
         MaterialButtonToggleGroup materialButtonToggleGroup = findViewById(R.id.toggle);
         materialButtonToggleGroup.addOnButtonCheckedListener((toggleButtonGroup, checkedId, isChecked)->{
-
             if (checkedId == R.id.charts){
                 if(isChecked) {
                     charts();
@@ -112,6 +115,7 @@ public class OrderHistoryActivity extends AppCompatActivity implements MessageOb
             orderHistoryCharts.createTrafficChart(inflated);
             orderHistoryCharts.createTrafficChartForPrice(inflated);
             orderHistoryCharts.createPieChart(inflated);
+            orderHistoryCharts.createColumnChart(inflated);
 
         }
     }
@@ -139,10 +143,11 @@ public class OrderHistoryActivity extends AppCompatActivity implements MessageOb
         runOnUiThread(()->{
             this.syncing = false;
             this.orderHistory = Constants.WAITRESS.getRestaurant().getOrderHistory();
+            // added
             this.orderHistory = new OrderHistory(DataMock.data_set_1);
             charts();
         });
-    }
+    };
 
     @Override
     public void accept(NetworkMessage message) {

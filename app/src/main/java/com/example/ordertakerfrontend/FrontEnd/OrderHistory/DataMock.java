@@ -25,6 +25,7 @@ public class DataMock {
 
         LinkedList<Order> orders = new LinkedList<>();
         List<String> allCategories = List.of(Menu.getInstance().getCategories());
+        String[] products = new String[]{"همبرجر", "شنيتسل", "كباب", "تورتيا", "شوارما", "برجيت", "سلمون", "سرغوس", "سمك", "باستا"};
 
         for (int day = 1; day <= 30; day++){
             int numOfOrders = ThreadLocalRandom.current().nextInt(0, 100);
@@ -33,6 +34,7 @@ public class DataMock {
                 int hour = ThreadLocalRandom.current().nextInt(8, 23);
                 int minutes = ThreadLocalRandom.current().nextInt(0, 60);
                 int sectionIndex = ThreadLocalRandom.current().nextInt(0, allCategories.size());
+                int productIndex = ThreadLocalRandom.current().nextInt(0, products.length);
                 LocalDateTime localDateTime = LocalDateTime.of(2021, month, day, hour, minutes);
                 String startedBy = "B2b2";
 
@@ -45,7 +47,7 @@ public class DataMock {
                 for (int i = 0; i < numOfProducts; i ++){
                     int price = ThreadLocalRandom.current().nextInt(10, 100);
                     int quantity = ThreadLocalRandom.current().nextInt(1, 5);
-                    order.addItem(startedBy, new OrderProduct(new MenuProduct(allCategories.get(sectionIndex), "p1", "desc", price, true, new LinkedList<>(), new String[]{})), quantity, "", false);
+                    order.addItem(startedBy, new OrderProduct(new MenuProduct(allCategories.get(sectionIndex), products[productIndex], "desc", price, true, new LinkedList<>(), new String[]{})), quantity, "", false);
                 }
                 orders.add(order);
             }
