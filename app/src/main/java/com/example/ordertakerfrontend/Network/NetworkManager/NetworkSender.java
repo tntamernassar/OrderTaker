@@ -10,33 +10,38 @@ import java.io.DataOutputStream;
 import java.io.IOException;
 import java.net.Socket;
 import java.nio.charset.StandardCharsets;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ThreadPoolExecutor;
 
-public class NetworkSender extends Thread {
+public class NetworkSender {
 
     private Socket socket;
-    private NetworkMessage networkMessage;
+    private ThreadPoolExecutor threadPool;
 
-    public NetworkSender(Socket socket, NetworkMessage networkMessage){
+    public NetworkSender(Socket socket) {
         this.socket = socket;
-        this.networkMessage = networkMessage;
+        this.threadPool =  (ThreadPoolExecutor) Executors.newFixedThreadPool(1);
     }
 
-    @Override
-    public void run() {
-        try {
-            JSONObject jsonObject = networkMessage.encode();
-            jsonObject.put("SerialNumber", Constants.WAITRESS.getName());
-            String msg = new String(jsonObject.toString().getBytes(StandardCharsets.UTF_8), StandardCharsets.UTF_8);
-            if(socket != null) {
-                DataOutputStream dos = new DataOutputStream(socket.getOutputStream());
-                dos.writeUTF(msg);
+    public void send(NetworkMessage message){
+        threadPool.execute(()->{
+            try {
+                JSONObject jsonObject = message.encode();
+                jsonObject.put("SerialNumber", Constants.WAITRESS.getName());
+                String msg = new String(jsonObject.toString().getBytes(StandardCharsets.UTF_8), StandardCharsets.UTF_8);
+                if(socket != null) {
+                    DataOutputStream dos = new DataOutputStream(socket.getOutputStream());
+                    dos.writeUTF(msg);
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+            } catch (JSONException e){
+                e.printStackTrace();
+            } catch (Exception e){
+                e.printStackTrace();
             }
-        } catch (IOException e) {
-            e.printStackTrace();
-        } catch (JSONException e){
-            e.printStackTrace();
-        } catch (Exception e){
-            e.printStackTrace();
-        }
+        });
     }
+
+
 }

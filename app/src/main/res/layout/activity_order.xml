@@ -41,25 +41,12 @@
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
                 android:padding="16dp"
-                android:text="انهاء الطلبيه"
+                android:text="اغلاق الطاوله"
                 android:layout_marginLeft="20dp"
                 android:layout_marginTop="10dp"
                 android:backgroundTint="@color/gold"
                 android:drawableTint="@color/white"
                 android:drawableLeft="@android:drawable/ic_lock_lock"
-                android:textSize="20dp"/>
-
-            <Button
-                android:id="@+id/cancel"
-                android:layout_width="fill_parent"
-                android:layout_height="wrap_content"
-                android:padding="16dp"
-                android:text="الغاء الطلبيه"
-                android:layout_marginLeft="20dp"
-                android:layout_marginTop="10dp"
-                android:backgroundTint="@color/gold"
-                android:drawableTint="@color/white"
-                android:drawableLeft="@drawable/ic_baseline_delete_forever_24"
                 android:textSize="20dp"/>
 
 

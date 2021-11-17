@@ -348,7 +348,7 @@ public class MenuEditActivity extends AppCompatActivity {
 
     private void setAddProductListener(Menu menu){
         FloatingActionButton add_product = findViewById(R.id.add_product);
-
+        Activity that = this;
         add_product.setOnClickListener(add_product_view -> {
             setWorkingArea("", "", 0, true, new LinkedList<>(), new String[]{"default.png"}, new AddProductCallback() {
                 @RequiresApi(api = Build.VERSION_CODES.O)
@@ -362,7 +362,7 @@ public class MenuEditActivity extends AppCompatActivity {
                     AsyncTask t = new AsyncTask() {
                         @Override
                         protected void onPreExecute() {
-                            Toast.makeText(getApplicationContext(),"Started", Toast.LENGTH_SHORT).show();
+
                         }
 
                         @Override
@@ -379,13 +379,12 @@ public class MenuEditActivity extends AppCompatActivity {
 
                         @Override
                         protected void onPostExecute(Object o) {
-                            Toast.makeText(getApplicationContext(),"Finished", Toast.LENGTH_SHORT).show();
                             menu.addProduct(menuProduct);
                             BuildMenuList(menu, menuProduct.getCategory());
                             setAddProductListener(menu);
                             writeMenu(menu);
-
                             NetworkAdapter.getInstance().send(new MenuEdit(menu.toJSON(),havingPendingImage ? new String[]{imageName} : new String[]{}, new String[]{}));
+                            Utils.ShowSuccessAlert(that, "تم اضافة المنتج !");
                         }
                     };
 

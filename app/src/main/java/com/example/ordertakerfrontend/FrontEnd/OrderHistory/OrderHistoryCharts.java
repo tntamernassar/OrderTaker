@@ -207,7 +207,7 @@ public class OrderHistoryCharts {
 
         Cartesian cartesian = AnyChart.column();
         // for testing
-        int top = 5;
+        int top = 3;
 
         // extract useful informations
         HashMap<String, Integer> productPerQuantity = new HashMap<>();
@@ -266,6 +266,7 @@ public class OrderHistoryCharts {
 
         anyChartView.setChart(cartesian);
     }
+
 
 
 

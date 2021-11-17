@@ -3,6 +3,7 @@ package com.example.ordertakerfrontend;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.os.Bundle;
@@ -16,6 +17,7 @@ import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import com.example.ordertakerfrontend.BackEnd.Logic.Order;
 import com.example.ordertakerfrontend.BackEnd.Logic.OrderItem;
 import com.example.ordertakerfrontend.BackEnd.Services.Constants;
 import com.example.ordertakerfrontend.BackEnd.Services.ImagesManager;
@@ -69,30 +71,13 @@ public class OrderActivity extends AppCompatActivity implements OnePageOrderActi
         createOrdersList();
         updateOrderPrice();
 
+        Activity that = this;
+
         TabLayout categories = (TabLayout) findViewById(R.id.categories);
         if(Menu.getInstance().getCategories().length > 0) {
             String selected = categories.getTabAt(categories.getSelectedTabPosition()).getText().toString();
             createMenuList(selected);
         }
-
-        Button cancel = findViewById(R.id.cancel);
-        cancel.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Utils.YesNoDialog(OrderActivity.this, "لالغاء الطلب اضغط نعم", new YesNoCallbacks() {
-                    @Override
-                    public void yes() {
-                        Constants.WAITRESS.cancelOrder(tableId);
-                        NetworkAdapter.getInstance().send(new CancelTable(tableId));
-                        Intent intent = new Intent(OrderActivity.this, MainActivity.class);
-                        startActivity(intent);
-                    }
-
-                    @Override
-                    public void no() { }
-                });
-            }
-        });
 
         FloatingActionButton submit = findViewById(R.id.submit);
         submit.setOnClickListener(new View.OnClickListener() {
@@ -103,6 +88,8 @@ public class OrderActivity extends AppCompatActivity implements OnePageOrderActi
                     public void yes() {
                         Constants.WAITRESS.submitOrder(tableId);
                         NetworkAdapter.getInstance().send(new SubmitTable(Constants.WAITRESS.getRestaurant().getTable(tableId)));
+                        Utils.ShowSuccessAlert(that, "تم ارسال الطلبيه الى المطبخ !");
+
                     }
 
                     @Override
@@ -119,8 +106,15 @@ public class OrderActivity extends AppCompatActivity implements OnePageOrderActi
                 Utils.YesNoDialog(OrderActivity.this, "لاغلاق الطلب اضغط نعم", new YesNoCallbacks() {
                     @Override
                     public void yes() {
-                        Constants.WAITRESS.closeOrder(tableId);
-                        NetworkAdapter.getInstance().send(new CloseTable(tableId));
+                        Order order = Constants.WAITRESS.getRestaurant().getTable(tableId).getCurrentOrder();
+                        if (order.isDistributed()){
+                            Constants.WAITRESS.closeOrder(tableId);
+                            NetworkAdapter.getInstance().send(new CloseTable(tableId));
+                        }else{
+                            Constants.WAITRESS.cancelOrder(tableId);
+                            NetworkAdapter.getInstance().send(new CancelTable(tableId));
+                        }
+
                         Intent intent = new Intent(OrderActivity.this, MainActivity.class);
                         startActivity(intent);
                     }

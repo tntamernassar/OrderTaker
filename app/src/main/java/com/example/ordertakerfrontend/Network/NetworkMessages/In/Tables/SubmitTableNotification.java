@@ -26,7 +26,7 @@ public class SubmitTableNotification extends NetworkMessage {
             Table serverTable = new Table(table);
             Table tabletTable = waitress.getRestaurant().getTable(serverTable.getNumber());
             if (tabletTable.isActive()){
-                tabletTable.getCurrentOrder().setDistributed(serverTable.getCurrentOrder().isDistributed());
+                tabletTable.getCurrentOrder().setDistributed(tabletTable.getCurrentOrder().isDistributed() || serverTable.getCurrentOrder().isDistributed());
                 tabletTable.mergeTable(serverTable, waitress.getName());
             }else{
                 tabletTable.setTable(serverTable);

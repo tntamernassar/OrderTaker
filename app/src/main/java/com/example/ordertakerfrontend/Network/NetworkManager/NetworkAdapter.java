@@ -20,6 +20,7 @@ public abstract class NetworkAdapter extends Thread {
 
     private Socket socket;
     private NetworkReceiver receiver;
+    private NetworkSender sender;
     private ConcurrentHashMap<String, MessageObserver> observers;
     public static NetworkAdapter instance;
 
@@ -63,8 +64,7 @@ public abstract class NetworkAdapter extends Thread {
     }
 
     public synchronized void send(NetworkMessage message){
-        NetworkSender networkSender = new NetworkSender(socket, message);
-        networkSender.start();
+        this.sender.send(message);
     }
 
 
@@ -74,8 +74,9 @@ public abstract class NetworkAdapter extends Thread {
         boolean notifiedError = false;
         while (!connected){
             try {
-                this.socket = new Socket("10.42.0.1",2222);
+                this.socket = new Socket("10.0.0.5",2222);
                 this.receiver = new NetworkReceiver(this.socket, this);
+                this.sender = new NetworkSender(socket);
                 connected = true;
                 onConnection(this);
             } catch (IOException e) {

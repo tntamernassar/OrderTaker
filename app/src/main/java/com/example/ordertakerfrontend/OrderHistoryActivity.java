@@ -77,8 +77,9 @@ public class OrderHistoryActivity extends AppCompatActivity implements MessageOb
         this.syncing = true;
 
         NetworkAdapter.getInstance().register(id, this);
-        NetworkAdapter.getInstance().send(new GetOrderHistory());
-
+//        NetworkAdapter.getInstance().send(new GetOrderHistory());
+        this.orderHistory = new OrderHistory(DataMock.data_set_1);
+        this.syncing = false;
 
         MaterialButtonToggleGroup materialButtonToggleGroup = findViewById(R.id.toggle);
         materialButtonToggleGroup.addOnButtonCheckedListener((toggleButtonGroup, checkedId, isChecked)->{

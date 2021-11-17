@@ -8,21 +8,26 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Typeface;
+import android.graphics.drawable.Drawable;
 import android.net.wifi.WifiInfo;
 import android.net.wifi.WifiManager;
 import android.os.Build;
 import android.text.InputType;
 import android.util.Base64;
+import android.widget.Button;
 import android.widget.EditText;
 
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AlertDialog;
+import androidx.core.content.ContextCompat;
+import androidx.core.graphics.drawable.DrawableCompat;
 
 import com.example.ordertakerfrontend.FrontEnd.Menus.Menu;
 import com.example.ordertakerfrontend.FrontEnd.Menus.MenuProduct;
 import com.example.ordertakerfrontend.FrontEnd.Popups.TextInputCallback;
 import com.example.ordertakerfrontend.FrontEnd.Popups.YesNoCallbacks;
 import com.example.ordertakerfrontend.MainActivity;
+import com.example.ordertakerfrontend.R;
 
 import java.io.ByteArrayOutputStream;
 import java.lang.reflect.Method;
@@ -30,6 +35,8 @@ import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.util.Map;
 import java.util.Random;
+
+import cn.pedant.SweetAlert.SweetAlertDialog;
 
 public class Utils {
 
@@ -169,11 +176,13 @@ public class Utils {
         builder.show();
     }
 
-    public static String getSerialNumber(Activity activity) {
-        WifiManager manager = (WifiManager) activity.getSystemService(Context.WIFI_SERVICE);
-        WifiInfo info = manager.getConnectionInfo();
-        String address = info.getMacAddress();
-        return address;
+    public static void ShowSuccessAlert(final Context context, String heading) {
+        SweetAlertDialog dialog = new SweetAlertDialog(context, SweetAlertDialog.SUCCESS_TYPE);
+        dialog.setTitleText(heading);
+        dialog.changeAlertType(SweetAlertDialog.SUCCESS_TYPE);
+        dialog.show();
+        Button btn = (Button) dialog.findViewById(R.id.confirm_button);
+        btn.setText("اوكي");
     }
 
 }
