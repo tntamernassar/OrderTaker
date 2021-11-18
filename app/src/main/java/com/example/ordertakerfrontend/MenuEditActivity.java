@@ -16,6 +16,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -258,6 +259,16 @@ public class MenuEditActivity extends AppCompatActivity {
     private void BuildMenuSection(ListView view, LinkedList<MenuSection> menuSections){
         EditableAddons editableAddons = new EditableAddons(this, view.getId(), menuSections);
         view.setAdapter(editableAddons);
+        int totalHeight = 0;
+        for (int i = 0; i < editableAddons.getCount(); i++) {
+            View listItem = editableAddons.getView(i, null, view);
+            listItem.measure(0, 0);
+            totalHeight += listItem.getMeasuredHeight();
+        }
+        ViewGroup.LayoutParams params = view.getLayoutParams();
+        params.height = totalHeight + (view.getDividerHeight() * (editableAddons.getCount() - 1));
+        view.setLayoutParams(params);
+        view.requestLayout();
     }
 
     private void resetWorkingArea(){
