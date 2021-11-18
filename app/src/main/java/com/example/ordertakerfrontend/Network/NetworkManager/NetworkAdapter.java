@@ -64,7 +64,9 @@ public abstract class NetworkAdapter extends Thread {
     }
 
     public synchronized void send(NetworkMessage message){
-        this.sender.send(message);
+        if (this.sender != null) {
+            this.sender.send(message);
+        }
     }
 
 
