@@ -156,6 +156,12 @@ public class MenuProduct implements Product, Serializable {
     }
 
     @Override
+    public Product clone() {
+        MenuProduct menuProduct = new MenuProduct(category, name, description, price, available, sections != null ? (LinkedList<MenuSection>) sections.clone(): null, images.clone());
+        return menuProduct;
+    }
+
+    @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;

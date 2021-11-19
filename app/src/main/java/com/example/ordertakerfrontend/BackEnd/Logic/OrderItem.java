@@ -93,6 +93,7 @@ public class OrderItem implements Serializable {
         return timestamp;
     }
 
+
     public Product getProduct() {
         return product;
     }
@@ -123,6 +124,10 @@ public class OrderItem implements Serializable {
         if (o == null || getClass() != o.getClass()) return false;
         OrderItem orderItem = (OrderItem) o;
         return waiterName.equals(orderItem.waiterName) && timestamp.equals(orderItem.timestamp);
+    }
+
+    public boolean sameItem(OrderItem orderItem){
+        return quantity == orderItem.getQuantity() && notes.equals(orderItem.getNotes()) && product.equals(orderItem.getProduct());
     }
 
     @Override

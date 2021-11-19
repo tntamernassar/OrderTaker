@@ -11,4 +11,6 @@ public interface Product extends Serializable {
         return null;
     }
 
+    Product clone();
+
 }

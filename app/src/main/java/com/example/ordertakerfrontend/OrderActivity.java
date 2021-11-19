@@ -15,6 +15,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ListView;
+import android.widget.NumberPicker;
 import android.widget.TextView;
 
 import com.example.ordertakerfrontend.BackEnd.Logic.Order;
@@ -66,6 +67,15 @@ public class OrderActivity extends AppCompatActivity implements OnePageOrderActi
         Intent intent = getIntent();
         this.tableId = intent.getExtras().getInt("table");
 
+        NumberPicker numberPicker = findViewById(R.id.people_on_table);
+        String[] options = new String[41];
+        for (int i = 0; i <= 40; i++){
+            options[i] = i + "";
+        }
+        numberPicker.setDisplayedValues(options);
+        numberPicker.setMinValue(0);
+        numberPicker.setMaxValue(options.length-1);
+
         buildTabs();
 
         createOrdersList();
@@ -107,16 +117,21 @@ public class OrderActivity extends AppCompatActivity implements OnePageOrderActi
                     @Override
                     public void yes() {
                         Order order = Constants.WAITRESS.getRestaurant().getTable(tableId).getCurrentOrder();
-                        if (order.isDistributed()){
-                            Constants.WAITRESS.closeOrder(tableId);
-                            NetworkAdapter.getInstance().send(new CloseTable(tableId));
-                        }else{
+                        if (order.isDistributed()) {
+                            if (numberPicker.getValue() == 0) {
+                                Utils.ShowWarningAlert(that, "الرجاء ادخال عدد الاشخاص ");
+                            } else {
+                                Constants.WAITRESS.closeOrder(tableId);
+                                NetworkAdapter.getInstance().send(new CloseTable(tableId, numberPicker.getValue()));
+                                Intent intent = new Intent(OrderActivity.this, MainActivity.class);
+                                startActivity(intent);
+                            }
+                        } else {
                             Constants.WAITRESS.cancelOrder(tableId);
                             NetworkAdapter.getInstance().send(new CancelTable(tableId));
+                            Intent intent = new Intent(OrderActivity.this, MainActivity.class);
+                            startActivity(intent);
                         }
-
-                        Intent intent = new Intent(OrderActivity.this, MainActivity.class);
-                        startActivity(intent);
                     }
 
                     @Override
@@ -351,7 +366,7 @@ public class OrderActivity extends AppCompatActivity implements OnePageOrderActi
          * Display Popup
          * */
         dialog.show();
-        dialog.getWindow().setLayout(1000, 1500);
+        dialog.getWindow().setLayout(1000, ViewGroup.LayoutParams.WRAP_CONTENT);
     }
 
     @Override

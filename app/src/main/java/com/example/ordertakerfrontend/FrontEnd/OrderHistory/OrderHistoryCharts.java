@@ -12,6 +12,7 @@ import com.anychart.charts.Cartesian;
 import com.anychart.charts.Pie;
 import com.anychart.core.cartesian.series.Column;
 import com.anychart.core.cartesian.series.Line;
+import com.anychart.core.ui.ChartCredits;
 import com.anychart.enums.Align;
 import com.anychart.enums.Anchor;
 import com.anychart.enums.HoverMode;
@@ -27,6 +28,7 @@ import com.example.ordertakerfrontend.FrontEnd.Menus.OrderProduct;
 import com.example.ordertakerfrontend.R;
 
 import java.time.LocalDateTime;
+import java.time.Month;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -40,20 +42,20 @@ import java.util.TreeMap;
 import androidx.annotation.RequiresApi;
 
 public class OrderHistoryCharts {
-    public static HashMap<Integer, HashMap<Integer, ArrayList<Order>>> ordersPerMonthPerDays;
-    public static HashMap<Integer, Integer> quantityPerDays;
+    public HashMap<Integer, HashMap<Integer, ArrayList<Order>>> ordersPerMonthPerDays;
+    public HashMap<Integer, Integer> quantityPerDays;
 
-    public static HashMap<Integer, HashMap<Integer, HashMap<String, Integer>>> quantityPerSection;
-    public static HashMap<Integer, HashMap<Integer, HashMap<String, Integer>>> quantityPerProduct;
-    static int currentMonth;
+    public HashMap<Integer, HashMap<Integer, HashMap<String, Integer>>> quantityPerSection;
+    public HashMap<Integer, HashMap<Integer, HashMap<String, Integer>>> quantityPerProduct;
+    private int currentMonth;
 
     @RequiresApi(api = Build.VERSION_CODES.O)
-    public OrderHistoryCharts(LinkedList<Order> orders){
+    public OrderHistoryCharts(LinkedList<Order> orders, Month month){
         ordersPerMonthPerDays = new HashMap<>();
         quantityPerDays = new HashMap<>();
         quantityPerSection = new HashMap<>();
         quantityPerProduct = new HashMap<>();
-        currentMonth = (int) LocalDateTime.now().getMonth().getValue();
+        currentMonth = month.getValue();
         init(orders);
     }
 
@@ -105,10 +107,10 @@ public class OrderHistoryCharts {
                             quantityPerProduct.get(month).get(day).put(product, 0);
 
                          int oldSectionQuantity = quantityPerSection.get(month).get(day).get(section);
-                         quantityPerSection.get(month).get(day).put(section, oldSectionQuantity + 1);
+                         quantityPerSection.get(month).get(day).put(section, oldSectionQuantity + orderitem.getQuantity());
 
                         int oldProductQuantity = quantityPerProduct.get(month).get(day).get(product);
-                        quantityPerProduct.get(month).get(day).put(product, oldProductQuantity + 1);
+                        quantityPerProduct.get(month).get(day).put(product, oldProductQuantity + orderitem.getQuantity());
 
                     }
                 }
@@ -116,13 +118,16 @@ public class OrderHistoryCharts {
         }
     }
 
+
+
     /**
      * Line Charts
+     *  xAxis - day of the month
+     *  yAxis - # Of sales
      **/
-    public static void createTrafficChart(View parent){
+    public void createTrafficLineChart(View parent){
 
         AnyChartView lineChart = (AnyChartView) parent.findViewById(R.id.trafficChartForQuantity);
-//        lineChart.setProgressBar(parent.findViewById(R.id.progressBar));
         APIlib.getInstance().setActiveAnyChartView(lineChart);
 
         // building the line chart:
@@ -134,7 +139,13 @@ public class OrderHistoryCharts {
         initializeLineChart(lineChart, seriesData, "كمية المبيعات", "כמות המוצרים", "", "blue");
 
     }
-    public static void createTrafficChartForPrice(View parent){
+
+    /**
+     * Line chart
+     *  xAxis - day of the month
+     *  yAxis - total income
+     * */
+    public void createIncomeLineChart(View parent){
         AnyChartView priceChart = (AnyChartView) parent.findViewById(R.id.trafficChartForPrice);
         APIlib.getInstance().setActiveAnyChartView(priceChart);
 
@@ -160,13 +171,13 @@ public class OrderHistoryCharts {
 
     /**
      * Pie Chart
+     *  - percentage of sections sales
      **/
-    public static void createPieChart(View parent){
+    public void createSectionsPieChart(View parent){
         AnyChartView anyChartView = (AnyChartView) parent.findViewById(R.id.pieChart);
         APIlib.getInstance().setActiveAnyChartView(anyChartView);
 
         Pie pie = AnyChart.pie();
-
 
         List<DataEntry> seriesData = new ArrayList<>();
         HashMap<String, Integer> sectionCounter = new HashMap<>();
@@ -200,16 +211,16 @@ public class OrderHistoryCharts {
 
     /**
      * Column Chart
+     *  xAxis - product from top 5 products
+     *  yAxis - number of sales
      **/
-    public static void createColumnChart(View parent){
+    public void createTopNBarChart(View parent, int top){
         AnyChartView anyChartView = (AnyChartView) parent.findViewById(R.id.columnChart);
         APIlib.getInstance().setActiveAnyChartView(anyChartView);
 
         Cartesian cartesian = AnyChart.column();
-        // for testing
-        int top = 3;
 
-        // extract useful informations
+        // extract useful information
         HashMap<String, Integer> productPerQuantity = new HashMap<>();
         for(Integer day: quantityPerProduct.get(currentMonth).keySet()){
             for(String product: quantityPerProduct.get(currentMonth).get(day).keySet()){
@@ -217,7 +228,7 @@ public class OrderHistoryCharts {
                     productPerQuantity.put(product, 0);
 
                 int oldProductQuantity = productPerQuantity.get(product);
-                productPerQuantity.put(product, oldProductQuantity + 1);
+                productPerQuantity.put(product, oldProductQuantity + quantityPerProduct.get(currentMonth).get(day).get(product));
             }
         }
 
@@ -236,7 +247,7 @@ public class OrderHistoryCharts {
         Collections.sort(listOfEntries, valueComparator);
 
         List<DataEntry> data = new ArrayList<>();
-        for(int i =0; i < top; i++){
+        for(int i =0; i < Math.min(top, listOfEntries.size()); i++){
             Map.Entry<String, Integer> entry = listOfEntries.get(i);
             data.add(new ValueDataEntry(entry.getKey(), entry.getValue()));
         }
@@ -249,29 +260,26 @@ public class OrderHistoryCharts {
                 .anchor(Anchor.CENTER_BOTTOM)
                 .offsetX(0d)
                 .offsetY(5d)
-                .format("${%Value}{groupsSeparator: }");
+                .format("{%Value}{groupsSeparator: }");
 
         cartesian.animation(true);
-        cartesian.title("Top 10 Cosmetic Products by Revenue");
+        cartesian.title("اكثر 5 منتاج بيعا");
 
         cartesian.yScale().minimum(0d);
 
-        cartesian.yAxis(0).labels().format("${%Value}{groupsSeparator: }");
+        cartesian.yAxis(0).labels().format("{%Value}{groupsSeparator: }");
 
         cartesian.tooltip().positionMode(TooltipPositionMode.POINT);
         cartesian.interactivity().hoverMode(HoverMode.BY_X);
 
-        cartesian.xAxis(0).title("Product");
-        cartesian.yAxis(0).title("Revenue");
+        cartesian.xAxis(0).title("منتج");
+        cartesian.yAxis(0).title("عدد المبيعات");
 
         anyChartView.setChart(cartesian);
     }
 
 
-
-
-
-    public static void initializeLineChart(AnyChartView someChart, List<DataEntry> seriesData, String chartName, String yTitle, String xTitle, String LineColor){
+    public void initializeLineChart(AnyChartView someChart, List<DataEntry> seriesData, String chartName, String yTitle, String xTitle, String LineColor){
         Cartesian cartesian = AnyChart.line();
         cartesian.yAxis(0).title(yTitle);
         cartesian.xAxis(0).title(xTitle);

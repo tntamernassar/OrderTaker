@@ -1,37 +1,27 @@
 package com.example.ordertakerfrontend;
 
 import androidx.annotation.RequiresApi;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.app.Activity;
 import android.content.Context;
 import android.os.Build;
 import android.os.Bundle;
-import android.util.Pair;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
-import android.widget.ProgressBar;
+import android.widget.TextView;
 
-import com.anychart.AnyChart;
-import com.anychart.AnyChartView;
-import com.anychart.chart.common.dataentry.DataEntry;
-import com.anychart.chart.common.dataentry.ValueDataEntry;
-import com.anychart.chart.common.listener.Event;
-import com.anychart.chart.common.listener.ListenersInterface;
-import com.anychart.charts.Cartesian;
-import com.anychart.charts.Pie;
-import com.anychart.core.cartesian.series.Line;
-import com.anychart.data.Mapping;
-import com.anychart.data.Set;
-import com.anychart.enums.Align;
-import com.anychart.enums.Anchor;
-import com.anychart.enums.LegendLayout;
-import com.anychart.enums.MarkerType;
 import com.example.ordertakerfrontend.BackEnd.Logic.Order;
 import com.example.ordertakerfrontend.BackEnd.Logic.OrderHistory;
+import com.example.ordertakerfrontend.BackEnd.Logic.OrderItem;
 import com.example.ordertakerfrontend.BackEnd.Services.Constants;
+import com.example.ordertakerfrontend.BackEnd.Services.Utils;
+import com.example.ordertakerfrontend.FrontEnd.Menus.OrderProduct;
 import com.example.ordertakerfrontend.FrontEnd.OrderHistory.DataMock;
 import com.example.ordertakerfrontend.FrontEnd.OrderHistory.OrderHistoryCharts;
 import com.example.ordertakerfrontend.FrontEnd.OrderHistory.OrderHistoryTable;
@@ -49,13 +39,10 @@ import com.example.ordertakerfrontend.Network.NetworkMessages.tools.MessageObser
 import com.example.ordertakerfrontend.Network.NetworkMessages.tools.NetworkMessage;
 import com.google.android.material.button.MaterialButtonToggleGroup;
 
-import java.time.LocalDateTime;
-import java.util.ArrayList;
+import java.time.Month;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Random;
-import java.util.concurrent.ThreadLocalRandom;
 
 public class OrderHistoryActivity extends AppCompatActivity implements MessageObserver {
 
@@ -77,9 +64,7 @@ public class OrderHistoryActivity extends AppCompatActivity implements MessageOb
         this.syncing = true;
 
         NetworkAdapter.getInstance().register(id, this);
-//        NetworkAdapter.getInstance().send(new GetOrderHistory());
-        this.orderHistory = new OrderHistory(DataMock.data_set_1);
-        this.syncing = false;
+        NetworkAdapter.getInstance().send(new GetOrderHistory());
 
         MaterialButtonToggleGroup materialButtonToggleGroup = findViewById(R.id.toggle);
         materialButtonToggleGroup.addOnButtonCheckedListener((toggleButtonGroup, checkedId, isChecked)->{
@@ -104,38 +89,102 @@ public class OrderHistoryActivity extends AppCompatActivity implements MessageOb
 
     @RequiresApi(api = Build.VERSION_CODES.O)
     private void charts(){
-        if(!syncing) {
-            System.out.println("Charts !");
-            this.container.removeAllViews();
-            LayoutInflater inflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-            View inflated = inflater.inflate(R.layout.report_layout, null);
-            this.container.addView(inflated);
-            OrderHistoryCharts orderHistoryCharts = new OrderHistoryCharts(this.orderHistory.getOrders());
+        this.container.removeAllViews();
+        if (this.orderHistory != null && this.orderHistory.getOrders().isEmpty()){
+            Utils.ShowWarningAlert(this, "قائمة الطلبيات فارغة");
+        }else{
+            if(!syncing) {
+                System.out.println("Charts !");
+                LayoutInflater inflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+                View inflated = inflater.inflate(R.layout.report_layout, null);
+                this.container.addView(inflated);
 
-            // chart for quantity X days.
-            orderHistoryCharts.createTrafficChart(inflated);
-            orderHistoryCharts.createTrafficChartForPrice(inflated);
-            orderHistoryCharts.createPieChart(inflated);
-            orderHistoryCharts.createColumnChart(inflated);
+                Collections.sort(this.orderHistory.getOrders(), new Comparator<Order>() {
+                    @Override
+                    public int compare(Order order, Order t1) {
+                        return -1 * order.getStartedAt().compareTo(t1.getStartedAt());
+                    }
+                });
 
+                OrderHistoryCharts orderHistoryCharts = new OrderHistoryCharts(this.orderHistory.getOrders(), Month.NOVEMBER);
+
+                // chart for quantity X days.
+                orderHistoryCharts.createTrafficLineChart(inflated);
+                orderHistoryCharts.createIncomeLineChart(inflated);
+                orderHistoryCharts.createSectionsPieChart(inflated);
+                orderHistoryCharts.createTopNBarChart(inflated, 5);
+
+            }
         }
     }
 
     private void table(){
-        if(!syncing) {
-            System.out.println("Tables");
-            this.container.removeAllViews();
+        this.container.removeAllViews();
+        if (this.orderHistory != null && this.orderHistory.getOrders().isEmpty()){
+            Utils.ShowWarningAlert(this, "قائمة الطلبيات فارغة");
+        }else{
+            if(!syncing) {
+                System.out.println("Tables");
+                Activity that = this;
+                ListView table = new ListView(getApplicationContext());
+                this.container.addView(table);
+                table.setAdapter(new OrderHistoryTable(getApplicationContext(), table.getId(), this.orderHistory.getOrders()));
+                table.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                    @Override
+                    public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                        Order o = (Order) adapterView.getItemAtPosition(i);
+                        AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(that);
+                        View popUp = that.getLayoutInflater().inflate(R.layout.order_record_popup, (ViewGroup) view, false);
+                        dialogBuilder.setView(popUp);
+                        AlertDialog dialog = dialogBuilder.create();
 
-            ListView table = new ListView(getApplicationContext());
-            this.container.addView(table);
-            table.setAdapter(new OrderHistoryTable(getApplicationContext(), table.getId(), this.orderHistory.getOrders()));
+                        TextView table_num = popUp.findViewById(R.id.table_num);
+                        TextView number_of_people = popUp.findViewById(R.id.number_of_people);
+                        TextView order_date = popUp.findViewById(R.id.order_date);
+                        TextView price = popUp.findViewById(R.id.price);
+                        LinearLayout order_items = popUp.findViewById(R.id.order_items);
 
-            ViewGroup.LayoutParams params = table.getLayoutParams();
-            params.width = ViewGroup.LayoutParams.MATCH_PARENT;
-            params.height = ViewGroup.LayoutParams.MATCH_PARENT;
-            table.setLayoutParams(params);
-            table.requestLayout();
+                        table_num.setText(o.getTable() + "");
+                        number_of_people.setText(o.getNumberOfPeople() + "");
+                        order_date.setText(Utils.dateToString(o.getStartedAt()) + "");
+                        price.setText(o.calculatePrice() + "");
+
+                        HashMap<String, Integer> productsQuantities = new HashMap<>();
+                        for (OrderItem orderItem: o.getOrderItems().values()){
+                            OrderProduct orderProduct = (OrderProduct)orderItem.getProduct();
+                            String productName = orderProduct.getMenuProduct().getName();
+                            if (!productsQuantities.containsKey(productName)){
+                                productsQuantities.put(productName, 0);
+                            }
+
+                            productsQuantities.put(productName, productsQuantities.get(productName) + orderItem.getQuantity());
+                        }
+
+                        for (String name: productsQuantities.keySet()) {
+                            TextView textView = new TextView(getApplicationContext());
+                            textView.setTextSize(30);
+                            textView.setTextDirection(View.TEXT_DIRECTION_RTL);
+                            StringBuilder stringBuilder = new StringBuilder("");
+                            stringBuilder.append("x");
+                            stringBuilder.append(productsQuantities.get(name));
+                            stringBuilder.append(" ");
+                            stringBuilder.append(name);
+                            textView.setText(stringBuilder.toString());
+                            order_items.addView(textView);
+                        }
+
+                        dialog.show();
+                        dialog.getWindow().setLayout(1000, ViewGroup.LayoutParams.WRAP_CONTENT);
+                    }
+                });
+                ViewGroup.LayoutParams params = table.getLayoutParams();
+                params.width = ViewGroup.LayoutParams.MATCH_PARENT;
+                params.height = ViewGroup.LayoutParams.MATCH_PARENT;
+                table.setLayoutParams(params);
+                table.requestLayout();
+            }
         }
+
     }
 
     @RequiresApi(api = Build.VERSION_CODES.O)
@@ -143,9 +192,8 @@ public class OrderHistoryActivity extends AppCompatActivity implements MessageOb
     public void accept(OrderHistoryContainer message) {
         runOnUiThread(()->{
             this.syncing = false;
-            this.orderHistory = Constants.WAITRESS.getRestaurant().getOrderHistory();
-            // added
-            this.orderHistory = new OrderHistory(DataMock.data_set_1);
+//            this.orderHistory = Constants.WAITRESS.getRestaurant().getOrderHistory();
+            this.orderHistory = new OrderHistory((DataMock.data_set_1));
             charts();
         });
     };

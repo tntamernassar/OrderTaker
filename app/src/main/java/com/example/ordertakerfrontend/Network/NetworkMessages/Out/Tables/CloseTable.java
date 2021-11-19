@@ -8,15 +8,18 @@ import org.json.JSONObject;
 
 public class CloseTable extends NetworkMessage {
     private int table;
+    private int numberOfPeople;
 
-    public CloseTable(int table){
+    public CloseTable(int table, int numberOfPeople){
         this.table = table;
+        this.numberOfPeople = numberOfPeople;
     }
     @Override
     public JSONObject encode() {
         try {
             JSONObject result = makeJSONMessage("CloseTable");
             result.put("table", table);
+            result.put("numberOfPeople", numberOfPeople);
             return result;
         } catch (JSONException e) {
             e.printStackTrace();

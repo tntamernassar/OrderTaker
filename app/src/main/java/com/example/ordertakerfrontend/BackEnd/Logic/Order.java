@@ -15,12 +15,14 @@ import java.util.concurrent.atomic.AtomicInteger;
 public class Order implements Serializable {
 
     private int table;
+    private int numberOfPeople;
     private AtomicInteger itemsCounter;
     private LocalDateTime startedAt;
     private String startedBy;
     private boolean distributed;
     private Order distributeVersion;
     private HashMap<Integer, OrderItem> orderItems;
+
 
 
     public Order(int table, String startedBy){
@@ -31,6 +33,7 @@ public class Order implements Serializable {
         this.distributeVersion = null;
         this.orderItems = new HashMap<>();
         this.startedAt = LocalDateTime.now();
+        this.numberOfPeople = -1;
     }
 
     public Order(JSONObject order) throws JSONException {
@@ -41,6 +44,8 @@ public class Order implements Serializable {
         String startedAt = (String) order.get("startedAt");
         String startedBy = (String) order.get("startedBy");
         boolean distributed = (boolean) order.get("distributed");
+        int numberOfPeople = (int) order.get("numberOfPeople");
+
         Order distributeVersion = null;
         if (!order.isNull("distributeVersion")) {
             distributeVersion = new Order((JSONObject) order.get("distributeVersion"));
@@ -61,6 +66,7 @@ public class Order implements Serializable {
         this.startedBy = startedBy;
         this.distributed = distributed;
         this.distributeVersion = distributeVersion;
+        this.numberOfPeople = numberOfPeople;
 
     }
 
@@ -115,6 +121,10 @@ public class Order implements Serializable {
 
     public int getTable() {
         return table;
+    }
+
+    public int getNumberOfPeople() {
+        return numberOfPeople;
     }
 
     public boolean isDistributed() {
@@ -188,7 +198,7 @@ public class Order implements Serializable {
         Order o = new Order(table, getStartedBy());
         for(Integer oi: this.orderItems.keySet()){
             OrderItem orderItem = this.orderItems.get(oi);
-            o.orderItems.put(oi, new OrderItem(orderItem.getIndex(), orderItem.getTimestamp(), orderItem.getWaiterName(), orderItem.getProduct(), orderItem.getQuantity(), orderItem.getNotes(), orderItem.isDistributed(), orderItem.isDeleted()));
+            o.orderItems.put(oi, new OrderItem(orderItem.getIndex(), orderItem.getTimestamp(), orderItem.getWaiterName(), orderItem.getProduct().clone(), orderItem.getQuantity(), orderItem.getNotes(), orderItem.isDistributed(), orderItem.isDeleted()));
         }
         return o;
     }
@@ -210,6 +220,7 @@ public class Order implements Serializable {
             res.put("startedBy", startedBy);
             res.put("distributed", distributed);
             res.put("distributeVersion", distributeVersion != null ? distributeVersion.toJSON() : null);
+            res.put("numberOfPeople", numberOfPeople);
 
             JSONObject orderItemsObject = new JSONObject();
             JSONArray indexes = new JSONArray();

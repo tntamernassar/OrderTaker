@@ -1,5 +1,7 @@
 package com.example.ordertakerfrontend.FrontEnd.Menus;
 
+import androidx.annotation.NonNull;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -114,6 +116,13 @@ public class MenuSection implements Serializable {
         if (o == null || getClass() != o.getClass()) return false;
         MenuSection that = (MenuSection) o;
         return maxOne == that.maxOne && section.equals(that.section) && Arrays.equals(addons, that.addons);
+    }
+
+    @NonNull
+    @Override
+    protected Object clone() throws CloneNotSupportedException {
+        MenuSection menuSection = new MenuSection(section, addons.clone(), maxOne);
+        return menuSection;
     }
 
     @Override

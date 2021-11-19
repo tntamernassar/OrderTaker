@@ -17,10 +17,16 @@ public class NetworkSender {
 
     private Socket socket;
     private ThreadPoolExecutor threadPool;
+    private boolean connected;
 
     public NetworkSender(Socket socket) {
         this.socket = socket;
+        this.connected = true;
         this.threadPool =  (ThreadPoolExecutor) Executors.newFixedThreadPool(1);
+    }
+
+    public boolean isConnected() {
+        return connected;
     }
 
     public void send(NetworkMessage message){
@@ -34,11 +40,11 @@ public class NetworkSender {
                     dos.writeUTF(msg);
                 }
             } catch (IOException e) {
-                e.printStackTrace();
+                this.connected = false;
             } catch (JSONException e){
-                e.printStackTrace();
+                this.connected = false;
             } catch (Exception e){
-                e.printStackTrace();
+                this.connected = false;
             }
         });
     }

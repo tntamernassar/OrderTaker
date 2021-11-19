@@ -48,6 +48,6 @@ public class Constants {
     /**
      * The interval that the network demon is checking the health of the connection
      * **/
-    public static final int NETWORK_DEMON_INTERVAL = 20 * 1000;
+    public static final int NETWORK_DEMON_INTERVAL = 5 * 1000;
 
 }

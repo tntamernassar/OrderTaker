@@ -1,42 +1,74 @@
 package com.example.ordertakerfrontend.Network.NetworkManager;
 
+import android.content.Context;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
+
 import com.example.ordertakerfrontend.BackEnd.Services.Constants;
 import com.example.ordertakerfrontend.BackEnd.Services.Utils;
+import com.example.ordertakerfrontend.Network.NetworkMessages.tools.TestMessage;
 
 public class NetworkDemon{
 
+    private int reconnectionAttempt;
+    private NetworkAdapter networkAdapter;
     private static NetworkDemon instance;
+
     public static NetworkDemon init(NetworkAdapter networkAdapter) {
         instance = new NetworkDemon(networkAdapter);
         return instance;
     }
+
     public static NetworkDemon getInstance() {
         return instance;
     }
 
-    private NetworkAdapter networkAdapter;
-
     public NetworkDemon(NetworkAdapter networkAdapter){
         this.networkAdapter = networkAdapter;
+        this.reconnectionAttempt = 0;
+    }
+
+    private void restartReconnectionAttempt(){
+        reconnectionAttempt = 0;
+    }
+
+    private synchronized int nextReconnectionAttempt(){
+        int r = reconnectionAttempt;
+        reconnectionAttempt += 1;
+        return r;
     }
 
 
     public void start() {
+        System.out.println("Network demon started");
         new Thread(()->{
             while (true){
-                boolean connectedToServer = networkAdapter != null && networkAdapter.getReceiver().isConnected();
+
+                if(networkAdapter != null) {
+                    networkAdapter.send(new TestMessage());
+                    try {
+                        Thread.sleep(1000);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                }
+                boolean connectedToServer = networkAdapter != null && !networkAdapter.isConnecting() && networkAdapter.getReceiver().isConnected() && networkAdapter.getSender().isConnected();
                 if (!connectedToServer){
+                    final int a = nextReconnectionAttempt();
+                    System.out.println("Reconnecting attempt " + a);
                     Utils.writeToLog("NetworkDemon is trying to reconnect to server");
                     NetworkAdapter.init(new NetworkAdapter() {
                         @Override
                         public void onConnection(NetworkAdapter adapter) {
-                            Utils.writeToLog("NetworkDemon reconnected to server successfully");
+                            System.out.println("NetworkDemon reconnected to server successfully in attempt " + a);
                             networkAdapter = adapter;
+                            restartReconnectionAttempt();
                         }
 
                         @Override
                         public void onError(Exception e) {
-                            Utils.writeToLog("NetworkDemon failed to reconnect to server");
+                            System.out.println("NetworkDemon failed to reconnect to server in attempt " + a);
+                            Utils.writeToLog("NetworkDemon failed to reconnect to server in attempt " + a);
                         }
                     });
                     NetworkAdapter.getInstance().start();

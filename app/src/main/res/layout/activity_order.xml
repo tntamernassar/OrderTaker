@@ -10,15 +10,17 @@
     tools:context=".OrderActivity">
 
 
-    <LinearLayout
+    <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="100dp"
         android:background="@drawable/classic_border"
+        android:gravity="center"
         android:orientation="horizontal">
 
         <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
             android:layout_weight="1">
             <TextView
                 android:layout_width="wrap_content"
@@ -28,14 +30,33 @@
                 android:textSize="50dp"
                 android:layout_marginRight="20dp"
                 android:layout_marginTop="20dp"></TextView>
-
         </LinearLayout>
 
         <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
             android:orientation="horizontal">
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="عدد الاشخاص : "
+                android:textSize="20dp"
+                android:textStyle="bold"
+                android:layout_marginTop="33dp"/>
+            <NumberPicker
+                android:id="@+id/people_on_table"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                />
+        </LinearLayout>
 
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:orientation="horizontal">
             <Button
                 android:id="@+id/close"
                 android:layout_width="fill_parent"
@@ -52,7 +73,7 @@
 
         </LinearLayout>
 
-    </LinearLayout>
+    </RelativeLayout>
 
 
     <LinearLayout

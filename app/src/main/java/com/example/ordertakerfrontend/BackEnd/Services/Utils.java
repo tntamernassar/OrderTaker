@@ -3,7 +3,9 @@ package com.example.ordertakerfrontend.BackEnd.Services;
 import android.app.Activity;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.res.Resources;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
@@ -13,6 +15,9 @@ import android.net.wifi.WifiInfo;
 import android.net.wifi.WifiManager;
 import android.os.Build;
 import android.text.InputType;
+import android.text.Layout;
+import android.text.StaticLayout;
+import android.text.TextPaint;
 import android.util.Base64;
 import android.widget.Button;
 import android.widget.EditText;
@@ -67,6 +72,54 @@ public class Utils {
         );
     }
 
+    public static Bitmap drawMultilineTextToBitmap(String gText) {
+        Resources resources = Constants.CONTEXT.getResources();
+        float scale = resources.getDisplayMetrics().density;
+        Bitmap bitmap = Bitmap.createBitmap(700, 300, Bitmap.Config.ARGB_8888);
+
+        android.graphics.Bitmap.Config bitmapConfig = bitmap.getConfig();
+        // set default bitmap config if none
+        if(bitmapConfig == null) {
+            bitmapConfig = android.graphics.Bitmap.Config.ARGB_8888;
+        }
+        // resource bitmaps are imutable,
+        // so we need to convert it to mutable one
+        bitmap = bitmap.copy(bitmapConfig, true);
+
+        Canvas canvas = new Canvas(bitmap);
+
+        // new antialiased Paint
+        TextPaint paint=new TextPaint(Paint.ANTI_ALIAS_FLAG);
+        // text color - #3D3D3D
+        paint.setColor(Color.rgb(61, 61, 61));
+        // text size in pixels
+        paint.setTextSize((int) (14 * scale));
+        // text shadow
+        paint.setShadowLayer(1f, 0f, 1f, Color.WHITE);
+
+        // set text width to canvas width minus 16dp padding
+        int textWidth = canvas.getWidth() - (int) (16 * scale);
+
+        // init StaticLayout for text
+        StaticLayout textLayout = new StaticLayout(
+                gText, paint, textWidth, Layout.Alignment.ALIGN_CENTER, 1.0f, 0.0f, false);
+
+        // get height of multiline text
+        int textHeight = textLayout.getHeight();
+
+        // get position of text's top left corner
+        float x = (bitmap.getWidth() - textWidth)/2;
+        float y = (bitmap.getHeight() - textHeight)/2;
+
+        // draw text to the Canvas center
+        canvas.save();
+        canvas.translate(x, y);
+        textLayout.draw(canvas);
+        canvas.restore();
+
+        return bitmap;
+    }
+
     public static Bitmap textAsBitmap(String text, float textSize) {
         /**
          *  see
@@ -78,8 +131,8 @@ public class Utils {
         paint.setColor(Color.BLACK);
         paint.setTextAlign(Paint.Align.RIGHT);
         paint.setTypeface(Typeface.create(Typeface.DEFAULT, Typeface.BOLD));
-        float baseline = -paint.ascent(); // ascent() is negative
-        int width = (int) 500; // round
+        float baseline = -paint.ascent();
+        int width = (int) 500;
         int height = (int) 70;
         Bitmap image = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888);
         Canvas canvas = new Canvas(image);
@@ -179,7 +232,22 @@ public class Utils {
     public static void ShowSuccessAlert(final Context context, String heading) {
         SweetAlertDialog dialog = new SweetAlertDialog(context, SweetAlertDialog.SUCCESS_TYPE);
         dialog.setTitleText(heading);
-        dialog.changeAlertType(SweetAlertDialog.SUCCESS_TYPE);
+        dialog.show();
+        Button btn = (Button) dialog.findViewById(R.id.confirm_button);
+        btn.setText("اوكي");
+    }
+
+    public static void ShowErrorAlert(final Context context, String heading) {
+        SweetAlertDialog dialog = new SweetAlertDialog(context, SweetAlertDialog.ERROR_TYPE);
+        dialog.setTitleText(heading);
+        dialog.show();
+        Button btn = (Button) dialog.findViewById(R.id.confirm_button);
+        btn.setText("اوكي");
+    }
+
+    public static void ShowWarningAlert(final Context context, String heading) {
+        SweetAlertDialog dialog = new SweetAlertDialog(context, SweetAlertDialog.WARNING_TYPE);
+        dialog.setTitleText(heading);
         dialog.show();
         Button btn = (Button) dialog.findViewById(R.id.confirm_button);
         btn.setText("اوكي");

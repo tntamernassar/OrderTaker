@@ -1,5 +1,6 @@
 package com.example.ordertakerfrontend.FrontEnd.Menus;
 
+import com.example.ordertakerfrontend.BackEnd.Logic.Order;
 import com.example.ordertakerfrontend.BackEnd.Logic.Product;
 
 import org.json.JSONArray;
@@ -8,6 +9,8 @@ import org.json.JSONObject;
 
 import java.util.HashMap;
 import java.util.LinkedList;
+import java.util.List;
+import java.util.Objects;
 
 public class OrderProduct implements Product{
 
@@ -72,5 +75,40 @@ public class OrderProduct implements Product{
             e.printStackTrace();
             return null;
         }
+    }
+
+    @Override
+    public Product clone() {
+        HashMap<String, LinkedList<String>> hashMap = new HashMap<>();
+        for (String key : addons.keySet()){
+            LinkedList<String> clonedAddons = new LinkedList<>();
+            clonedAddons.addAll(addons.get(key));
+            hashMap.put(key, clonedAddons);
+        }
+        OrderProduct orderProduct = new OrderProduct((MenuProduct) menuProduct.clone(), hashMap);
+        return orderProduct;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        OrderProduct that = (OrderProduct) o;
+        if (!Objects.equals(addons.keySet(), that.addons.keySet())){
+            return false;
+        }
+
+        for (String k : addons.keySet()){
+            if (!addons.get(k).equals(that.addons.get(k))){
+                return false;
+            }
+        }
+
+        return Objects.equals(menuProduct, that.menuProduct);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(menuProduct);
     }
 }

@@ -22,11 +22,17 @@ public abstract class NetworkAdapter extends Thread {
     private NetworkReceiver receiver;
     private NetworkSender sender;
     private ConcurrentHashMap<String, MessageObserver> observers;
+    private boolean connecting;
     public static NetworkAdapter instance;
 
 
     public NetworkAdapter(){
         this.observers = new ConcurrentHashMap<>();
+        this.connecting = false;
+    }
+
+    public boolean isConnecting() {
+        return connecting;
     }
 
     public static void init(NetworkAdapter networkAdapter){
@@ -39,6 +45,10 @@ public abstract class NetworkAdapter extends Thread {
 
     public NetworkReceiver getReceiver() {
         return receiver;
+    }
+
+    public NetworkSender getSender() {
+        return sender;
     }
 
     public void register(String id, MessageObserver observer){
@@ -72,31 +82,17 @@ public abstract class NetworkAdapter extends Thread {
 
     @Override
     public void run() {
-        boolean connected = false;
-        boolean notifiedError = false;
-        while (!connected){
-            try {
-                this.socket = new Socket("10.0.0.5",2222);
-                this.receiver = new NetworkReceiver(this.socket, this);
-                this.sender = new NetworkSender(socket);
-                connected = true;
-                onConnection(this);
-            } catch (IOException e) {
-                if(!notifiedError){
-                    onError(e);
-                    notifiedError = true;
-                }
-                try {
-                    Log.d("NetworkAdapter", "Trying to connect to server ...");
-                    Utils.writeToLog("NetworkAdapter Trying to connect to server ...");
-                    Thread.sleep(5000);
-                }catch (Exception e1){
-                    e1.printStackTrace();
-                }
-            }
+        try {
+            this.connecting = true;
+            this.socket = new Socket("10.0.0.5", 2222);
+            this.receiver = new NetworkReceiver(this.socket, this);
+            this.sender = new NetworkSender(socket);
+            this.connecting = false;
+            onConnection(this);
+        } catch (IOException e) {
+            this.connecting = false;
+            onError(e);
         }
-
-
     }
 
 
