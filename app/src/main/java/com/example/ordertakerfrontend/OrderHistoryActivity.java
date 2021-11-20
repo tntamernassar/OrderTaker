@@ -75,24 +75,13 @@ public class OrderHistoryActivity extends AppCompatActivity implements MessageOb
             @Override
             public void onScrollStateChange(NumberPicker numberPicker, int i) {
                 if(i == 0) {
-                    AsyncTask task = new AsyncTask() {
-                        @Override
-                        protected Object doInBackground(Object[] objects) {
-                            if (inCharts) {
-                                orderHistory = new OrderHistory(DataMock.makeRandomOrders(getMonth()));
-                                runOnUiThread(()->{
-                                    charts();
-                                });
-                            } else {
-                                orderHistory = new OrderHistory(DataMock.makeRandomOrders(getMonth()));
-                                runOnUiThread(()->{
-                                    table();
-                                });
-                            }
-                            return null;
-                        }
-                    };
-                    task.execute();
+                    if (inCharts) {
+                        orderHistory = new OrderHistory(DataMock.makeRandomOrders(getMonth()));
+                        charts();
+                    } else {
+                        orderHistory = new OrderHistory(DataMock.makeRandomOrders(getMonth()));
+                        table();
+                    }
                 }
             }
         });
@@ -167,7 +156,6 @@ public class OrderHistoryActivity extends AppCompatActivity implements MessageOb
                 orderHistoryCharts.createTrafficLineChart(inflated);
                 orderHistoryCharts.createSectionsPieChart(inflated);
                 orderHistoryCharts.createTopNBarChart(inflated, 5);
-
             }
         }
     }
