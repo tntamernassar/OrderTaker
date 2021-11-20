@@ -24,13 +24,14 @@ public class DataMock {
         return randomNum;
     }
 
-    private static LinkedList<Order> makeRandomOrders(Month month){
+    public static LinkedList<Order> makeRandomOrders(Month month){
 
         LinkedList<Order> orders = new LinkedList<>();
         MenuProduct[] products = Menu.getInstance().getMenuProductList().toArray(new MenuProduct[]{});
-
-        for (int day = 1; day <= 30; day++){
-            int numOfOrders = random(1, 100);
+        int factor = 1;
+        for (int day = 1; day <= 27; day++){
+            factor += random(5, 10);
+            int numOfOrders = random(50 + factor, 60 + factor);
             for(int n = 0 ; n < numOfOrders ; n ++){
                 int table = random(1, 9);
                 int hour = random(8, 23);
@@ -41,11 +42,12 @@ public class DataMock {
                 Order order = new Order(table, startedBy);
                 order.setStartedAt(localDateTime);
                 order.setDistributed(true);
+                order.setNumberOfPeople(random(1, 10));
+                int numOfProducts = random(1, order.getNumberOfPeople() + 1);
 
-                int numOfProducts = random(1, 9);
 
                 for (int i = 0; i < numOfProducts; i ++){
-                    int quantity = random(1, 5);
+                    int quantity = random(1, 2);
                     MenuProduct menuProduct = products[random(0, products.length)];
                     order.addItem(startedBy, new OrderProduct(menuProduct), quantity, "", false);
                 }

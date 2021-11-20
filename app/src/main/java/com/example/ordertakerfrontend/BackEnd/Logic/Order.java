@@ -96,21 +96,7 @@ public class Order implements Serializable {
                 tabletOrderItem.setDeleted(tabletOrderItem.isDeleted() || otherOrderItem.isDeleted());
             }
         }
-
-        /**
-         * Check for items that is in the tablet but not in the server
-         * those items should be deleted
-         * */
-        for(Integer index : orderItems.keySet()){
-            OrderItem tabletOrderItems = orderItems.get(index);
-            if (!tabletOrderItems.getWaiterName().equals(tabletWaitressName)){
-                OrderItem serverOrderItems = order.getOrderItem(tabletOrderItems);
-
-                if(serverOrderItems == null){ // this item is deleted
-                    orderItems.remove(index);
-                }
-            }
-        }
+        setDistributeVersion(order.getDistributeVersion());
     }
 
     public void distributeItems(){
@@ -135,6 +121,10 @@ public class Order implements Serializable {
         this.distributed = distributed;
     }
 
+    public void setNumberOfPeople(int numberOfPeople) {
+        this.numberOfPeople = numberOfPeople;
+    }
+
     public Order getDistributeVersion() {
         return distributeVersion;
     }
@@ -142,6 +132,7 @@ public class Order implements Serializable {
     public void setDistributeVersion(Order distributeVersion) {
         this.distributeVersion = distributeVersion;
     }
+
 
     public void setStartedAt(LocalDateTime startedAt) {
         this.startedAt = startedAt;

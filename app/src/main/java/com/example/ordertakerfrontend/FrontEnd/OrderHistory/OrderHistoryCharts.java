@@ -132,11 +132,41 @@ public class OrderHistoryCharts {
 
         // building the line chart:
         List<DataEntry> seriesData = new ArrayList<>();
-        for(Integer day: quantityPerDays.keySet())
+        for(Integer day: quantityPerDays.keySet()) {
             seriesData.add(new ValueDataEntry(day + "/" + currentMonth, quantityPerDays.get(day)));
+        }
+
+        initializeLineChart(lineChart, seriesData, "كمية المبيعات", "عدد المبيعات", "يوم", "blue");
+
+    }
+
+    /**
+     * Line Charts
+     *  xAxis - day of the month
+     *  yAxis - # Of sales
+     **/
+    public void createTrafficPeopleChart(View parent){
+        AnyChartView peopleChart = (AnyChartView) parent.findViewById(R.id.trafficChartForPeople);
+        APIlib.getInstance().setActiveAnyChartView(peopleChart);
+
+        HashMap<Integer, Integer> peoplePerDay = new HashMap<>();
+
+        for(Integer day: ordersPerMonthPerDays.get(currentMonth).keySet()){
+            int totalPerDay = 0;
+            for(Order o: ordersPerMonthPerDays.get(currentMonth).get(day)){
+                totalPerDay += o.getNumberOfPeople();
+            }
+
+            peoplePerDay.put(day, totalPerDay);
+        }
 
 
-        initializeLineChart(lineChart, seriesData, "كمية المبيعات", "כמות המוצרים", "", "blue");
+        // building the line chart:
+        List<DataEntry> seriesData = new ArrayList<>();
+        for(Integer day: peoplePerDay.keySet())
+            seriesData.add(new ValueDataEntry(day + "/" + currentMonth, peoplePerDay.get(day)));
+
+        initializeLineChart(peopleChart, seriesData, "زائرين", "عدد زائرين", "يوم", "green");
 
     }
 
@@ -166,7 +196,7 @@ public class OrderHistoryCharts {
         for(Integer day: pricePerDay.keySet())
             seriesData.add(new ValueDataEntry(day + "/" + currentMonth, pricePerDay.get(day)));
 
-        initializeLineChart(priceChart, seriesData, "الايرادات", "מחיר ₪", "", "red");
+        initializeLineChart(priceChart, seriesData, "الايرادات", "₪", "يوم", "red");
     }
 
     /**
@@ -195,16 +225,12 @@ public class OrderHistoryCharts {
 
         pie.data(seriesData);
 
-        pie.title(String.format("نسب الاصناف في تاريخ:  %d", currentMonth));
-        pie.legend().title().enabled(true);
-        pie.legend().title()
-                .text("Retail channels")
-                .padding(0d, 0d, 10d, 0d);
+        pie.title(String.format("نسبة المبيعات حسب الاصناف"));
 
         pie.legend()
                 .position("center-bottom")
                 .itemsLayout(LegendLayout.HORIZONTAL)
-                .align(Align.RIGHT);
+                .align(Align.CENTER);
 
         anyChartView.setChart(pie);
     }

@@ -20,6 +20,7 @@ import android.widget.TextView;
 
 import com.example.ordertakerfrontend.BackEnd.Logic.Order;
 import com.example.ordertakerfrontend.BackEnd.Logic.OrderItem;
+import com.example.ordertakerfrontend.BackEnd.Logic.Table;
 import com.example.ordertakerfrontend.BackEnd.Services.Constants;
 import com.example.ordertakerfrontend.BackEnd.Services.ImagesManager;
 import com.example.ordertakerfrontend.BackEnd.Services.Utils;
@@ -66,6 +67,7 @@ public class OrderActivity extends AppCompatActivity implements OnePageOrderActi
         NetworkAdapter.getInstance().register(id, this);
         Intent intent = getIntent();
         this.tableId = intent.getExtras().getInt("table");
+        Table table = Constants.WAITRESS.getRestaurant().getTable(tableId);
 
         NumberPicker numberPicker = findViewById(R.id.people_on_table);
         String[] options = new String[41];
@@ -75,7 +77,17 @@ public class OrderActivity extends AppCompatActivity implements OnePageOrderActi
         numberPicker.setDisplayedValues(options);
         numberPicker.setMinValue(0);
         numberPicker.setMaxValue(options.length-1);
-
+        if (table.getCurrentOrder().getNumberOfPeople() != -1){
+            numberPicker.setValue(table.getCurrentOrder().getNumberOfPeople());
+        }
+        numberPicker.setOnScrollListener(new NumberPicker.OnScrollListener() {
+            @Override
+            public void onScrollStateChange(NumberPicker numberPicker, int i) {
+                if (i == 0){
+                    table.getCurrentOrder().setNumberOfPeople(numberPicker.getValue());
+                }
+            }
+        });
         buildTabs();
 
         createOrdersList();
@@ -97,7 +109,7 @@ public class OrderActivity extends AppCompatActivity implements OnePageOrderActi
                     @Override
                     public void yes() {
                         Constants.WAITRESS.submitOrder(tableId);
-                        NetworkAdapter.getInstance().send(new SubmitTable(Constants.WAITRESS.getRestaurant().getTable(tableId)));
+                        NetworkAdapter.getInstance().send(new SubmitTable(table));
                         Utils.ShowSuccessAlert(that, "تم ارسال الطلبيه الى المطبخ !");
 
                     }
@@ -116,7 +128,7 @@ public class OrderActivity extends AppCompatActivity implements OnePageOrderActi
                 Utils.YesNoDialog(OrderActivity.this, "لاغلاق الطلب اضغط نعم", new YesNoCallbacks() {
                     @Override
                     public void yes() {
-                        Order order = Constants.WAITRESS.getRestaurant().getTable(tableId).getCurrentOrder();
+                        Order order = table.getCurrentOrder();
                         if (order.isDistributed()) {
                             if (numberPicker.getValue() == 0) {
                                 Utils.ShowWarningAlert(that, "الرجاء ادخال عدد الاشخاص ");

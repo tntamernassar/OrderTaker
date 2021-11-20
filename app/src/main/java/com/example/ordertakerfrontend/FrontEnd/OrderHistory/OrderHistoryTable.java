@@ -11,6 +11,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import com.example.ordertakerfrontend.BackEnd.Logic.Order;
+import com.example.ordertakerfrontend.BackEnd.Services.Utils;
 import com.example.ordertakerfrontend.FrontEnd.Menus.MenuProduct;
 import com.example.ordertakerfrontend.R;
 
@@ -39,7 +40,7 @@ public class OrderHistoryTable extends ArrayAdapter<Order> {
         TextView price = row.findViewById(R.id.price);
 
         table.setText(order.getTable() + "");
-        date.setText(order.getStartedAt().format(DateTimeFormatter.ofPattern("yyyy-MM-dd hh:mm")) + "");
+        date.setText(Utils.dateToString(order.getStartedAt()));
         price.setText(order.calculatePrice() + "₪");
 
         return row;

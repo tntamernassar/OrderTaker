@@ -6,6 +6,8 @@ import android.net.NetworkInfo;
 
 import com.example.ordertakerfrontend.BackEnd.Services.Constants;
 import com.example.ordertakerfrontend.BackEnd.Services.Utils;
+import com.example.ordertakerfrontend.Network.NetworkMessages.Out.HealthMessage;
+import com.example.ordertakerfrontend.Network.NetworkMessages.Out.initRequest;
 import com.example.ordertakerfrontend.Network.NetworkMessages.tools.TestMessage;
 
 public class NetworkDemon{
@@ -45,7 +47,7 @@ public class NetworkDemon{
             while (true){
 
                 if(networkAdapter != null) {
-                    networkAdapter.send(new TestMessage());
+                    networkAdapter.send(new HealthMessage());
                     try {
                         Thread.sleep(1000);
                     } catch (InterruptedException e) {
@@ -61,7 +63,14 @@ public class NetworkDemon{
                         @Override
                         public void onConnection(NetworkAdapter adapter) {
                             System.out.println("NetworkDemon reconnected to server successfully in attempt " + a);
+
+                            if (networkAdapter != null){
+                                System.out.println("Copying "+ networkAdapter.getObservers().size() + " observers");
+                                adapter.setObservers(networkAdapter.getObservers());
+                            }
                             networkAdapter = adapter;
+                            networkAdapter.receive();
+                            networkAdapter.send(new HealthMessage());
                             restartReconnectionAttempt();
                         }
 

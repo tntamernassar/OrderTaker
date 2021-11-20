@@ -118,7 +118,9 @@ public class initResponse extends NetworkMessage {
                 Table serverTable = new Table(tablesJSONObject);
                 Table clientTable = waitress.getRestaurant().getTable(serverTable.getNumber());
 
-                clientTable.setTable(serverTable);
+                if (!clientTable.isActive()){
+                    clientTable.setTable(serverTable);
+                }
             }
         }catch (Exception e){
             e.printStackTrace();

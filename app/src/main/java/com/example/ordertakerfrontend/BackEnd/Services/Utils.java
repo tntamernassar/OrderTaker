@@ -38,6 +38,9 @@ import java.io.ByteArrayOutputStream;
 import java.lang.reflect.Method;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Map;
 import java.util.Random;
 
@@ -55,8 +58,9 @@ public class Utils {
     }
 
     public static String dateToString(LocalDateTime date){
-        return date.getDayOfMonth() + "-" + date.getMonthValue() + "-" + date.getYear() + " " +
-                date.getHour() + ":" + date.getMinute();
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
+
+        return date.format(formatter).toString();
     }
 
     public static LocalDateTime stringToDate(String date){

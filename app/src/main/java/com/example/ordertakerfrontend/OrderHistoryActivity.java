@@ -6,6 +6,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.app.Activity;
 import android.content.Context;
+import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -14,6 +15,7 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.NumberPicker;
 import android.widget.TextView;
 
 import com.example.ordertakerfrontend.BackEnd.Logic.Order;
@@ -39,6 +41,7 @@ import com.example.ordertakerfrontend.Network.NetworkMessages.tools.MessageObser
 import com.example.ordertakerfrontend.Network.NetworkMessages.tools.NetworkMessage;
 import com.google.android.material.button.MaterialButtonToggleGroup;
 
+import java.time.LocalDateTime;
 import java.time.Month;
 import java.util.Collections;
 import java.util.Comparator;
@@ -50,7 +53,8 @@ public class OrderHistoryActivity extends AppCompatActivity implements MessageOb
     private boolean syncing;
     private OrderHistory orderHistory;
     private LinearLayout container;
-
+    private boolean inCharts;
+    private String[] months = new String[]{"January", "February", "March", "April", "May", "June", "July", "Aguste", "September", "October", "November", "December"};
     @RequiresApi(api = Build.VERSION_CODES.O)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -62,9 +66,52 @@ public class OrderHistoryActivity extends AppCompatActivity implements MessageOb
 
         this.container = findViewById(R.id.container);
         this.syncing = true;
+        NumberPicker numberPicker = findViewById(R.id.month);
+        numberPicker.setDisplayedValues(months);
+        numberPicker.setMinValue(0);
+        numberPicker.setMaxValue(months.length-1);
+        numberPicker.setValue(LocalDateTime.now().getMonthValue() - 1);
+        numberPicker.setOnScrollListener(new NumberPicker.OnScrollListener() {
+            @Override
+            public void onScrollStateChange(NumberPicker numberPicker, int i) {
+                if(i == 0) {
+                    AsyncTask task = new AsyncTask() {
+                        @Override
+                        protected Object doInBackground(Object[] objects) {
+                            if (inCharts) {
+                                orderHistory = new OrderHistory(DataMock.makeRandomOrders(getMonth()));
+                                runOnUiThread(()->{
+                                    charts();
+                                });
+                            } else {
+                                orderHistory = new OrderHistory(DataMock.makeRandomOrders(getMonth()));
+                                runOnUiThread(()->{
+                                    table();
+                                });
+                            }
+                            return null;
+                        }
+                    };
+                    task.execute();
+                }
+            }
+        });
 
         NetworkAdapter.getInstance().register(id, this);
-        NetworkAdapter.getInstance().send(new GetOrderHistory());
+//        NetworkAdapter.getInstance().send(new GetOrderHistory());
+        syncing = false;
+        new AsyncTask<Void, Void, Void>() {
+
+            @Override
+            protected Void doInBackground(Void... voids) {
+                runOnUiThread(()->{
+                    orderHistory = new OrderHistory(DataMock.makeRandomOrders(getMonth()));
+                    charts();
+                });
+                return null;
+            }
+        }.execute();
+
 
         MaterialButtonToggleGroup materialButtonToggleGroup = findViewById(R.id.toggle);
         materialButtonToggleGroup.addOnButtonCheckedListener((toggleButtonGroup, checkedId, isChecked)->{
@@ -81,6 +128,11 @@ public class OrderHistoryActivity extends AppCompatActivity implements MessageOb
         });
     }
 
+    private Month getMonth(){
+        NumberPicker numberPicker = findViewById(R.id.month);
+        return Month.of(numberPicker.getValue() + 1);
+    }
+
     @Override
     protected void onStop() {
         super.onStop();
@@ -89,6 +141,7 @@ public class OrderHistoryActivity extends AppCompatActivity implements MessageOb
 
     @RequiresApi(api = Build.VERSION_CODES.O)
     private void charts(){
+        this.inCharts = true;
         this.container.removeAllViews();
         if (this.orderHistory != null && this.orderHistory.getOrders().isEmpty()){
             Utils.ShowWarningAlert(this, "قائمة الطلبيات فارغة");
@@ -106,11 +159,12 @@ public class OrderHistoryActivity extends AppCompatActivity implements MessageOb
                     }
                 });
 
-                OrderHistoryCharts orderHistoryCharts = new OrderHistoryCharts(this.orderHistory.getOrders(), Month.NOVEMBER);
+                OrderHistoryCharts orderHistoryCharts = new OrderHistoryCharts(this.orderHistory.getOrders(), getMonth());
 
                 // chart for quantity X days.
-                orderHistoryCharts.createTrafficLineChart(inflated);
                 orderHistoryCharts.createIncomeLineChart(inflated);
+                orderHistoryCharts.createTrafficPeopleChart(inflated);
+                orderHistoryCharts.createTrafficLineChart(inflated);
                 orderHistoryCharts.createSectionsPieChart(inflated);
                 orderHistoryCharts.createTopNBarChart(inflated, 5);
 
@@ -119,6 +173,7 @@ public class OrderHistoryActivity extends AppCompatActivity implements MessageOb
     }
 
     private void table(){
+        this.inCharts = false;
         this.container.removeAllViews();
         if (this.orderHistory != null && this.orderHistory.getOrders().isEmpty()){
             Utils.ShowWarningAlert(this, "قائمة الطلبيات فارغة");

@@ -37,18 +37,19 @@
             android:layout_height="wrap_content"
             android:layout_centerHorizontal="true"
             android:orientation="horizontal">
+
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginTop="33dp"
                 android:text="عدد الاشخاص : "
                 android:textSize="20dp"
-                android:textStyle="bold"
-                android:layout_marginTop="33dp"/>
+                android:textStyle="bold" />
+
             <NumberPicker
                 android:id="@+id/people_on_table"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                />
+                android:layout_height="wrap_content" />
         </LinearLayout>
 
 

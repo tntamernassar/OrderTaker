@@ -51,6 +51,14 @@ public abstract class NetworkAdapter extends Thread {
         return sender;
     }
 
+    public ConcurrentHashMap<String, MessageObserver> getObservers() {
+        return observers;
+    }
+
+    public void setObservers(ConcurrentHashMap<String, MessageObserver> observers) {
+        this.observers = observers;
+    }
+
     public void register(String id, MessageObserver observer){
         this.observers.put(id, observer);
     }

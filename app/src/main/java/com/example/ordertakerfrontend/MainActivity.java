@@ -111,6 +111,11 @@ public class MainActivity extends AppCompatActivity implements MessageObserver {
         NetworkAdapter.getInstance().unregister(id);
     }
 
+    @Override
+    public void onBackPressed() {
+
+    }
+
     private Waitress initSystem(){
         Constants.CONTEXT = getApplicationContext();
 
