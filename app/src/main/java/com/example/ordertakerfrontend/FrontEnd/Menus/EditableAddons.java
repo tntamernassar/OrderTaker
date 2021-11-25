@@ -19,6 +19,7 @@ import androidx.annotation.Nullable;
 
 import com.example.ordertakerfrontend.BackEnd.Services.Utils;
 import com.example.ordertakerfrontend.FrontEnd.Popups.YesNoCallbacks;
+import com.example.ordertakerfrontend.FrontEnd.UserMessages;
 import com.example.ordertakerfrontend.MainActivity;
 import com.example.ordertakerfrontend.R;
 import com.github.dhaval2404.imagepicker.ImagePicker;
@@ -55,7 +56,7 @@ public class EditableAddons extends ArrayAdapter<MenuSection> {
         button.setLayoutParams(layoutParams);
 
         button.setOnClickListener(view->{
-            Utils.YesNoDialog(getContext(), "Are you sure you want to delete " + addon + " ?", new YesNoCallbacks() {
+            Utils.YesNoDialog(getContext(), UserMessages.get("ask_if_delete", addon), new YesNoCallbacks() {
                 @Override
                 public void yes() {
                     menuSection.removeAddon(addon);
@@ -104,20 +105,23 @@ public class EditableAddons extends ArrayAdapter<MenuSection> {
         }
 
         add_addon.setOnClickListener(view -> {
-            Utils.AcquireInputDialog(getContext(), "Enter category name ", input -> {
-                menuSection.addAddon(input);
-                Button button = createAddonButton(addonsList, menuSection, input);
-                addonsList.addView(button);
+            Utils.AcquireInputDialog(getContext(), UserMessages.get("ask_enter_addon_name"), input -> {
+                if (input.length() > 0) {
+                    menuSection.addAddon(input);
+                    Button button = createAddonButton(addonsList, menuSection, input);
+                    addonsList.addView(button);
+                }else{
+                    Utils.ShowWarningAlert(getContext(), UserMessages.get("ask_enter_valid_name"));
+                }
             });
         });
 
         delete_section.setOnClickListener(view ->{
-            Utils.YesNoDialog(getContext(), "Are you sure you want to delete " + section + " ?", new YesNoCallbacks() {
+            Utils.YesNoDialog(getContext(), UserMessages.get("ask_if_delete",section), new YesNoCallbacks() {
                 @Override
                 public void yes() {
                     menuSections.remove(position);
                     notifyDataSetChanged();
-                    Toast.makeText(getContext(), "Section Removed", Toast.LENGTH_SHORT).show();
                 }
 
                 @Override

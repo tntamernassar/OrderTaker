@@ -20,6 +20,7 @@ import com.example.ordertakerfrontend.BackEnd.Services.ImagesManager;
 import com.example.ordertakerfrontend.BackEnd.Services.OrderDistribution.PrinterService;
 import com.example.ordertakerfrontend.BackEnd.Services.Utils;
 import com.example.ordertakerfrontend.FrontEnd.Menus.DiskMenu;
+import com.example.ordertakerfrontend.FrontEnd.UserMessages;
 import com.example.ordertakerfrontend.Network.NetworkManager.NetworkAdapter;
 import com.example.ordertakerfrontend.Network.NetworkManager.NetworkDemon;
 import com.example.ordertakerfrontend.Network.NetworkMessages.In.MenuEditNotification;
@@ -45,6 +46,7 @@ public class InitializeActivity extends AppCompatActivity implements MessageObse
     private String id="initActivity";
     private int shouldDownload;
     private LinkedList<String> missingImages;
+    private boolean failedToConnect;
 
     private TextView label;
     @Override
@@ -52,6 +54,8 @@ public class InitializeActivity extends AppCompatActivity implements MessageObse
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_initialize);
         getSupportActionBar().hide();
+
+        this.failedToConnect = false;
 
         Constants.CONTEXT = getApplicationContext();
         this.label = findViewById(R.id.label);
@@ -80,6 +84,19 @@ public class InitializeActivity extends AppCompatActivity implements MessageObse
         NetworkAdapter.getInstance().unregister(id);
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+        if (failedToConnect){
+            initNetworkAdapter();
+            NetworkAdapter.getInstance().register(id, this);
+        }else {
+            checkIfDone();
+        }
+    }
+
+
+
     private void initNetworkAdapter(){
         final Activity thatActivity = this;
         /** Network init **/
@@ -93,6 +110,7 @@ public class InitializeActivity extends AppCompatActivity implements MessageObse
 
             @Override
             public void onError(Exception e) {
+                failedToConnect = true;
                 NetworkAdapter.getInstance().unregister(id);
                 NetworkDemon.init(null).start();
                 Intent mainActivity = new Intent(thatActivity, MainActivity.class);
@@ -108,7 +126,7 @@ public class InitializeActivity extends AppCompatActivity implements MessageObse
         Constants.CONTEXT = getApplicationContext();
 
         PrinterService.getInstance().init("MTP-II");
-
+        UserMessages.init();
         /**
          * Set up Menu
          *
@@ -225,8 +243,6 @@ public class InitializeActivity extends AppCompatActivity implements MessageObse
         });
     }
 
-
-
     @Override
     public synchronized void accept(ServerImage message) {
         runOnUiThread(()->{
@@ -251,24 +267,15 @@ public class InitializeActivity extends AppCompatActivity implements MessageObse
     public void accept(OpenTableNotification message) { }
 
     @Override
-    public void accept(CloseTableNotification message) {
-
-    }
+    public void accept(CloseTableNotification message) { }
 
     @Override
-    public void accept(CancelTableNotification message) {
-
-    }
+    public void accept(CancelTableNotification message) { }
 
     @Override
-    public void accept(SubmitTableNotification message) {
-
-    }
+    public void accept(SubmitTableNotification message) { }
 
     @Override
-    public void accept(OrderHistoryContainer message) {
-
-    }
-
+    public void accept(OrderHistoryContainer message) { }
 
 }

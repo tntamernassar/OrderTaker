@@ -14,13 +14,13 @@
         android:background="@color/gold">
 
         <TextView
-            android:layout_marginRight="20dp"
-            android:layout_marginTop="20dp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="اوردار هيستوري"
-            android:textColor="@color/white"
             android:layout_alignParentRight="true"
+            android:layout_marginTop="20dp"
+            android:layout_marginRight="20dp"
+            android:text="سجل الطلبيات"
+            android:textColor="@color/white"
             android:textSize="40dp">
 
         </TextView>
@@ -76,15 +76,6 @@
         android:gravity="center">
 
 
-
-
-        <ProgressBar
-            android:id="@+id/progress"
-            android:layout_height="300dp"
-            android:layout_width="300dp"
-            android:layout_marginTop="200dp"
-            android:backgroundTint="@color/gold"
-            />
 
     </LinearLayout>
 

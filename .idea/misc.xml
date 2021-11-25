@@ -31,7 +31,7 @@
         <entry key="app/src/main/res/layout-w936dp/order_item.xml" value="0.10852478839177751" />
         <entry key="app/src/main/res/layout/activity_initialize.xml" value="0.18" />
         <entry key="app/src/main/res/layout/activity_main.xml" value="0.25" />
-        <entry key="app/src/main/res/layout/activity_menu_edit.xml" value="0.22" />
+        <entry key="app/src/main/res/layout/activity_menu_edit.xml" value="0.5160523186682521" />
         <entry key="app/src/main/res/layout/activity_order.xml" value="0.33" />
         <entry key="app/src/main/res/layout/activity_order_history.xml" value="0.266796875" />
         <entry key="app/src/main/res/layout/activity_scrolling.xml" value="0.1" />
@@ -49,6 +49,7 @@
         <entry key="app/src/main/res/layout/section_addons.xml" value="0.33" />
         <entry key="app/src/main/res/layout/table_management.xml" value="0.10037174721189591" />
         <entry key="app/src/main/res/menu/menu_scrolling.xml" value="0.2630208333333333" />
+        <entry key="app/src/main/res/mipmap-anydpi-v26/ic_launcher.xml" value="0.250920245398773" />
       </map>
     </option>
   </component>

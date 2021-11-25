@@ -33,6 +33,7 @@ import com.example.ordertakerfrontend.FrontEnd.Popups.ItemSubmitCallback;
 import com.example.ordertakerfrontend.FrontEnd.Popups.OnePageOrderActivity;
 import com.example.ordertakerfrontend.FrontEnd.Popups.PopupAddons;
 import com.example.ordertakerfrontend.FrontEnd.Popups.YesNoCallbacks;
+import com.example.ordertakerfrontend.FrontEnd.UserMessages;
 import com.example.ordertakerfrontend.Network.NetworkManager.NetworkAdapter;
 import com.example.ordertakerfrontend.Network.NetworkMessages.In.MenuEditNotification;
 import com.example.ordertakerfrontend.Network.NetworkMessages.In.OrderHistoryContainer;
@@ -68,6 +69,13 @@ public class OrderActivity extends AppCompatActivity implements OnePageOrderActi
         Intent intent = getIntent();
         this.tableId = intent.getExtras().getInt("table");
         Table table = Constants.WAITRESS.getRestaurant().getTable(tableId);
+
+        /** Setting user messages **/
+        TextView table_header = findViewById(R.id.table_header);
+        TextView number_of_people_label = findViewById(R.id.number_of_people_label);
+
+        table_header.setText(UserMessages.get("table_i", tableId));
+        number_of_people_label.setText(UserMessages.get("number_of_people_label"));
 
         NumberPicker numberPicker = findViewById(R.id.people_on_table);
         String[] options = new String[41];
@@ -105,13 +113,12 @@ public class OrderActivity extends AppCompatActivity implements OnePageOrderActi
         submit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Utils.YesNoDialog(OrderActivity.this, "لارسال الطلب اضغط نعم", new YesNoCallbacks() {
+                Utils.YesNoDialog(OrderActivity.this, UserMessages.get("ask_if_send_to_kitchen"), new YesNoCallbacks() {
                     @Override
                     public void yes() {
                         Constants.WAITRESS.submitOrder(tableId);
                         NetworkAdapter.getInstance().send(new SubmitTable(table));
-                        Utils.ShowSuccessAlert(that, "تم ارسال الطلبيه الى المطبخ !");
-
+                        Utils.ShowSuccessAlert(that, UserMessages.get("send_to_kitchen_success"));
                     }
 
                     @Override
@@ -121,17 +128,18 @@ public class OrderActivity extends AppCompatActivity implements OnePageOrderActi
         });
 
         Button close = findViewById(R.id.close);
+        close.setText(UserMessages.get("close_table"));
         close.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
 
-                Utils.YesNoDialog(OrderActivity.this, "لاغلاق الطلب اضغط نعم", new YesNoCallbacks() {
+                Utils.YesNoDialog(OrderActivity.this, UserMessages.get("ask_table_close"), new YesNoCallbacks() {
                     @Override
                     public void yes() {
                         Order order = table.getCurrentOrder();
                         if (order.isDistributed()) {
                             if (numberPicker.getValue() == 0) {
-                                Utils.ShowWarningAlert(that, "الرجاء ادخال عدد الاشخاص ");
+                                Utils.ShowWarningAlert(that, UserMessages.get("ask_enter_num_of_people"));
                             } else {
                                 Constants.WAITRESS.closeOrder(tableId);
                                 NetworkAdapter.getInstance().send(new CloseTable(tableId, numberPicker.getValue()));
@@ -184,10 +192,10 @@ public class OrderActivity extends AppCompatActivity implements OnePageOrderActi
                     i++;
                 }
 
-                if(!List.of(menuCategories).contains(selected)){
-                    categories.selectTab(categories.getTabAt(0));
-                }else{
+                if (List.of(menuCategories).contains(selected)) {
                     categories.selectTab(categories.getTabAt(new_index));
+                } else {
+                    categories.selectTab(categories.getTabAt(0));
                 }
             }
         }
@@ -270,7 +278,6 @@ public class OrderActivity extends AppCompatActivity implements OnePageOrderActi
         ListView parentList = findViewById(R.id.order_holder);
         List<OrderItem> orderItems = new LinkedList<>();
         for (OrderItem o : Constants.WAITRESS.getRestaurant().getTable(tableId).getCurrentOrder().getOrderItems().values()) {
-            System.out.println(o.toJSON());
             if(!o.isDeleted()) {
                 orderItems.add(o);
             }
@@ -446,8 +453,6 @@ public class OrderActivity extends AppCompatActivity implements OnePageOrderActi
     public void accept(ServerImage message) { }
 
     @Override
-    public void accept(OrderHistoryContainer message) {
-
-    }
+    public void accept(OrderHistoryContainer message) { }
 
 }

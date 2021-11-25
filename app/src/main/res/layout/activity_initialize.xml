@@ -12,8 +12,7 @@
     <pl.droidsonroids.gif.GifImageView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:src="@drawable/loading"
-        />
+        android:src="@drawable/loading" />
     <TextView
         android:id="@+id/label"
         android:layout_width="wrap_content"

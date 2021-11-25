@@ -54,7 +54,7 @@ public class OrderHistoryActivity extends AppCompatActivity implements MessageOb
     private OrderHistory orderHistory;
     private LinearLayout container;
     private boolean inCharts;
-    private String[] months = new String[]{"January", "February", "March", "April", "May", "June", "July", "Aguste", "September", "October", "November", "December"};
+    private String[] months = new String[]{"شهر 1", "شهر 2", "شهر 3", "شهر 4", "شهر 5", "شهر 6", "شهر 7", "شهر 8", "شهر 9", "شهر 10", "شهر 11", "شهر 12"};
     @RequiresApi(api = Build.VERSION_CODES.O)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -136,7 +136,6 @@ public class OrderHistoryActivity extends AppCompatActivity implements MessageOb
             Utils.ShowWarningAlert(this, "قائمة الطلبيات فارغة");
         }else{
             if(!syncing) {
-                System.out.println("Charts !");
                 LayoutInflater inflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
                 View inflated = inflater.inflate(R.layout.report_layout, null);
                 this.container.addView(inflated);
@@ -167,7 +166,6 @@ public class OrderHistoryActivity extends AppCompatActivity implements MessageOb
             Utils.ShowWarningAlert(this, "قائمة الطلبيات فارغة");
         }else{
             if(!syncing) {
-                System.out.println("Tables");
                 Activity that = this;
                 ListView table = new ListView(getApplicationContext());
                 this.container.addView(table);

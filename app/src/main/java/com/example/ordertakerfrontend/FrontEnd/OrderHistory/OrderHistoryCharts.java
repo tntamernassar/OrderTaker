@@ -128,6 +128,7 @@ public class OrderHistoryCharts {
     public void createTrafficLineChart(View parent){
 
         AnyChartView lineChart = (AnyChartView) parent.findViewById(R.id.trafficChartForQuantity);
+        lineChart.setProgressBar(parent.findViewById(R.id.trafficChartForQuantityProgress));
         APIlib.getInstance().setActiveAnyChartView(lineChart);
 
         // building the line chart:
@@ -147,6 +148,7 @@ public class OrderHistoryCharts {
      **/
     public void createTrafficPeopleChart(View parent){
         AnyChartView peopleChart = (AnyChartView) parent.findViewById(R.id.trafficChartForPeople);
+        peopleChart.setProgressBar(parent.findViewById(R.id.trafficChartForPeopleProgress));
         APIlib.getInstance().setActiveAnyChartView(peopleChart);
 
         HashMap<Integer, Integer> peoplePerDay = new HashMap<>();
@@ -177,6 +179,7 @@ public class OrderHistoryCharts {
      * */
     public void createIncomeLineChart(View parent){
         AnyChartView priceChart = (AnyChartView) parent.findViewById(R.id.trafficChartForPrice);
+        priceChart.setProgressBar(parent.findViewById(R.id.trafficChartForPriceProgress));
         APIlib.getInstance().setActiveAnyChartView(priceChart);
 
         HashMap<Integer, Integer> pricePerDay = new HashMap<>();
@@ -205,6 +208,8 @@ public class OrderHistoryCharts {
      **/
     public void createSectionsPieChart(View parent){
         AnyChartView anyChartView = (AnyChartView) parent.findViewById(R.id.pieChart);
+        anyChartView.setProgressBar(parent.findViewById(R.id.pieChartProgress));
+
         APIlib.getInstance().setActiveAnyChartView(anyChartView);
 
         Pie pie = AnyChart.pie();
@@ -242,6 +247,7 @@ public class OrderHistoryCharts {
      **/
     public void createTopNBarChart(View parent, int top){
         AnyChartView anyChartView = (AnyChartView) parent.findViewById(R.id.columnChart);
+        anyChartView.setProgressBar(parent.findViewById(R.id.columnChartProgress));
         APIlib.getInstance().setActiveAnyChartView(anyChartView);
 
         Cartesian cartesian = AnyChart.column();

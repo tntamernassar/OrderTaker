@@ -18,6 +18,7 @@ import com.example.ordertakerfrontend.BackEnd.Services.FileManager;
 import com.example.ordertakerfrontend.BackEnd.Services.Utils;
 import com.example.ordertakerfrontend.FrontEnd.Menus.DiskMenu;
 import com.example.ordertakerfrontend.FrontEnd.Popups.YesNoCallbacks;
+import com.example.ordertakerfrontend.FrontEnd.UserMessages;
 import com.example.ordertakerfrontend.Network.NetworkManager.NetworkAdapter;
 import com.example.ordertakerfrontend.Network.NetworkMessages.In.MenuEditNotification;
 import com.example.ordertakerfrontend.Network.NetworkMessages.In.OrderHistoryContainer;
@@ -70,15 +71,9 @@ public class MainActivity extends AppCompatActivity implements MessageObserver {
         setContentView(R.layout.activity_main);
         getSupportActionBar().hide();
 
-
-        if(Constants.WAITRESS == null) {
-            this.waitress = initSystem();
-        } else {
-            this.waitress = Constants.WAITRESS;
-        }
+        this.waitress = Constants.WAITRESS;
 
         NetworkAdapter.getInstance().register(id, this);
-
 
         FloatingActionButton edit_menu = findViewById(R.id.edit_menu);
         edit_menu.setOnClickListener(v->{
@@ -102,7 +97,6 @@ public class MainActivity extends AppCompatActivity implements MessageObserver {
             });
         }
 
-
     }
 
     @Override
@@ -112,91 +106,14 @@ public class MainActivity extends AppCompatActivity implements MessageObserver {
     }
 
     @Override
-    public void onBackPressed() {
+    public void onBackPressed() { }
 
-    }
-
-    private Waitress initSystem(){
-        Constants.CONTEXT = getApplicationContext();
-
-        /**
-         * Set up Menu
-         *
-         * Read from 'menu' file, and build the menu accordingly.
-         * if menu doesn't exist, create empty menu and wait for the server
-         * **/
-
-        DiskMenu diskMenu = (DiskMenu) FileManager.readObject("menu");
-        if(diskMenu == null){
-            diskMenu = new DiskMenu(new LinkedList<>());
-        }
-        diskMenu.makeMenu(this);
-
-
-        /**
-         * Set up Restaurant, check if there is cached version in memory
-         * **/
-        Restaurant lastState;
-        try{
-            lastState = (Restaurant) FileManager.readObject(Constants.RESTAURANT_STATE_FILE);
-            if(lastState == null){
-                lastState = new Restaurant();
-                lastState.addTable(new Table(1));
-                lastState.addTable(new Table(2));
-                lastState.addTable(new Table(3));
-                lastState.addTable(new Table(4));
-                lastState.addTable(new Table(5));
-                lastState.addTable(new Table(6));
-                lastState.addTable(new Table(7));
-                lastState.addTable(new Table(8));
-            }
-        }catch (Exception e){
-            lastState = new Restaurant();
-            lastState.addTable(new Table(1));
-            lastState.addTable(new Table(2));
-            lastState.addTable(new Table(3));
-            lastState.addTable(new Table(4));
-            lastState.addTable(new Table(5));
-            lastState.addTable(new Table(6));
-            lastState.addTable(new Table(7));
-            lastState.addTable(new Table(8));
-        }
-
-        final Restaurant restaurant = lastState;
-
-        /**
-         * Set up Waitress Listeners
-         * **/
-        Waitress waitress = new Waitress("John", restaurant);
-
-        Constants.WAITRESS = waitress;
-
-        /** Cache this run in log **/
-        Utils.writeToLog(waitress.getName() + " Started OrderTaker");
-
-
-        /** Network init **/
-        NetworkAdapter.init(new NetworkAdapter() {
-            @Override
-            public void onConnection(NetworkAdapter adapter) {
-                adapter.receive();
-                adapter.send(new initRequest());
-            }
-
-            @Override
-            public void onError(Exception e) {
-                System.out.println("Not connected");
-            }
-        });
-        NetworkAdapter.getInstance().start();
-        return waitress;
-    }
 
     private void openTable(int table){
         MessageObserver that = this;
         Intent intent = new Intent(this, OrderActivity.class);
         if(!waitress.getRestaurant().getTable(table).isActive()) {
-            Utils.YesNoDialog(MainActivity.this, "فتح طاوله رقم 1 ؟", new YesNoCallbacks() {
+            Utils.YesNoDialog(MainActivity.this, UserMessages.get("ask_open_table", table), new YesNoCallbacks() {
                 @Override
                 public void yes() {
                     waitress.openTable(table);
@@ -252,14 +169,10 @@ public class MainActivity extends AppCompatActivity implements MessageObserver {
     }
 
     @Override
-    public void accept(SubmitTableNotification message) {
-
-    }
+    public void accept(SubmitTableNotification message) { }
 
     @Override
-    public void accept(OrderHistoryContainer message) {
-
-    }
+    public void accept(OrderHistoryContainer message) { }
 
     @Override
     public void accept(NetworkMessage message) { }

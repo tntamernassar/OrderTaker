@@ -14,6 +14,7 @@ import com.example.ordertakerfrontend.BackEnd.Services.Constants;
 import com.example.ordertakerfrontend.BackEnd.Services.Utils;
 import com.example.ordertakerfrontend.FrontEnd.Popups.OnePageOrderActivity;
 import com.example.ordertakerfrontend.FrontEnd.Popups.YesNoCallbacks;
+import com.example.ordertakerfrontend.FrontEnd.UserMessages;
 import com.example.ordertakerfrontend.R;
 
 import java.util.LinkedList;
@@ -85,7 +86,7 @@ public class Orders extends ArrayAdapter<OrderItem> {
          * Delete item
          * */
         delete_item.setOnClickListener((view)->{
-            Utils.YesNoDialog(context, "are you sure you want to delete this item ?", new YesNoCallbacks() {
+            Utils.YesNoDialog(context, UserMessages.get("ask_if_delete", orderedProduct.getMenuProduct().getName()), new YesNoCallbacks() {
                 @Override
                 public void yes() {
                     Constants.WAITRESS.removeItem(tableId, orderItem.getIndex());

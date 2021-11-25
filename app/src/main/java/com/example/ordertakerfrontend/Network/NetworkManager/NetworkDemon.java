@@ -15,6 +15,7 @@ public class NetworkDemon{
     private int reconnectionAttempt;
     private NetworkAdapter networkAdapter;
     private static NetworkDemon instance;
+    private boolean connecting;
 
     public static NetworkDemon init(NetworkAdapter networkAdapter) {
         instance = new NetworkDemon(networkAdapter);
@@ -28,6 +29,7 @@ public class NetworkDemon{
     public NetworkDemon(NetworkAdapter networkAdapter){
         this.networkAdapter = networkAdapter;
         this.reconnectionAttempt = 0;
+        connecting = false;
     }
 
     private void restartReconnectionAttempt(){
@@ -55,8 +57,9 @@ public class NetworkDemon{
                     }
                 }
                 boolean connectedToServer = networkAdapter != null && !networkAdapter.isConnecting() && networkAdapter.getReceiver().isConnected() && networkAdapter.getSender().isConnected();
-                if (!connectedToServer){
+                if (!connectedToServer && !connecting){
                     final int a = nextReconnectionAttempt();
+                    connecting = true;
                     System.out.println("Reconnecting attempt " + a);
                     Utils.writeToLog("NetworkDemon is trying to reconnect to server");
                     NetworkAdapter.init(new NetworkAdapter() {
@@ -72,12 +75,14 @@ public class NetworkDemon{
                             networkAdapter.receive();
                             networkAdapter.send(new HealthMessage());
                             restartReconnectionAttempt();
+                            connecting = false;
                         }
 
                         @Override
                         public void onError(Exception e) {
                             System.out.println("NetworkDemon failed to reconnect to server in attempt " + a);
                             Utils.writeToLog("NetworkDemon failed to reconnect to server in attempt " + a);
+                            connecting = false;
                         }
                     });
                     NetworkAdapter.getInstance().start();

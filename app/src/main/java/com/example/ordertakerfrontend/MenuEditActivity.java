@@ -34,6 +34,7 @@ import com.example.ordertakerfrontend.FrontEnd.Menus.MenuProduct;
 import com.example.ordertakerfrontend.FrontEnd.Menus.MenuSection;
 import com.example.ordertakerfrontend.FrontEnd.Popups.AddProductCallback;
 import com.example.ordertakerfrontend.FrontEnd.Popups.YesNoCallbacks;
+import com.example.ordertakerfrontend.FrontEnd.UserMessages;
 import com.example.ordertakerfrontend.Network.NetworkManager.NetworkAdapter;
 import com.example.ordertakerfrontend.Network.NetworkMessages.Out.MenuEdit;
 import com.github.dhaval2404.imagepicker.ImagePicker;
@@ -53,6 +54,9 @@ public class MenuEditActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_menu_edit);
         getSupportActionBar().hide();
+
+        TextView edit_menu_header = findViewById(R.id.edit_menu_header);
+        edit_menu_header.setText(UserMessages.get("edit_menu_header"));
 
         Menu menu = Menu.getInstance();
         BuildTabLayout(menu);
@@ -92,11 +96,11 @@ public class MenuEditActivity extends AppCompatActivity {
         Activity that = this;
 
         add_section.setOnClickListener(view ->{
-            Utils.AcquireInputDialog(that, "ادخل اسم السكشن الجديد", (input)->{
+            Utils.AcquireInputDialog(that, UserMessages.get("ask_enter_category_name"), (input)->{
                 if (input.length() > 0) {
                     AddNewCategory(menu, input);
                 } else {
-                    Toast.makeText(getApplicationContext(), "PLease enter valid section name", Toast.LENGTH_LONG).show();
+                    Utils.ShowWarningAlert(that, UserMessages.get("ask_enter_valid_name"));
                 }
             });
         });
@@ -104,7 +108,7 @@ public class MenuEditActivity extends AppCompatActivity {
         remove_category.setOnClickListener(view->{
             if (menu.getCategories().length > 0){
                 String selected = categories.getTabAt(categories.getSelectedTabPosition()).getText().toString();
-                Utils.YesNoDialog(this, "Are you sre you want to delete " + selected, new YesNoCallbacks() {
+                Utils.YesNoDialog(this, UserMessages.get("ask_if_delete", selected), new YesNoCallbacks() {
                     @Override
                     public void yes() {
                         LinkedList<String> shouldDeleteImages = new LinkedList<>();
@@ -176,7 +180,7 @@ public class MenuEditActivity extends AppCompatActivity {
                 setWorkingArea(menuProduct.getName(), menuProduct.getDescription(), menuProduct.getPrice(), menuProduct.isAvailable(), menuProduct.getSections() != null ? menuProduct.getSections() : new LinkedList<>() , menuProduct.getImages(), new AddProductCallback() {
                     @Override
                     public void callback(MenuProduct newMenuProduct) {
-                        Utils.YesNoDialog(that, "Are you sure you want to save " + menuProduct.getName() + " ? ", new YesNoCallbacks() {
+                        Utils.YesNoDialog(that, UserMessages.get("ask_if_save", newMenuProduct.getName()), new YesNoCallbacks() {
                             @RequiresApi(api = Build.VERSION_CODES.N)
                             @Override
                             public void yes() {
@@ -188,11 +192,6 @@ public class MenuEditActivity extends AppCompatActivity {
                                 String previousImageName = menuProduct.getImages()[0];
 
                                 AsyncTask t = new AsyncTask() {
-                                    @Override
-                                    protected void onPreExecute() {
-                                        Toast.makeText(getApplicationContext(),"Started", Toast.LENGTH_SHORT).show();
-                                    }
-
                                     @RequiresApi(api = Build.VERSION_CODES.O)
                                     @Override
                                     protected Object doInBackground(Object[] objects) {
@@ -208,7 +207,7 @@ public class MenuEditActivity extends AppCompatActivity {
 
                                     @Override
                                     protected void onPostExecute(Object o) {
-                                        Toast.makeText(getApplicationContext(),"Finished ", Toast.LENGTH_SHORT).show();
+                                        Utils.ShowSuccessAlert(that, UserMessages.get("save_success"));
                                         menuProduct.setName(newMenuProduct.getName());
                                         menuProduct.setDescription(newMenuProduct.getDescription());
                                         menuProduct.setPrice(newMenuProduct.getPrice());
@@ -233,7 +232,7 @@ public class MenuEditActivity extends AppCompatActivity {
                 }, new AddProductCallback() {
                     @Override
                     public void callback(MenuProduct m) {
-                        Utils.YesNoDialog(that, "Are you sure you want to delete " + menuProduct.getName() + " ? ", new YesNoCallbacks() {
+                        Utils.YesNoDialog(that, UserMessages.get("ask_if_delete", menuProduct.getName()), new YesNoCallbacks() {
                             @Override
                             public void yes() {
                                 menu.removeProduct(menuProduct);
@@ -279,6 +278,7 @@ public class MenuEditActivity extends AppCompatActivity {
     }
 
     private void setWorkingArea(String productName, String productDescription, double productPrice, boolean productAvailable, LinkedList<MenuSection> productMenuSections, String[] productImagesArray, AddProductCallback submitCallback, AddProductCallback cancelCallback) {
+        Activity that = this;
         TabLayout categories = findViewById(R.id.categories);
         ScrollView working_area = findViewById(R.id.working_area);
 
@@ -298,11 +298,18 @@ public class MenuEditActivity extends AppCompatActivity {
         FloatingActionButton submit_product = inflated.findViewById(R.id.submit_product);
         FloatingActionButton cancel_product = inflated.findViewById(R.id.cancel_product);
         ListView listView = linearLayout.findViewById(R.id.sections_list_view);
+        TextView add_new_section_label = linearLayout.findViewById(R.id.add_new_section_label);
 
         TextView product_name = inflated.findViewById(R.id.product_name);
         TextView product_price = inflated.findViewById(R.id.product_price);
         TextView product_description = inflated.findViewById(R.id.product_description);
         Bitmap bitmap = ImagesManager.readImage(productImagesArray[0]);
+
+        /** set User messages **/
+        available.setText(UserMessages.get("available"));
+        product_name.setHint(UserMessages.get("product_name"));
+        product_description.setHint(UserMessages.get("product_description"));
+        add_new_section_label.setText(UserMessages.get("add_new_section_label"));
 
         header_title.setText(selectedCategory);
         product_image.setImageBitmap(bitmap);
@@ -319,9 +326,13 @@ public class MenuEditActivity extends AppCompatActivity {
         LinkedList<MenuSection> menuSections = new LinkedList<>(productMenuSections);
 
         add_section.setOnClickListener(add_section_view -> {
-            Utils.AcquireInputDialog(this, "Enter Section name", input -> {
-                menuSections.add(new MenuSection(input, new String[]{}, false));
-                BuildMenuSection(listView, menuSections);
+            Utils.AcquireInputDialog(this, UserMessages.get("ask_enter_section_name"), input -> {
+                if (input.length() > 0) {
+                    menuSections.add(new MenuSection(input, new String[]{}, false));
+                    BuildMenuSection(listView, menuSections);
+                }else{
+                    Utils.ShowWarningAlert(that, UserMessages.get("ask_enter_valid_name"));
+                }
             });
         });
 
@@ -332,12 +343,8 @@ public class MenuEditActivity extends AppCompatActivity {
             double price = Double.parseDouble(product_price.getText().toString());
             String description = product_description.getText().toString();
             boolean isAvailable = available.isChecked();
-            System.out.println("Available : " + isAvailable);
             if(name.length() == 0){
-                Toast.makeText(getApplicationContext(), "Please Enter product name", Toast.LENGTH_LONG).show();
-                return;
-            }else if(description.length() == 0){
-                Toast.makeText(getApplicationContext(), "Please Enter product Description", Toast.LENGTH_LONG).show();
+                Utils.ShowWarningAlert(that, UserMessages.get("ask_enter_product_name"));
                 return;
             }
 
@@ -384,7 +391,6 @@ public class MenuEditActivity extends AppCompatActivity {
                                 menuProduct.setImages(new String[]{imageName});
                                 ImagesManager.sendImageInChucks(imageName, imageBase64);
                             }
-
                             return null;
                         }
 
@@ -395,7 +401,7 @@ public class MenuEditActivity extends AppCompatActivity {
                             setAddProductListener(menu);
                             writeMenu(menu);
                             NetworkAdapter.getInstance().send(new MenuEdit(menu.toJSON(),havingPendingImage ? new String[]{imageName} : new String[]{}, new String[]{}));
-                            Utils.ShowSuccessAlert(that, "تم اضافة المنتج !");
+                            Utils.ShowSuccessAlert(that, UserMessages.get("add_product_success"));
                         }
                     };
 
@@ -427,9 +433,6 @@ public class MenuEditActivity extends AppCompatActivity {
             }
         } else if (resultCode == ImagePicker.RESULT_ERROR) {
             Toast.makeText(this, ImagePicker.getError(data), Toast.LENGTH_SHORT).show();
-        } else {
-            Toast.makeText(this, "Task Cancelled", Toast.LENGTH_SHORT).show();
         }
-
     }
 }
