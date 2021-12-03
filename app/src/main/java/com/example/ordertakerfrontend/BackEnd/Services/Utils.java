@@ -156,12 +156,19 @@ public class Utils {
     }
 
     /**
-     * true if t1 > t2
+     * true iff t1 > t2
      * **/
     public static boolean isBigger(String t1, String t2){
         Timestamp timestamp1 = new Timestamp(Long.parseLong(t1));
         Timestamp timestamp2 = new Timestamp(Long.parseLong(t1));
         return timestamp1.compareTo(timestamp2) > 0;
+    }
+
+    /**
+     * true iff d1 > d2
+     * **/
+    public static boolean after(LocalDateTime d1, LocalDateTime d2){
+        return d1.compareTo(d2) > 0;
     }
 
     @RequiresApi(api = Build.VERSION_CODES.N)

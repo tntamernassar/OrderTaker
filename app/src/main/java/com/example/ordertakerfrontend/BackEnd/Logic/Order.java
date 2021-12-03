@@ -79,7 +79,7 @@ public class Order implements Serializable {
         return null;
     }
 
-    public synchronized void mergerOrder(Order order, String tabletWaitressName){
+    public synchronized void mergerOrder(Order order){
         HashMap<Integer, OrderItem> otherOrderItems = order.getOrderItems();
 
         for (Integer index : otherOrderItems.keySet()){
@@ -97,6 +97,7 @@ public class Order implements Serializable {
             }
         }
         setDistributeVersion(order.getDistributeVersion());
+        setDistributed(order.isDistributed());
     }
 
     public void distributeItems(){

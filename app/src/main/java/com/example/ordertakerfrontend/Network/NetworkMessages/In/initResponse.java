@@ -3,6 +3,7 @@ package com.example.ordertakerfrontend.Network.NetworkMessages.In;
 import com.example.ordertakerfrontend.BackEnd.Logic.Table;
 import com.example.ordertakerfrontend.BackEnd.Logic.Waitress;
 import com.example.ordertakerfrontend.BackEnd.Services.ImagesManager;
+import com.example.ordertakerfrontend.BackEnd.Services.Utils;
 import com.example.ordertakerfrontend.FrontEnd.Menus.DiskMenu;
 import com.example.ordertakerfrontend.FrontEnd.Menus.Menu;
 import com.example.ordertakerfrontend.FrontEnd.Menus.MenuProduct;
@@ -117,8 +118,27 @@ public class initResponse extends NetworkMessage {
                 JSONObject tablesJSONObject = tables.getJSONObject(i);
                 Table serverTable = new Table(tablesJSONObject);
                 Table clientTable = waitress.getRestaurant().getTable(serverTable.getNumber());
+                System.out.println(serverTable.toJSON());
+                System.out.println(clientTable.toJSON());
 
-                if (!clientTable.isActive()){
+                if (clientTable.isActive() && !serverTable.isActive()){
+                    // if serverTable closed after client table order is opened, close client table
+                    if (serverTable.getClosedAt() != null && Utils.after(serverTable.getClosedAt(), clientTable.getCurrentOrder().getStartedAt())){
+                        waitress.closeOrder(clientTable.getNumber());
+                    }
+                }else if (!clientTable.isActive() && serverTable.isActive()){
+                    // if serverTable order opened after clientTable closed, open client table
+                    if ( (clientTable.getClosedAt() == null) ||
+                            (clientTable.getClosedAt() != null) && Utils.after(serverTable.getCurrentOrder().getStartedAt(), clientTable.getClosedAt())){
+                        waitress.openTable(clientTable.getNumber());
+                        clientTable.mergeTable(serverTable);
+                    }
+                }else if(clientTable.isActive() && serverTable.isActive()){
+                    // if clientTable opened the same is server table, merge the two tables
+                    if (clientTable.getCurrentOrder().getStartedAt().equals(serverTable.getCurrentOrder().getStartedAt())){
+                        clientTable.mergeTable(serverTable);
+                    }
+                }else {
                     clientTable.setTable(serverTable);
                 }
             }

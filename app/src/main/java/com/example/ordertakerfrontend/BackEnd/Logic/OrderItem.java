@@ -45,7 +45,6 @@ public class OrderItem implements Serializable {
     }
 
     public OrderItem(JSONObject orderItem, Product product) throws JSONException {
-
         int index = (int) orderItem.get("index");
         int quantity = (int) orderItem.get("quantity");
         String notes = (String) orderItem.get("notes");
@@ -54,9 +53,9 @@ public class OrderItem implements Serializable {
         boolean isDistributed = (boolean) orderItem.get("isDistributed");
         boolean isDeleted = (boolean) orderItem.get("deleted");
 
-        this.index = (int) index;
+        this.index = index;
         this.product = product;
-        this.quantity = (int) quantity;
+        this.quantity = quantity;
         this.notes = notes;
         this.waiterName = waiterName;
         this.timestamp = timestamp;
@@ -68,11 +67,16 @@ public class OrderItem implements Serializable {
     public int getIndex() {
         return index;
     }
+    public String getWaiterName() {
+        return waiterName;
+    }
+    public String getTimestamp() {
+        return timestamp;
+    }
 
     public boolean isDistributed() {
         return isDistributed;
     }
-
     public void setDistributed(boolean distributed) {
         isDistributed = distributed;
     }
@@ -80,66 +84,33 @@ public class OrderItem implements Serializable {
     public boolean isDeleted() {
         return deleted;
     }
-
     public void setDeleted(boolean deleted) {
         this.deleted = deleted;
     }
 
-    public String getWaiterName() {
-        return waiterName;
-    }
-
-    public String getTimestamp() {
-        return timestamp;
-    }
-
-
     public Product getProduct() {
         return product;
+    }
+    public void setProduct(Product product) {
+        this.product = product;
     }
 
     public int getQuantity() {
         return quantity;
     }
-
-    public String getNotes() {
-        return notes;
-    }
-
-    public void setProduct(Product product) {
-        this.product = product;
-    }
-
     public void setQuantity(int quantity) {
         this.quantity = quantity;
     }
 
+    public String getNotes() {
+        return notes;
+    }
     public void setNotes(String notes) {
         this.notes = notes;
     }
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        OrderItem orderItem = (OrderItem) o;
-        return waiterName.equals(orderItem.waiterName) && timestamp.equals(orderItem.timestamp);
-    }
-
     public boolean sameItem(OrderItem orderItem){
         return quantity == orderItem.getQuantity() && notes.equals(orderItem.getNotes()) && product.equals(orderItem.getProduct());
-    }
-
-    @Override
-    public String toString() {
-        return "OrderItem {" + "\n\t" +
-                "waiter = " + waiterName +"\n\t" +
-                "timestamp = " + timestamp +"\n\t" +
-                "distributed = " + isDistributed +"\n\t" +
-                "product = " + product +"\n\t" +
-                "quantity = " + quantity +"\n\t" +
-                "notes = " + notes  +"\n" +
-                "}\n";
     }
 
     public JSONObject toJSON(){
@@ -158,5 +129,18 @@ public class OrderItem implements Serializable {
             e.printStackTrace();
             return null;
         }
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        OrderItem orderItem = (OrderItem) o;
+        return waiterName.equals(orderItem.waiterName) && timestamp.equals(orderItem.timestamp);
+    }
+
+    @Override
+    public String toString() {
+        return toJSON().toString();
     }
 }

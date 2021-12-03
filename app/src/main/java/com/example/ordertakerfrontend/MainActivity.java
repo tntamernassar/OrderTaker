@@ -169,6 +169,24 @@ public class MainActivity extends AppCompatActivity implements MessageObserver {
     }
 
     @Override
+    public void accept(initResponse message) {
+        runOnUiThread(()->{
+            Resources resources = getResources();
+            for (Integer table : Constants.WAITRESS.getRestaurant().getTables()) {
+                int table_id = resources.getIdentifier("table_"+table, "id", getApplicationContext().getPackageName());
+                Button table_btn = findViewById(table_id);
+                if(Constants.WAITRESS.getRestaurant().getTable(table).isActive()){
+                    table_btn.setBackground(ContextCompat.getDrawable(getApplicationContext(), R.drawable.taken_table));
+                    table_btn.setTextColor(this.getResources().getColor(R.color.white));
+                }else{
+                    table_btn.setBackground(ContextCompat.getDrawable(getApplicationContext(), R.drawable.available_table));
+                    table_btn.setTextColor(this.getResources().getColor(R.color.gold2));
+                }
+            }
+        });
+    }
+
+    @Override
     public void accept(SubmitTableNotification message) { }
 
     @Override
@@ -176,9 +194,6 @@ public class MainActivity extends AppCompatActivity implements MessageObserver {
 
     @Override
     public void accept(NetworkMessage message) { }
-
-    @Override
-    public void accept(initResponse message) { }
 
     @Override
     public void accept(ServerImage message) { }

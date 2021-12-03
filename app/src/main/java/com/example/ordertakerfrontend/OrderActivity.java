@@ -199,9 +199,6 @@ public class OrderActivity extends AppCompatActivity implements OnePageOrderActi
                 }
             }
         }
-
-
-
         categories.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
             @Override
             public void onTabSelected(TabLayout.Tab tab) {
@@ -396,10 +393,15 @@ public class OrderActivity extends AppCompatActivity implements OnePageOrderActi
     @Override
     public void accept(initResponse message) {
         runOnUiThread(()->{
-            TabLayout categories = (TabLayout) findViewById(R.id.categories);
-            String selected = categories.getTabAt(categories.getSelectedTabPosition()).getText().toString();
-            createMenuList(selected);
-            createOrdersList();
+            if (!Constants.WAITRESS.getRestaurant().getTable(tableId).isActive()){
+                Intent mainActivity = new Intent(this, MainActivity.class);
+                startActivity(mainActivity);
+            }else {
+                TabLayout categories = (TabLayout) findViewById(R.id.categories);
+                String selected = categories.getTabAt(categories.getSelectedTabPosition()).getText().toString();
+                createMenuList(selected);
+                createOrdersList();
+            }
         });
     }
 
