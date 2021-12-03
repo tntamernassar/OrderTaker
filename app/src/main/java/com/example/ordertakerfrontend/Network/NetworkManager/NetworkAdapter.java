@@ -92,8 +92,8 @@ public abstract class NetworkAdapter extends Thread {
     public void run() {
         try {
             this.connecting = true;
-//            this.socket = new Socket("193.123.85.54", 443);
-            this.socket = new Socket("10.0.0.5", 2222);
+            this.socket = new Socket("193.123.85.54", 443);
+//            this.socket = new Socket("10.0.0.5", 2222);
             this.receiver = new NetworkReceiver(this.socket, this);
             this.sender = new NetworkSender(socket);
             this.connecting = false;
